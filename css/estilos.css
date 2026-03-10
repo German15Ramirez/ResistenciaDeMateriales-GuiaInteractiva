@@ -1,0 +1,20 @@
+.tarjeta{
+
+background:white;
+padding:1.5rem;
+border-radius:12px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+
+transition:all 0.3s;
+
+font-weight:600;
+color:#1e40af;
+
+}
+
+.tarjeta:hover{
+
+transform:scale(1.05);
+box-shadow:0 10px 20px rgba(0,0,0,0.2);
+
+}
