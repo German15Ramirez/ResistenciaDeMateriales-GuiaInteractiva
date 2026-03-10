@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Portal de Metodologías de Proyectos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-white text-gray-800 font-sans opacity-0 transition-opacity duration-700">
+
+<!-- HERO -->
+<header class="bg-blue-900 text-white py-16">
+<div class="max-w-5xl mx-auto text-center px-6">
+
+<h1 class="text-4xl md:text-5xl font-bold mb-4">
+Metodologías de Proyectos
+</h1>
+
+<p class="text-lg md:text-xl">
+Comparación entre proyectos privados y públicos
+</p>
+
+<p class="mt-4 text-sm opacity-80">
+Equipo: Alex, Integrante 2, Integrante 3
+</p>
+
+</div>
+</header>
+
+<!-- CONTENIDO -->
+<main class="max-w-6xl mx-auto px-6 py-12">
+
+<h2 class="text-3xl font-bold text-center mb-10">
+Comparación de Metodologías
+</h2>
+
+<div class="grid md:grid-cols-2 gap-8">
+
+<!-- TARJETA PRIVADA -->
+<div class="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl hover:scale-105 transition duration-300">
+
+<h3 class="text-2xl font-semibold text-blue-800 mb-4">
+Proyectos Privados
+</h3>
+
+<ul class="list-disc pl-5 space-y-2 mb-6">
+<li>Enfoque en rentabilidad.</li>
+<li>Decisiones más rápidas.</li>
+<li>Menos regulación estatal.</li>
+<li>Objetivo: retorno de inversión.</li>
+</ul>
+
+<a href="privado.html"
+class="inline-block bg-blue-800 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition">
+Ver subtema
+</a>
+
+</div>
+
+<!-- TARJETA PUBLICA -->
+<div class="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl hover:scale-105 transition duration-300">
+
+<h3 class="text-2xl font-semibold text-gray-700 mb-4">
+Proyectos Públicos
+</h3>
+
+<ul class="list-disc pl-5 space-y-2 mb-6">
+<li>Enfoque social.</li>
+<li>Procesos más largos.</li>
+<li>Alta regulación legal.</li>
+<li>Objetivo: bienestar público.</li>
+</ul>
+
+<a href="publico.html"
+class="inline-block bg-gray-800 text-white px-5 py-2 rounded-lg hover:bg-gray-700 transition">
+Ver subtema
+</a>
+
+</div>
+
+</div>
+
+<!-- COMPARACIÓN INTERACTIVA -->
+<section class="mt-16 text-center">
+
+<h2 class="text-2xl font-bold mb-6">
+Comparación Interactiva
+</h2>
+
+<div class="flex justify-center gap-4 mb-6">
+
+<button onclick="mostrarPrivado()"
+class="bg-blue-800 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+Privado
+</button>
+
+<button onclick="mostrarPublico()"
+class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+Público
+</button>
+
+</div>
+
+<div id="comparacion"
+class="bg-gray-100 p-6 rounded-xl shadow-md max-w-xl mx-auto">
+
+Seleccione una opción para ver la información.
+
+</div>
+
+</section>
+
+<!-- QUIZ -->
+<section class="mt-16 text-center">
+
+<h2 class="text-2xl font-bold mb-6">
+Mini Evaluación
+</h2>
+
+<p class="mb-4">
+¿Cuál es el objetivo principal de un proyecto privado?
+</p>
+
+<button onclick="correcto()"
+class="bg-green-600 text-white px-4 py-2 rounded-lg m-2 hover:scale-105 transition">
+Rentabilidad
+</button>
+
+<button onclick="incorrecto()"
+class="bg-red-600 text-white px-4 py-2 rounded-lg m-2 hover:scale-105 transition">
+Bienestar social
+</button>
+
+<p id="resultadoQuiz" class="mt-4 font-semibold"></p>
+
+</section>
+
+<!-- MODAL -->
+<section class="mt-16 text-center">
+
+<button onclick="abrirModal()"
+class="bg-blue-900 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition">
+Información Técnica
+</button>
+
+</section>
+
+</main>
+
+<!-- MODAL -->
+<div id="modal"
+class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+
+<div class="bg-white p-8 rounded-2xl shadow-xl max-w-lg text-center">
+
+<h3 class="text-xl font-bold mb-4">
+Información Técnica
+</h3>
+
+<p>
+Los proyectos privados priorizan retorno de inversión,
+mientras que los proyectos públicos buscan generar
+beneficio social y desarrollo para la población.
+</p>
+
+<button onclick="cerrarModal()"
+class="mt-6 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
+Cerrar
+</button>
+
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-gray-900 text-white text-center py-6 mt-16">
+<p class="text-sm">
+Facultad de Ingeniería – 2026
+</p>
+</footer>
+
+<script>
+
+/* Animación al cargar */
+window.onload = function(){
+document.body.classList.remove("opacity-0");
+}
+
+/* Comparación */
+
+function mostrarPrivado(){
+document.getElementById("comparacion").innerHTML =
+"<b>Proyecto Privado</b><br><br>✔ Rentabilidad<br>✔ Decisiones rápidas<br>✔ Menos regulación";
+}
+
+function mostrarPublico(){
+document.getElementById("comparacion").innerHTML =
+"<b>Proyecto Público</b><br><br>✔ Enfoque social<br>✔ Alta regulación<br>✔ Procesos más largos";
+}
+
+/* Quiz */
+
+function correcto(){
+document.getElementById("resultadoQuiz").innerHTML =
+"<span class='text-green-600'>✔ Correcto</span>";
+}
+
+function incorrecto(){
+document.getElementById("resultadoQuiz").innerHTML =
+"<span class='text-red-600'>✘ Incorrecto</span>";
+}
+
+/* Modal */
+
+function abrirModal(){
+document.getElementById("modal").classList.remove("hidden");
+}
+
+function cerrarModal(){
+document.getElementById("modal").classList.add("hidden");
+}
+
+</script>
+
+</body>
+</html>
