@@ -1,5 +1,9 @@
+function iniciarDarkMode(){
+
 const botonModo = document.getElementById("modoBtn")
 const switchBtn = document.getElementById("switch")
+
+if(!botonModo) return
 
 function activarOscuro(){
 
@@ -17,15 +21,11 @@ switchBtn.textContent = "🌙"
 
 }
 
-// revisar preferencia guardada
-
 if(localStorage.getItem("modo") === "oscuro"){
 activarOscuro()
 }else{
 activarClaro()
 }
-
-// evento click
 
 botonModo.addEventListener("click",()=>{
 
@@ -42,3 +42,5 @@ localStorage.setItem("modo","oscuro")
 }
 
 })
+
+}

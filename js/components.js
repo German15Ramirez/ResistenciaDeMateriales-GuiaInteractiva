@@ -1,16 +1,22 @@
-function cargarComponente(id, archivo){
+async function cargarComponente(id, archivo){
 
-fetch(archivo)
-.then(res => res.text())
-.then(data => {
+const res = await fetch(archivo)
+const html = await res.text()
 
-document.getElementById(id).innerHTML = data;
-
-});
+document.getElementById(id).innerHTML = html
 
 }
 
-cargarComponente("navbar","components/navbar.html");
-cargarComponente("hero","components/hero.html");
-cargarComponente("tarjetas","components/tarjetas.html");
-cargarComponente("footer","components/footer.html");
+async function iniciarComponentes(){
+
+await cargarComponente("navbar","components/navbar.html")
+await cargarComponente("hero","components/hero.html")
+await cargarComponente("tarjetas","components/tarjetas.html")
+await cargarComponente("footer","components/footer.html")
+
+// iniciar darkmode cuando ya existe el botón
+iniciarDarkMode()
+
+}
+
+iniciarComponentes()

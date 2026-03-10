@@ -5,6 +5,7 @@
 
 <meta charset="UTF-8">
 <title>Guía Interactiva - Resistencia de Materiales</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -12,12 +13,6 @@
 <script>
 tailwind.config = {
 darkMode: 'class'
-}
-</script>
-
-<script>
-if(window.matchMedia("(prefers-color-scheme: dark)").matches){
-document.documentElement.classList.add("dark")
 }
 </script>
 
@@ -29,7 +24,7 @@ document.documentElement.classList.add("dark")
 
 <div id="hero"></div>
 
-<main id="temas" class="max-w-7xl mx-auto px-6 py-12">
+<main class="max-w-7xl mx-auto px-6 py-12">
 
 <h2 class="text-3xl font-bold text-center mb-6">
 Temas del Curso
@@ -39,7 +34,9 @@ Temas del Curso
 id="buscador"
 type="text"
 placeholder="Buscar tema..."
-class="border rounded-lg px-4 py-2 mb-10 w-full max-w-md mx-auto block dark:bg-gray-800"
+class="border rounded-lg px-4 py-2 mb-10 w-full max-w-md mx-auto block
+bg-white text-gray-800
+dark:bg-gray-800 dark:text-white dark:border-gray-600"
 />
 
 <div id="tarjetas"></div>
@@ -48,10 +45,9 @@ class="border rounded-lg px-4 py-2 mb-10 w-full max-w-md mx-auto block dark:bg-g
 
 <div id="footer"></div>
 
+<script src="js/darkmode.js"></script>
 <script src="js/components.js"></script>
 <script src="js/buscador.js"></script>
 <script src="js/animaciones.js"></script>
-<script src="js/darkmode.js"></script>
-
 </body>
 </html>
