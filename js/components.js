@@ -14,8 +14,10 @@ await cargarComponente("hero","components/hero.html")
 await cargarComponente("tarjetas","components/tarjetas.html")
 await cargarComponente("footer","components/footer.html")
 
-// iniciar darkmode cuando ya existe el botón
+// iniciar scripts cuando ya existen los elementos
 iniciarDarkMode()
+iniciarAcordeon()
+iniciarBuscador()
 
 }
 

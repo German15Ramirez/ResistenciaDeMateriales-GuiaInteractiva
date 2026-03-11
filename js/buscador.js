@@ -1,25 +1,26 @@
-const buscador = document.getElementById("buscador");
+function iniciarBuscador(){
 
-buscador.addEventListener("keyup", function(){
+const buscador = document.getElementById("buscador")
 
-let texto = buscador.value.toLowerCase();
+if(!buscador) return
 
-let temas = document.querySelectorAll(".tema");
+buscador.addEventListener("input", ()=>{
 
-temas.forEach(function(tema){
+const texto = buscador.value.toLowerCase()
+const temas = document.querySelectorAll(".tema")
 
-let titulo = tema.innerText.toLowerCase();
+temas.forEach(tema=>{
+
+const titulo = tema.textContent.toLowerCase()
 
 if(titulo.includes(texto)){
-
-tema.style.display = "";
-
+tema.style.display = "block"
 }else{
-
-tema.style.display = "none";
-
+tema.style.display = "none"
 }
 
-});
+})
 
-});
+})
+
+}
