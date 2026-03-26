@@ -16,7 +16,6 @@ El portal incluye temas como:
 Cada sección contiene:
 - Introducción teórica
 - Explicación del tema
-- Ejemplos
 - Ejercicios prácticos
 
 ## Tecnologías utilizadas
@@ -27,4 +26,6 @@ Cada sección contiene:
 
 ## Publicación
 
-El portal será publicado mediante la plataforma Vercel.
+El portal actualmente está desplegado en vercel
+
+https://resistencia-de-materiales-guia.vercel.app/

@@ -31,21 +31,13 @@ tailwind.config = {
 <link rel="stylesheet" href="css/progreso.css">
 
 <style>
-/* Animaciones y efectos visuales avanzados */
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-}
-@keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 5px rgba(59,130,246,0.3); }
-    50% { box-shadow: 0 0 20px rgba(59,130,246,0.6); }
-}
-@keyframes slideIn {
-    from { opacity: 0; transform: translateX(-30px); }
-    to { opacity: 1; transform: translateX(0); }
+/* Animaciones y efectos visuales */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 @keyframes scaleIn {
-    from { opacity: 0; transform: scale(0.9); }
+    from { opacity: 0; transform: scale(0.95); }
     to { opacity: 1; transform: scale(1); }
 }
 
@@ -69,14 +61,11 @@ tailwind.config = {
     100% { transform: translateX(100%); }
 }
 
-/* Tarjetas con efecto glassmorphism */
+/* Tarjetas con animación suave */
 .tema {
-    animation: scaleIn 0.4s ease forwards;
+    animation: scaleIn 0.3s ease forwards;
     opacity: 0;
-    transform: scale(0.9);
-    backdrop-filter: blur(10px);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(255,255,255,0.2);
 }
 .tema:nth-child(1) { animation-delay: 0.05s; }
 .tema:nth-child(2) { animation-delay: 0.1s; }
@@ -84,50 +73,24 @@ tailwind.config = {
 .tema:nth-child(4) { animation-delay: 0.2s; }
 .tema:nth-child(5) { animation-delay: 0.25s; }
 .tema:nth-child(6) { animation-delay: 0.3s; }
-.tema:nth-child(7) { animation-delay: 0.35s; }
-.tema:nth-child(8) { animation-delay: 0.4s; }
 
 .tema:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.3);
-    border-color: rgba(59,130,246,0.5);
-}
-
-/* Efecto para el buscador */
-#buscador {
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-}
-#buscador:focus {
-    transform: scale(1.02);
+    transform: translateY(-4px);
     box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.2);
 }
 
-/* Acordeones con diseño moderno */
+/* Buscador mejorado */
+#buscador {
+    transition: all 0.3s ease;
+}
+#buscador:focus {
+    transform: scale(1.01);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Acordeones con efecto suave */
 .acordeon {
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-.acordeon::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    transition: left 0.5s ease;
-}
-.acordeon:hover::before {
-    left: 100%;
-}
-.acordeon.active {
-    background: linear-gradient(135deg, #1e3a8a, #2563eb);
-    color: white;
-}
-.dark .acordeon.active {
-    background: linear-gradient(135deg, #3b82f6, #60a5fa);
 }
 .icono {
     transition: transform 0.3s ease;
@@ -136,9 +99,9 @@ tailwind.config = {
     transform: rotate(45deg);
 }
 
-/* Hero con efecto parallax */
+/* Hero con gradiente limpio */
 .hero-gradient {
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
     position: relative;
     overflow: hidden;
 }
@@ -157,124 +120,61 @@ tailwind.config = {
     to { transform: rotate(360deg); }
 }
 
-/* Estadísticas circulares */
-.progress-ring {
-    transform: rotate(-90deg);
-}
-.progress-ring-circle {
-    transition: stroke-dashoffset 0.5s ease;
-}
-
-/* Badges animados */
+/* Badge de completado */
 .completado-badge {
     animation: pulse 1.5s infinite;
 }
 @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.1); }
+    50% { opacity: 0.7; transform: scale(1.05); }
 }
 
 /* Scrollbar personalizada */
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
 }
 ::-webkit-scrollbar-track {
-    background: linear-gradient(180deg, #f1f1f1, #e5e7eb);
+    background: #f1f1f1;
     border-radius: 10px;
 }
 .dark ::-webkit-scrollbar-track {
-    background: linear-gradient(180deg, #1f2937, #111827);
+    background: #1f2937;
 }
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    background: #1e3a8a;
     border-radius: 10px;
 }
+.dark ::-webkit-scrollbar-thumb {
+    background: #3b82f6;
+}
 ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #2563eb, #60a5fa);
-}
-
-/* Tooltip personalizado */
-[data-tooltip] {
-    position: relative;
-}
-[data-tooltip]:before {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-8px);
-    background: #1f2937;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.2s ease;
-    z-index: 50;
-}
-[data-tooltip]:hover:before {
-    opacity: 1;
-    transform: translateX(-50%) translateY(-4px);
-}
-
-/* Efecto de carga para las tarjetas */
-.loading-skeleton {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-}
-@keyframes loading {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    background: #2563eb;
 }
 </style>
 </head>
 
-<body class="bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 font-sans dark:text-gray-100">
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 font-sans dark:text-gray-100">
 
 <div id="navbar"></div>
 
-<!-- Hero con efecto parallax y partículas -->
+<!-- Hero con diseño limpio -->
 <div id="hero" class="hero-gradient relative overflow-hidden">
-    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%233b82f6" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
-    <div class="max-w-7xl mx-auto px-6 py-20 relative z-10">
+    <div class="max-w-7xl mx-auto px-6 py-16 relative z-10">
         <div class="text-center">
-            <div class="inline-block animate-bounce mb-4">
-                <div class="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                    <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="inline-block mb-4">
+                <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm mx-auto">
+                    <svg class="w-10 h-10 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
                     </svg>
                 </div>
             </div>
-            <h1 class="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-white to-blue-400 bg-clip-text text-transparent">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-white to-blue-400 bg-clip-text text-transparent">
                 Resistencia de Materiales
             </h1>
-            <p class="text-xl text-blue-200 max-w-3xl mx-auto mb-8">
+            <p class="text-lg text-blue-200 max-w-2xl mx-auto">
                 Domina los conceptos fundamentales del comportamiento estructural con nuestras guías interactivas
             </p>
-            <div class="flex flex-wrap justify-center gap-4">
-                <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-2">
-                    <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span>6 Unidades</span>
-                </div>
-                <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-2">
-                    <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                    </svg>
-                    <span>40+ Temas</span>
-                </div>
-                <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-2">
-                    <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span>Seguimiento de progreso</span>
-                </div>
-            </div>
         </div>
     </div>
     <!-- Ola decorativa -->
@@ -286,69 +186,20 @@ tailwind.config = {
 </div>
 
 <main class="max-w-7xl mx-auto px-6 py-12 relative z-10">
-    <!-- Panel de estadísticas rápido -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-        <div class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl p-6 text-white shadow-xl transform hover:scale-105 transition">
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                    </svg>
-                </div>
-                <div class="text-right">
-                    <p class="text-3xl font-bold" id="totalTemasDisplay">0</p>
-                    <p class="text-xs opacity-80">Temas totales</p>
-                </div>
-            </div>
-            <p class="text-sm font-medium">📚 Cobertura completa del curso</p>
-        </div>
-        <div class="bg-gradient-to-br from-green-500 to-green-700 rounded-2xl p-6 text-white shadow-xl transform hover:scale-105 transition">
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <div class="text-right">
-                    <p class="text-3xl font-bold" id="completadosDisplay">0</p>
-                    <p class="text-xs opacity-80">Completados</p>
-                </div>
-            </div>
-            <p class="text-sm font-medium">✅ Temas dominados</p>
-        </div>
-        <div class="bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl p-6 text-white shadow-xl transform hover:scale-105 transition">
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                    </svg>
-                </div>
-                <div class="text-right">
-                    <p class="text-3xl font-bold" id="porcentajeDisplay">0%</p>
-                    <p class="text-xs opacity-80">Progreso</p>
-                </div>
-            </div>
-            <p class="text-sm font-medium">📈 Avance académico</p>
-        </div>
-        <div class="bg-gradient-to-br from-orange-500 to-orange-700 rounded-2xl p-6 text-white shadow-xl transform hover:scale-105 transition">
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <div class="text-right">
-                    <p class="text-3xl font-bold" id="pendientesDisplay">0</p>
-                    <p class="text-xs opacity-80">Pendientes</p>
-                </div>
-            </div>
-            <p class="text-sm font-medium">⏳ Por estudiar</p>
-        </div>
+    <!-- Título de sección -->
+    <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold bg-gradient-to-r from-blue-800 to-blue-600 dark:from-blue-400 dark:to-blue-300 bg-clip-text text-transparent">
+            Temas de Estudio
+        </h2>
+        <p class="text-gray-600 dark:text-gray-400 mt-2">Explora y marca tu progreso en cada tema</p>
     </div>
-
+    
+    <!-- Barra de progreso compacta -->
+    <div id="contenedorBarraProgreso" class="mb-8"></div>
+    
     <!-- Buscador mejorado -->
-    <div class="relative max-w-2xl mx-auto mb-12">
-        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+    <div class="relative max-w-md mx-auto mb-10">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg class="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
@@ -356,27 +207,22 @@ tailwind.config = {
         <input
             id="buscador"
             type="text"
-            placeholder="🔍 Buscar tema por nombre, unidad o palabra clave..."
-            class="pl-12 pr-12 py-4 rounded-2xl w-full border-0 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xl"
+            placeholder="Buscar tema..."
+            class="pl-10 pr-4 py-2 rounded-xl w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 shadow-sm"
         />
-        <div class="absolute inset-y-0 right-0 pr-4 flex items-center">
-            <kbd class="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs text-gray-500">Ctrl + K</kbd>
-        </div>
     </div>
     
     <!-- Contenedor de tarjetas -->
     <div id="tarjetas" class="dark:text-white"></div>
     
     <!-- Mensaje cuando no hay resultados -->
-    <div id="noResultados" class="hidden text-center py-16">
-        <div class="w-32 h-32 mx-auto bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 rounded-full flex items-center justify-center mb-6">
-            <svg class="w-16 h-16 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-        </div>
-        <h3 class="text-2xl font-semibold text-gray-600 dark:text-gray-400 mb-2">No se encontraron temas</h3>
-        <p class="text-gray-500 dark:text-gray-500">Prueba con otra palabra clave o explora todas las unidades</p>
-        <button onclick="limpiarBusqueda()" class="mt-6 px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition">
+    <div id="noResultados" class="hidden text-center py-12">
+        <svg class="w-20 h-20 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <h3 class="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">No se encontraron temas</h3>
+        <p class="text-gray-500 dark:text-gray-500">Intenta con otra palabra clave</p>
+        <button onclick="limpiarBusqueda()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm">
             Limpiar búsqueda
         </button>
     </div>
@@ -411,34 +257,6 @@ document.addEventListener('keydown', function(e) {
 <script src="js/animaciones.js"></script>
 
 <script>
-// Función para actualizar las estadísticas del dashboard
-function actualizarDashboard() {
-    setTimeout(() => {
-        const temas = document.querySelectorAll('.tema');
-        const completados = JSON.parse(localStorage.getItem('temasCompletados')) || [];
-        const total = temas.length;
-        const completadosCount = completados.filter(c => {
-            let existe = false;
-            temas.forEach(tema => {
-                const link = tema.querySelector('a');
-                if (link) {
-                    let id = link.getAttribute('href');
-                    if (id.includes('/')) id = id.split('/').pop();
-                    id = id.replace('.html', '');
-                    if (id === c) existe = true;
-                }
-            });
-            return existe;
-        }).length;
-        const porcentaje = total > 0 ? Math.round((completadosCount / total) * 100) : 0;
-        
-        document.getElementById('totalTemasDisplay').textContent = total;
-        document.getElementById('completadosDisplay').textContent = completadosCount;
-        document.getElementById('porcentajeDisplay').textContent = `${porcentaje}%`;
-        document.getElementById('pendientesDisplay').textContent = total - completadosCount;
-    }, 500);
-}
-
 // Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof barraProgreso !== 'undefined' && barraProgreso.insertar) {
@@ -449,11 +267,22 @@ document.addEventListener('DOMContentLoaded', function() {
         if (typeof window.initProgreso === 'function') {
             window.initProgreso();
         }
-        actualizarDashboard();
     }, 500);
 });
 
-// Escuchar cambios de progreso
+// Forzar actualización cuando la página esté completamente cargada
+window.addEventListener('load', function() {
+    setTimeout(() => {
+        if (typeof window.actualizarEstadosTarjetas === 'function') {
+            window.actualizarEstadosTarjetas();
+        }
+        if (typeof window.actualizarBarraProgreso === 'function') {
+            window.actualizarBarraProgreso();
+        }
+    }, 500);
+});
+
+// Escuchar cambios de progreso desde otras páginas
 window.addEventListener('progresoActualizado', function() {
     setTimeout(() => {
         if (typeof window.actualizarEstadosTarjetas === 'function') {
@@ -462,10 +291,10 @@ window.addEventListener('progresoActualizado', function() {
         if (typeof window.actualizarBarraProgreso === 'function') {
             window.actualizarBarraProgreso();
         }
-        actualizarDashboard();
     }, 100);
 });
 
+// Actualizar cuando la página recibe foco
 window.addEventListener('focus', function() {
     setTimeout(() => {
         if (typeof window.actualizarEstadosTarjetas === 'function') {
@@ -474,10 +303,10 @@ window.addEventListener('focus', function() {
         if (typeof window.actualizarBarraProgreso === 'function') {
             window.actualizarBarraProgreso();
         }
-        actualizarDashboard();
     }, 200);
 });
 
+// Actualizar cuando se abre un acordeón
 document.addEventListener('click', function(e) {
     if (e.target.closest('.acordeon')) {
         setTimeout(() => {
