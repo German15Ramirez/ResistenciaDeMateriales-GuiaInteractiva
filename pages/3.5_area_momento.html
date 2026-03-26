@@ -156,14 +156,28 @@ iframe { width: 100%; height: 650px; border: none; background: white; border-rad
 <nav class="bg-blue-900 text-white sticky top-0 z-50 shadow-md"> 
 <div class="container mx-auto flex flex-wrap justify-between items-center p-4"> 
 <span class="font-bold uppercase tracking-tighter">Estructuras II - Grupo 8</span> 
-<div class="flex space-x-1"> 
-<button onclick="cambiarSeccion('teoria')" class="bg-blue-900 hover:bg-blue-700 px-3 py-2 rounded text-xs font-bold transition uppercase">Teoría</button> 
-<button onclick="cambiarSeccion('ejercicio')" class="bg-blue-900 hover:bg-blue-700 px-3 py-2 rounded text-xs font-bold transition uppercase">Ejercicio</button> 
-<button onclick="cambiarSeccion('mapa')" class="bg-blue-900 hover:bg-blue-700 px-3 py-2 rounded text-xs font-bold transition uppercase">Mapa</button> 
-<button onclick="cambiarSeccion('referencias')" class="bg-blue-900 hover:bg-blue-700 px-3 py-2 rounded text-xs font-bold transition uppercase">Fuentes</button> 
+
+<div class="flex items-center space-x-4">
+    <div class="flex space-x-1"> 
+        <button onclick="cambiarSeccion('teoria')" class="bg-blue-900 hover:bg-blue-700 px-3 py-2 rounded text-xs font-bold transition uppercase">Teoría</button> 
+        <button onclick="cambiarSeccion('ejercicio')" class="bg-blue-900 hover:bg-blue-700 px-3 py-2 rounded text-xs font-bold transition uppercase">Ejercicio</button> 
+        <button onclick="cambiarSeccion('mapa')" class="bg-blue-900 hover:bg-blue-700 px-3 py-2 rounded text-xs font-bold transition uppercase">Mapa</button> 
+        <button onclick="cambiarSeccion('referencias')" class="bg-blue-900 hover:bg-blue-700 px-3 py-2 rounded text-xs font-bold transition uppercase">Fuentes</button> 
+    </div>
+    
+    <!-- Botón de completado -->
+    <button 
+        id="btnCompletado"
+        onclick="toggleCompletado('3.5_area_momento')"
+        class="bg-green-600 hover:bg-green-700 px-3 py-2 rounded text-xs font-bold transition uppercase flex items-center gap-1"
+    >
+        📚 Marcar
+    </button>
+    </div>
+</div>
+
 </div> 
-</div> 
-</nav> 
+</nav>
 
 <div id="teoria" class="seccion activa"> 
 <header class="bg-blue-900 text-white py-12 px-4 text-center"> 
@@ -353,5 +367,20 @@ document.getElementById(id).classList.add('activa');
 window.scrollTo({top: 0, behavior: 'smooth'}); 
 } 
 </script> 
+<script src="../js/progreso.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Actualizar el botón según el estado actual
+    if (typeof actualizarBotonEnPagina === 'function') {
+        actualizarBotonEnPagina('3.5_area_momento');
+    }
+    // Ejecutar depuración para verificar
+    setTimeout(function() {
+        if (typeof debugProgreso === 'function') {
+            debugProgreso();
+        }
+    }, 500);
+});
+</script>
 </body> 
 </html>

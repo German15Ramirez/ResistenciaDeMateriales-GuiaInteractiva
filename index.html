@@ -6,20 +6,14 @@
 <title>Guía Interactiva - Resistencia de Materiales</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- CRÍTICO: Script que se ejecuta INMEDIATAMENTE antes del renderizado -->
 <script>
-// Este script se ejecuta antes de que el navegador renderice cualquier cosa
 (function() {
-  // Leer el modo guardado
   const modoGuardado = localStorage.getItem("modo");
   
-  // Por defecto MODO CLARO
   if (modoGuardado === "oscuro") {
     document.documentElement.classList.add("dark");
   } else {
-    // Asegurar modo claro por defecto
     document.documentElement.classList.remove("dark");
-    // Si no hay modo guardado, establecer claro como predeterminado
     if (!modoGuardado) {
       localStorage.setItem("modo", "claro");
     }
@@ -35,12 +29,12 @@ tailwind.config = {
 }
 </script>
 
-<!-- Pequeño estilo para evitar flash si algo sale mal -->
+<link rel="stylesheet" href="css/progreso.css">
+
 <style>
-  /* Transición suave para el cambio de modo */
-  body {
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
+#barraProgreso {
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
 </style>
 </head>
 
@@ -50,39 +44,91 @@ tailwind.config = {
 <div id="hero"></div>
 
 <main class="max-w-7xl mx-auto px-6 py-12">
-<h2 class="text-3xl font-bold text-center mb-6 dark:text-white">
-Temas
-</h2>
-
-<input
-id="buscador"
-type="text"
-placeholder="Buscar tema..."
-class="border rounded-lg px-4 py-2 mb-10 w-full max-w-md mx-auto block
-bg-white text-gray-800 border-gray-300
-dark:bg-gray-800 dark:text-white dark:border-gray-600
-focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-/>
-
-<div id="tarjetas" class="dark:text-white"></div>
+    <h2 class="text-3xl font-bold text-center mb-6 dark:text-white">
+        Temas
+    </h2>
+    
+    <div id="contenedorBarraProgreso"></div>
+    
+    <input
+        id="buscador"
+        type="text"
+        placeholder="Buscar tema..."
+        class="border rounded-lg px-4 py-2 mb-10 w-full max-w-md mx-auto block
+        bg-white text-gray-800 border-gray-300
+        dark:bg-gray-800 dark:text-white dark:border-gray-600
+        focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+    />
+    
+    <div id="tarjetas" class="dark:text-white"></div>
 </main>
 
 <div id="footer"></div>
 
-<!-- Tus scripts, pero modificados para no duplicar la lógica de inicialización -->
 <script src="js/darkmode.js"></script>
+<script src="js/progreso.js"></script>
+<script src="components/barraProgreso.js"></script>
 <script src="js/acordeon.js"></script>
 <script src="js/buscador.js"></script>
 <script src="js/components.js"></script>
 <script src="js/animaciones.js"></script>
 
 <script>
-// Inicializar darkmode cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-  if (typeof iniciarDarkMode === 'function') {
-    iniciarDarkMode();
-  }
+    if (typeof barraProgreso !== 'undefined' && barraProgreso.insertar) {
+        barraProgreso.insertar('contenedorBarraProgreso');
+    }
+    
+    setTimeout(() => {
+        if (typeof window.initProgreso === 'function') {
+            window.initProgreso();
+        }
+    }, 500);
+});
+
+window.addEventListener('load', function() {
+    setTimeout(() => {
+        if (typeof window.actualizarEstadosTarjetas === 'function') {
+            window.actualizarEstadosTarjetas();
+        }
+        if (typeof window.actualizarBarraProgreso === 'function') {
+            window.actualizarBarraProgreso();
+        }
+    }, 500);
+});
+
+window.addEventListener('progresoActualizado', function() {
+    setTimeout(() => {
+        if (typeof window.actualizarEstadosTarjetas === 'function') {
+            window.actualizarEstadosTarjetas();
+        }
+        if (typeof window.actualizarBarraProgreso === 'function') {
+            window.actualizarBarraProgreso();
+        }
+    }, 100);
+});
+
+window.addEventListener('focus', function() {
+    setTimeout(() => {
+        if (typeof window.actualizarEstadosTarjetas === 'function') {
+            window.actualizarEstadosTarjetas();
+        }
+        if (typeof window.actualizarBarraProgreso === 'function') {
+            window.actualizarBarraProgreso();
+        }
+    }, 200);
+});
+
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.acordeon')) {
+        setTimeout(() => {
+            if (typeof window.actualizarEstadosTarjetas === 'function') {
+                window.actualizarEstadosTarjetas();
+            }
+        }, 200);
+    }
 });
 </script>
+
 </body>
 </html>

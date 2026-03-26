@@ -1,0 +1,66 @@
+
+#barraProgreso {
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+#barraProgreso::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transform: translateX(-100%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.tema.completado {
+    border-left: 4px solid #10b981;
+    background-color: rgba(16, 185, 129, 0.05);
+}
+
+.dark .tema.completado {
+    background-color: rgba(16, 185, 129, 0.1);
+}
+
+#btnCompletado {
+    transition: all 0.3s ease;
+}
+
+#btnCompletado:active {
+    transform: scale(0.98);
+}
+
+.progreso-tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.progreso-tooltip:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1f2937;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 10;
+}
