@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deflexión en Vigas – Introducción</title>
+  
+  <!-- Script para modo oscuro (evita flash) - INMEDIATO -->
+  <script>
+  (function() {
+    const modoGuardado = localStorage.getItem("modo");
+    if (modoGuardado === "oscuro") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      if (!modoGuardado) {
+        localStorage.setItem("modo", "claro");
+      }
+    }
+  })();
+  </script>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  tailwind.config = {
+    darkMode: 'class'
+  }
+  </script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+  
+  <style>
+    html { scroll-behavior: smooth; }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Beam animation */
+    .beam-container {
+      position: relative;
+      width: 100%;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .beam-svg {
+      width: 100%;
+      max-width: 500px;
+    }
+    .beam-path {
+      stroke-dasharray: 600;
+      stroke-dashoffset: 600;
+      animation: drawBeam 1.5s ease forwards 0.4s;
+    }
+    @keyframes drawBeam {
+      to { stroke-dashoffset: 0; }
+    }
+    .load-arrow {
+      opacity: 0;
+      animation: fadeArrow 0.5s ease forwards 1.8s;
+    }
+    @keyframes fadeArrow {
+      to { opacity: 1; }
+    }
+
+    /* Quiz */
+    .quiz-option {
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .quiz-option:hover {
+      background-color: #dbeafe;
+      border-color: #3b82f6;
+    }
+    .dark .quiz-option:hover {
+      background-color: #1e3a8a;
+      border-color: #60a5fa;
+    }
+    .quiz-option.correct { background-color: #14532d !important; border-color: #22c55e !important; color: white !important; }
+    .quiz-option.wrong   { background-color: #7f1d1d !important; border-color: #ef4444 !important; color: white !important; }
+
+    /* Method cards hover */
+    .method-card {
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .method-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    }
+    .dark .method-card {
+      background-color: #1f2937 !important;
+    }
+
+    /* Formula highlight */
+    .formula-box {
+      background: linear-gradient(135deg, #0f2044 0%, #1a3a6b 100%);
+      border-left: 4px solid #3b82f6;
+    }
+    .dark .formula-box {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 50;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .dark .modal-overlay .bg-white {
+      background-color: #1f2937 !important;
+      color: #f3f4f6;
+    }
+
+    /* Progress bar */
+    #progressBar {
+      transition: width 0.3s ease;
+    }
+
+    /* Dark mode adjustments */
+    .dark .bg-gray-100 {
+      background-color: #111827 !important;
+    }
+    .dark .bg-white {
+      background-color: #1f2937 !important;
+    }
+    .dark .text-gray-800 {
+      color: #f3f4f6 !important;
+    }
+    .dark .text-gray-600 {
+      color: #9ca3af !important;
+    }
+    .dark .text-gray-500 {
+      color: #6b7280 !important;
+    }
+    .dark .bg-gray-50 {
+      background-color: #111827 !important;
+    }
+    .dark .border-gray-200 {
+      border-color: #374151 !important;
+    }
+    .dark .bg-blue-50 {
+      background-color: #1e293b !important;
+    }
+    .dark .text-blue-800 {
+      color: #60a5fa !important;
+    }
+    .dark .bg-amber-50 {
+      background-color: #451a03 !important;
+    }
+    .dark .text-amber-800 {
+      color: #fcd34d !important;
+    }
+    .dark .border-amber-200 {
+      border-color: #78350f !important;
+    }
+    .dark .bg-green-50 {
+      background-color: #32a560 !important;
+    }
+    .dark .text-green-700 {
+      color: #86efac !important;
+    }
+    .dark .text-green-800 {
+      color: #bbf7d0 !important;
+    }
+    .dark .border-green-500 {
+      border-color: #22c55e !important;
+    }
+    .dark .bg-blue-100 {
+      background-color: #1e3a8a !important;
+    }
+    .dark .text-blue-800 {
+      color: #93c5fd !important;
+    }
+  </style>
+</head>
+<body class="font-sans bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100">
+
+  <!-- HEADER con botón de modo oscuro -->
+  <header class="bg-blue-900 text-white shadow-lg sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold leading-tight">Deflexión en Vigas</h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <nav class="hidden md:flex gap-6 text-sm text-blue-200">
+          <a href="#introduccion" class="hover:text-white transition">Introducción</a>
+          <a href="#base-matematica" class="hover:text-white transition">Base Matemática</a>
+          <a href="#metodologia" class="hover:text-white transition">Métodos</a>
+          <a href="#conclusiones" class="hover:text-white transition">Conclusiones</a>
+          <a href="#ejercicio" class="hover:text-white transition">Ejercicio</a>
+        </nav>
+
+    <!-- Scroll progress -->
+    <div class="w-full h-1 bg-blue-800 overflow-hidden">
+      <div id="progressBar" class="w-full bg-blue-400 rounded-full" style="height:100%"></div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="bg-blue-900 text-white pt-16 pb-20 px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl md:text-5xl font-bold mb-4 leading-tight">Introducción a la<br>Deflexión en Vigas</h2>
+      <p class="text-blue-200 text-lg max-w-2xl mx-auto mb-8">Análisis del comportamiento deformacional de vigas bajo carga, ecuaciones fundamentales y métodos de cálculo aplicados a la ingeniería estructural.</p>
+
+      <!-- Botón de completado -->
+      <button 
+        id="btnCompletado"
+        onclick="toggleCompletado('3.1_introduccion')"
+        class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition flex items-center gap-2 shadow-md mx-auto"
+      >
+        📚 Marcar como completado
+      </button>
+
+      <!-- Animated beam -->
+      <div class="beam-container mx-auto my-6">
+        <svg class="beam-svg" viewBox="0 0 500 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="20,80 35,100 5,100" fill="#3b82f6"/>
+          <polygon points="480,80 495,100 465,100" fill="#3b82f6"/>
+          <line x1="5" y1="100" x2="35" y2="100" stroke="#3b82f6" stroke-width="3"/>
+          <line x1="465" y1="100" x2="495" y2="100" stroke="#3b82f6" stroke-width="3"/>
+          <line x1="20" y1="78" x2="480" y2="78" stroke="#1e40af" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"/>
+          <path class="beam-path" d="M20,78 Q250,115 480,78" stroke="#60a5fa" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <g class="load-arrow">
+            <line x1="250" y1="20" x2="250" y2="55" stroke="#f97316" stroke-width="3"/>
+            <polygon points="250,58 243,42 257,42" fill="#f97316"/>
+            <text x="265" y="38" fill="#f97316" font-size="12" font-family="sans-serif" font-weight="600">P = 10 kN</text>
+          </g>
+          <g class="load-arrow">
+            <line x1="250" y1="78" x2="250" y2="113" stroke="#a3e635" stroke-width="1.5" stroke-dasharray="3 2"/>
+            <text x="258" y="100" fill="#a3e635" font-size="11" font-family="sans-serif">δ</text>
+          </g>
+          <g class="load-arrow" opacity="0.6">
+            <line x1="20" y1="108" x2="480" y2="108" stroke="#94a3b8" stroke-width="1"/>
+            <text x="230" y="118" fill="#94a3b8" font-size="11" font-family="sans-serif">L = 6 m</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-5xl mx-auto px-4 py-12 space-y-16">
+    <section id="introduccion" class="fade-in">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg">1</div>
+        <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Introducción</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md border-t-4 border-blue-900 dark:border-blue-500">
+          <div class="text-3xl mb-3">📐</div>
+          <h3 class="font-bold text-blue-900 dark:text-blue-400 text-lg mb-2">¿Qué es la deflexión?</h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">La deflexión es el desplazamiento lateral o vertical que experimenta un punto sobre el eje neutro de una viga cuando esta se somete a cargas que producen flexión. La viga deja de tener forma recta y adopta una configuración curva llamada <strong>curva elástica</strong>.</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md border-t-4 border-blue-700 dark:border-blue-500">
+          <div class="text-3xl mb-3">⚠️</div>
+          <h3 class="font-bold text-blue-900 dark:text-blue-400 text-lg mb-2">¿Por qué calcularla?</h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">En diseño estructural moderno, el factor limitante no es únicamente la resistencia del material, sino también la <strong>deflexión máxima permitida</strong>. Una deflexión excesiva puede generar grietas, deformaciones visibles o desalineación de componentes mecánicos.</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md border-t-4 border-blue-500 dark:border-blue-500">
+          <div class="text-3xl mb-3">📊</div>
+          <h3 class="font-bold text-blue-900 dark:text-blue-400 text-lg mb-2">Curva elástica</h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Representa la forma que adquiere el eje longitudinal de la viga al deformarse bajo la acción de las cargas. Su análisis es esencial para verificar que las deformaciones permanezcan dentro de <strong>límites aceptables</strong> de seguridad y funcionalidad.</p>
+        </div>
+      </div>
+      <div class="mt-6 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-xl p-5 flex gap-4">
+        <div class="text-2xl">💡</div>
+        <div>
+          <h4 class="font-semibold text-blue-900 dark:text-blue-400 mb-1">Concepto clave</h4>
+          <p class="text-blue-800 dark:text-blue-300 text-sm">Una viga puede soportar las cargas sin fallar estructuralmente, pero si la deformación es excesiva puede generar problemas funcionales graves. Por eso el límite de deflexión permitido con frecuencia <strong>controla el diseño</strong> antes que el esfuerzo máximo.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="base-matematica" class="fade-in">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg">2</div>
+        <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Base Matemática</h2>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md overflow-hidden">
+        <div class="p-6 md:p-8">
+          <p class="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">El análisis de la deflexión se fundamenta en la relación entre el <strong>momento flector (M)</strong> y la <strong>curvatura de la viga (1/ρ)</strong>. Esta relación establece que la curvatura es proporcional al momento flector e inversamente proporcional a la rigidez a la flexión, descrita por la ecuación diferencial de Euler-Bernoulli:</p>
+          <div class="formula-box rounded-xl p-6 text-center mb-6">
+            <p class="text-blue-300 text-xs uppercase tracking-widest mb-3 font-semibold">Ecuación Diferencial de la Deflexión</p>
+            <div class="text-white text-lg md:text-xl font-mono">
+              \[ EI \frac{d^2y}{dx^2} = M(x) \]
+            </div>
+          </div>
+          <h4 class="font-bold text-blue-900 dark:text-blue-400 mb-4">Variables de la ecuación:</h4>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 text-center border border-gray-200 dark:border-gray-600">
+              <div class="text-2xl font-bold text-blue-900 dark:text-blue-400 font-mono mb-1">E</div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Módulo de</p>
+              <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Elasticidad</p>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 text-center border border-gray-200 dark:border-gray-600">
+              <div class="text-2xl font-bold text-blue-900 dark:text-blue-400 font-mono mb-1">I</div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Momento de</p>
+              <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Inercia</p>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 text-center border border-gray-200 dark:border-gray-600">
+              <div class="text-2xl font-bold text-blue-900 dark:text-blue-400 font-mono mb-1">M(x)</div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Momento</p>
+              <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Flector</p>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 text-center border border-gray-200 dark:border-gray-600">
+              <div class="text-2xl font-bold text-blue-900 dark:text-blue-400 font-mono mb-1">y</div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Deflexión de</p>
+              <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">la viga</p>
+            </div>
+          </div>
+          <div class="mt-6 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
+            <p class="text-amber-800 dark:text-amber-300 text-sm"><strong>Nota importante:</strong> La deflexión no solo depende de la magnitud de la carga, sino también de la geometría de la sección transversal y del material. Vigas con mayor momento de inercia o materiales más rígidos presentan <strong>menores deformaciones</strong>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="metodologia" class="fade-in">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg">3</div>
+        <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Métodos de Cálculo</h2>
+      </div>
+      <p class="text-gray-600 dark:text-gray-400 mb-6">Para determinar la curva elástica y calcular la deflexión se han desarrollado diversos métodos analíticos. La elección depende de la complejidad del sistema de cargas, las condiciones de apoyo y el tipo de resultado deseado.</p>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="method-card bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-700" onclick="openModal('modal1')">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-blue-900 text-white rounded-xl flex items-center justify-center text-xl font-bold shrink-0">∫∫</div>
+            <div>
+              <h3 class="font-bold text-blue-900 dark:text-blue-400 text-lg mb-1">Doble Integración</h3>
+              <p class="text-gray-500 dark:text-gray-400 text-sm mb-2">Integra sucesivamente la ecuación del momento flector para obtener pendiente y deflexión.</p>
+              <span class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 px-2 py-1 rounded-full font-semibold">Cargas simples y continuas</span>
+            </div>
+          </div>
+          <p class="text-xs text-blue-600 dark:text-blue-400 mt-4 font-semibold">→ Ver más detalles</p>
+        </div>
+        <div class="method-card bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-700" onclick="openModal('modal2')">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-blue-800 text-white rounded-xl flex items-center justify-center text-xl font-bold shrink-0">&lt; &gt;</div>
+            <div>
+              <h3 class="font-bold text-blue-900 dark:text-blue-400 text-lg mb-1">Método de Macaulay</h3>
+              <p class="text-gray-500 dark:text-gray-400 text-sm mb-2">Usa funciones de singularidad para expresar el momento con una sola ecuación válida para toda la viga.</p>
+              <span class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 px-2 py-1 rounded-full font-semibold">Cargas concentradas múltiples</span>
+            </div>
+          </div>
+          <p class="text-xs text-blue-600 dark:text-blue-400 mt-4 font-semibold">→ Ver más detalles</p>
+        </div>
+        <div class="method-card bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-700" onclick="openModal('modal3')">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-blue-700 text-white rounded-xl flex items-center justify-center text-xl font-bold shrink-0">△</div>
+            <div>
+              <h3 class="font-bold text-blue-900 dark:text-blue-400 text-lg mb-1">Área de Momentos</h3>
+              <p class="text-gray-500 dark:text-gray-400 text-sm mb-2">Método geométrico basado en las propiedades del diagrama M/EI para calcular cambios de pendiente y desviaciones.</p>
+              <span class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 px-2 py-1 rounded-full font-semibold">Deflexión en punto específico</span>
+            </div>
+          </div>
+          <p class="text-xs text-blue-600 dark:text-blue-400 mt-4 font-semibold">→ Ver más detalles</p>
+        </div>
+        <div class="method-card bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-700" onclick="openModal('modal4')">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center text-xl font-bold shrink-0">⇌</div>
+            <div>
+              <h3 class="font-bold text-blue-900 dark:text-blue-400 text-lg mb-1">Viga Conjugada</h3>
+              <p class="text-gray-500 dark:text-gray-400 text-sm mb-2">Convierte el problema de deflexión en un problema equivalente de estática mediante una viga ficticia.</p>
+              <span class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 px-2 py-1 rounded-full font-semibold">Apoyos complejos</span>
+            </div>
+          </div>
+          <p class="text-xs text-blue-600 dark:text-blue-400 mt-4 font-semibold">→ Ver más detalles</p>
+        </div>
+        <div class="method-card bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-700" onclick="openModal('modal5')">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-blue-500 text-white rounded-xl flex items-center justify-center text-xl font-bold shrink-0">Σ</div>
+            <div>
+              <h3 class="font-bold text-blue-900 dark:text-blue-400 text-lg mb-1">Superposición</h3>
+              <p class="text-gray-500 dark:text-gray-400 text-sm mb-2">Determina la deflexión total sumando los efectos de varios casos de carga simples analizados por separado.</p>
+              <span class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 px-2 py-1 rounded-full font-semibold">Diseño práctico con tablas</span>
+            </div>
+          </div>
+          <p class="text-xs text-blue-600 dark:text-blue-400 mt-4 font-semibold">→ Ver más detalles</p>
+        </div>
+        <div class="method-card bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-700" onclick="openModal('modal6')">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-blue-400 text-white rounded-xl flex items-center justify-center text-xl font-bold shrink-0">∂U</div>
+            <div>
+              <h3 class="font-bold text-blue-900 dark:text-blue-400 text-lg mb-1">Teorema de Castigliano</h3>
+              <p class="text-gray-500 dark:text-gray-400 text-sm mb-2">Basado en energía de deformación; los desplazamientos se obtienen mediante derivadas parciales de la energía almacenada.</p>
+              <span class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 px-2 py-1 rounded-full font-semibold">Sistemas indeterminados</span>
+            </div>
+          </div>
+          <p class="text-xs text-blue-600 dark:text-blue-400 mt-4 font-semibold">→ Ver más detalles</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="conclusiones" class="fade-in">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg">4</div>
+        <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Conclusiones</h2>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8 space-y-4">
+        <div class="flex gap-4 items-start p-4 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600">
+          <div class="w-8 h-8 bg-blue-900 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">1</div>
+          <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">La deflexión en vigas es el desplazamiento vertical bajo carga, fundamental para evaluar si una estructura mantendrá su forma y funcionamiento adecuado.</p>
+        </div>
+        <div class="flex gap-4 items-start p-4 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600">
+          <div class="w-8 h-8 bg-blue-900 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">2</div>
+          <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">El análisis se basa en la relación entre momento flector y curvatura: la deformación depende del momento aplicado, el módulo de elasticidad E y el momento de inercia I.</p>
+        </div>
+        <div class="flex gap-4 items-start p-4 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600">
+          <div class="w-8 h-8 bg-blue-900 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">3</div>
+          <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">Vigas con mayor momento de inercia o materiales más rígidos presentan menores deformaciones. La geometría de la sección transversal es un factor de diseño clave.</p>
+        </div>
+        <div class="flex gap-4 items-start p-4 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600">
+          <div class="w-8 h-8 bg-blue-900 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">4</div>
+          <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">El cálculo de deflexiones permite verificar criterios de servicio. En muchos casos el límite de deflexión permitido controla el diseño antes que el esfuerzo máximo.</p>
+        </div>
+        <div class="flex gap-4 items-start p-4 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600">
+          <div class="w-8 h-8 bg-blue-900 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">5</div>
+          <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">Comprender la deflexión de vigas permite predecir el comportamiento real de las estructuras y garantizar que las deformaciones permanezcan dentro de límites aceptables para seguridad y funcionalidad.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="ejercicio" class="fade-in">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg">5</div>
+        <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Ejercicio Práctico</h2>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md overflow-hidden">
+        <div class="bg-blue-900 text-white p-6">
+          <h3 class="font-bold text-lg mb-2">Problema</h3>
+          <p class="text-blue-100 text-sm leading-relaxed">Una viga simplemente apoyada, de <strong class="text-white">6 metros</strong> de longitud, soporta una carga puntual de <strong class="text-white">10 kN</strong> ubicada en el centro. Determine la deflexión máxima.</p>
+          <div class="mt-4 flex flex-wrap gap-4">
+            <div class="bg-blue-800 rounded-lg px-4 py-2 text-sm">
+              <span class="text-blue-300 text-xs block">Módulo E</span>
+              <span class="font-bold">200 GPa</span>
+            </div>
+            <div class="bg-blue-800 rounded-lg px-4 py-2 text-sm">
+              <span class="text-blue-300 text-xs block">Inercia I</span>
+              <span class="font-bold">8 × 10⁻⁶ m⁴</span>
+            </div>
+            <div class="bg-blue-800 rounded-lg px-4 py-2 text-sm">
+              <span class="text-blue-300 text-xs block">Carga P</span>
+              <span class="font-bold">10 kN</span>
+            </div>
+            <div class="bg-blue-800 rounded-lg px-4 py-2 text-sm">
+              <span class="text-blue-300 text-xs block">Longitud L</span>
+              <span class="font-bold">6 m</span>
+            </div>
+          </div>
+        </div>
+        <div class="p-6 md:p-8 space-y-6">
+          <div>
+            <h4 class="font-bold text-blue-900 dark:text-blue-400 mb-3 flex items-center gap-2">
+              <span class="bg-blue-900 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center font-bold">1</span>
+              Diagrama de la viga
+            </h4>
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 flex justify-center">
+              <svg viewBox="0 0 420 100" class="w-full max-w-md" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="30,68 45,85 15,85" fill="#1e3a8a"/>
+                <polygon points="390,68 405,85 375,85" fill="#1e3a8a"/>
+                <line x1="15" y1="85" x2="45" y2="85" stroke="#1e3a8a" stroke-width="2.5"/>
+                <line x1="375" y1="85" x2="405" y2="85" stroke="#1e3a8a" stroke-width="2.5"/>
+                <rect x="30" y="60" width="360" height="10" rx="2" fill="#374151"/>
+                <line x1="210" y1="18" x2="210" y2="58" stroke="#ea580c" stroke-width="2.5"/>
+                <polygon points="210,60 204,44 216,44" fill="#ea580c"/>
+                <text x="218" y="34" fill="#ea580c" font-size="11" font-family="sans-serif" font-weight="700">10 kN</text>
+                <line x1="30" y1="92" x2="210" y2="92" stroke="#6b7280" stroke-width="1"/>
+                <line x1="210" y1="92" x2="390" y2="92" stroke="#6b7280" stroke-width="1"/>
+                <text x="100" y="100" fill="#6b7280" font-size="10" font-family="sans-serif" text-anchor="middle">3 m</text>
+                <text x="300" y="100" fill="#6b7280" font-size="10" font-family="sans-serif" text-anchor="middle">3 m</text>
+                <line x1="30" y1="85" x2="30" y2="72" stroke="#16a34a" stroke-width="2"/>
+                <polygon points="30,70 26,82 34,82" fill="#16a34a"/>
+                <text x="6" y="68" fill="#16a34a" font-size="9" font-family="sans-serif">R=5kN</text>
+                <line x1="390" y1="85" x2="390" y2="72" stroke="#16a34a" stroke-width="2"/>
+                <polygon points="390,70 386,82 394,82" fill="#16a34a"/>
+                <text x="394" y="68" fill="#16a34a" font-size="9" font-family="sans-serif">R=5kN</text>
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h4 class="font-bold text-blue-900 dark:text-blue-400 mb-3 flex items-center gap-2">
+              <span class="bg-blue-900 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center font-bold">2</span>
+              Fórmula a utilizar
+            </h4>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">Para una viga simplemente apoyada con carga puntual en el centro, la deflexión máxima es:</p>
+            <div class="formula-box rounded-xl p-5 text-center">
+              <div class="text-white text-lg">
+                \[ \delta_{MAX} = \frac{P \cdot L^3}{48 \cdot E \cdot I} \]
+              </div>
+            </div>
+          </div>
+          <div>
+            <h4 class="font-bold text-blue-900 dark:text-blue-400 mb-3 flex items-center gap-2">
+              <span class="bg-blue-900 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center font-bold">3</span>
+              Homogeneidad de unidades
+            </h4>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-3 text-center">
+                <p class="text-xs text-gray-500 dark:text-gray-400">P</p>
+                <p class="font-bold text-blue-900 dark:text-blue-400">10,000 N</p>
+              </div>
+              <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-3 text-center">
+                <p class="text-xs text-gray-500 dark:text-gray-400">L</p>
+                <p class="font-bold text-blue-900 dark:text-blue-400">6 m</p>
+              </div>
+              <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-3 text-center">
+                <p class="text-xs text-gray-500 dark:text-gray-400">E</p>
+                <p class="font-bold text-blue-900 dark:text-blue-400">200×10⁹ Pa</p>
+              </div>
+              <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-3 text-center">
+                <p class="text-xs text-gray-500 dark:text-gray-400">I</p>
+                <p class="font-bold text-blue-900 dark:text-blue-400">8×10⁻⁶ m⁴</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h4 class="font-bold text-blue-900 dark:text-blue-400 mb-3 flex items-center gap-2">
+              <span class="bg-blue-900 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center font-bold">4</span>
+              Sustitución y cálculo
+            </h4>
+            <div class="formula-box rounded-xl p-5 text-center space-y-3">
+              <div class="text-white text-base">
+                \[ \delta_{MAX} = \frac{(10{,}000\,N)(6\,m)^3}{48 \cdot (200 \times 10^9\,Pa)(8 \times 10^{-6}\,m^4)} \]
+              </div>
+              <div class="text-blue-200 text-sm">
+                \[ \delta_{MAX} = \frac{2{,}160{,}000}{76{,}800{,}000} \]
+              </div>
+            </div>
+          </div>
+          <div class="bg-green-50 dark:bg-green-900/30 border-2 border-green-500 rounded-2xl p-6 text-center">
+            <p class="text-green-700 dark:text-green-400 text-sm font-semibold uppercase tracking-wider mb-2">Resultado</p>
+            <div class="text-4xl font-bold text-green-800 dark:text-green-300 mb-2">δ<sub>MAX</sub> = 28.1 mm</div>
+            <p class="text-green-700 dark:text-green-400 text-sm">La deflexión máxima ocurre en el centro de la viga, donde se aplica la carga.</p>
+          </div>
+          <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-xl p-5">
+            <h4 class="font-semibold text-blue-900 dark:text-blue-400 mb-2">Interpretación del resultado</h4>
+            <p class="text-blue-800 dark:text-blue-300 text-sm leading-relaxed">El valor de 28.1 mm indica cuánto se deforma la viga bajo la carga aplicada. En el diseño real, este valor se compara con el <strong>límite permisible de deflexión</strong> (generalmente L/300 a L/360) para verificar si la viga cumple con los criterios de servicio. Para esta viga: L/360 = 6000/360 ≈ <strong>16.7 mm</strong> — lo que indicaría que la viga <strong>requiere rediseño</strong> si aplica este criterio.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz" class="fade-in">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg">🧠</div>
+        <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Quiz Interactivo</h2>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8">
+        <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">Selecciona la respuesta correcta para cada pregunta.</p>
+        <div id="quiz-container" class="space-y-8">
+          <div class="quiz-q" data-answer="b">
+            <p class="font-semibold text-gray-800 dark:text-gray-200 mb-3">1. ¿Cuál es la ecuación diferencial básica de la deflexión según Euler-Bernoulli?</p>
+            <div class="space-y-2">
+              <div class="quiz-option border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700" data-val="a">A) EI·d³y/dx³ = M(x)</div>
+              <div class="quiz-option border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700" data-val="b">B) EI·d²y/dx² = M(x)</div>
+              <div class="quiz-option border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700" data-val="c">C) EI·dy/dx = M(x)</div>
+              <div class="quiz-option border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700" data-val="d">D) E·d²y/dx² = M(x)/I</div>
+            </div>
+            <p class="quiz-feedback text-sm mt-2 hidden"></p>
+          </div>
+          <div class="quiz-q" data-answer="c">
+            <p class="font-semibold text-gray-800 dark:text-gray-200 mb-3">2. ¿Qué método es más adecuado para vigas con múltiples cargas concentradas?</p>
+            <div class="space-y-2">
+              <div class="quiz-option border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700" data-val="a">A) Doble Integración</div>
+              <div class="quiz-option border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700" data-val="b">B) Teorema de Castigliano</div>
+              <div class="quiz-option border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700" data-val="c">C) Método de Macaulay</div>
+              <div class="quiz-option border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700" data-val="d">D) Área de Momentos</div>
+            </div>
+            <p class="quiz-feedback text-sm mt-2 hidden"></p>
+          </div>
+          <div class="quiz-q" data-answer="a">
+            <p class="font-semibold text-gray-800 dark:text-gray-200 mb-3">3. En el ejercicio resuelto, ¿cuál es la deflexión máxima de la viga?</p>
+            <div class="space-y-2">
+              <div class="quiz-option border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700" data-val="a">A) 28.1 mm</div>
+              <div class="quiz-option border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700" data-val="b">B) 14.5 mm</div>
+              <div class="quiz-option border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700" data-val="c">C) 56.2 mm</div>
+              <div class="quiz-option border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700" data-val="d">D) 0.281 m</div>
+            </div>
+            <p class="quiz-feedback text-sm mt-2 hidden"></p>
+          </div>
+        </div>
+        <div id="quiz-score" class="hidden mt-6 text-center bg-blue-900 text-white rounded-xl p-4">
+          <p class="text-lg font-bold" id="score-text"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+ <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="flex flex-col items-center space-y-4">
+            <div class="flex space-x-2">
+                <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-100"></div>
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse delay-200"></div>
+            </div>
+            
+            <div class="text-center space-y-1">
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Rocio Adilene Chaj Hernandez</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">202330544</span>
+                </div>
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Dorian Alexander Harryer Girón Laynez</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">202331479</span>
+                </div>
+            </div>
+            
+            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+            
+            <div class="flex space-x-3 pt-2">
+                <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                    </svg>
+                </a>
+                <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+  <div id="modal1" class="modal-overlay" onclick="closeModal('modal1')">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-lg w-full mx-4 shadow-2xl" onclick="event.stopPropagation()">
+      <h3 class="font-bold text-blue-900 dark:text-blue-400 text-xl mb-3">Método de Doble Integración</h3>
+      <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 leading-relaxed">Consiste en integrar sucesivamente la ecuación del momento flector. La primera integración proporciona la <strong>pendiente de la curva elástica</strong> (dy/dx), y la segunda integración proporciona la <strong>deflexión (y)</strong>. Las constantes de integración se determinan aplicando las condiciones de frontera del problema.</p>
+      <div class="formula-box rounded-xl p-4 text-center text-white text-sm mb-4 space-y-2">
+        \[ EI\frac{d^2y}{dx^2} = M(x) \]
+        \[ EI\frac{dy}{dx} = \int M(x)\,dx + C_1 \]
+        \[ EI\,y = \iint M(x)\,dx\,dx + C_1 x + C_2 \]
+      </div>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mb-4"><strong>Mejor para:</strong> Vigas con cargas simples o distribuciones continuas a lo largo del tramo.</p>
+      <button onclick="closeModal('modal1')" class="bg-blue-900 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Cerrar</button>
+    </div>
+  </div>
+
+  <div id="modal2" class="modal-overlay" onclick="closeModal('modal2')">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-lg w-full mx-4 shadow-2xl" onclick="event.stopPropagation()">
+      <h3 class="font-bold text-blue-900 dark:text-blue-400 text-xl mb-3">Método de Macaulay</h3>
+      <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 leading-relaxed">Emplea <strong>funciones de singularidad</strong> ⟨x − a⟩ⁿ para expresar el momento flector mediante una sola ecuación válida para toda la longitud de la viga. Esto permite manejar múltiples cargas concentradas sin necesidad de escribir ecuaciones por tramos.</p>
+      <div class="formula-box rounded-xl p-4 text-center text-white text-sm mb-4">
+        \[ M(x) = R_A \cdot x - P_1\langle x-a_1\rangle - P_2\langle x-a_2\rangle \]
+      </div>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mb-4"><strong>Mejor para:</strong> Vigas con varias cargas concentradas o momentos aplicados en diferentes puntos.</p>
+      <button onclick="closeModal('modal2')" class="bg-blue-900 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Cerrar</button>
+    </div>
+  </div>
+
+  <div id="modal3" class="modal-overlay" onclick="closeModal('modal3')">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-lg w-full mx-4 shadow-2xl" onclick="event.stopPropagation()">
+      <h3 class="font-bold text-blue-900 dark:text-blue-400 text-xl mb-3">Método del Área de Momentos</h3>
+      <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 leading-relaxed">Método geométrico basado en dos teoremas: el <strong>Primer Teorema</strong> establece que el cambio de pendiente entre dos puntos es igual al área del diagrama M/EI entre ellos. El <strong>Segundo Teorema</strong> establece que la desviación de un punto respecto a la tangente en otro es el momento del área M/EI.</p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mb-4"><strong>Mejor para:</strong> Situaciones donde se necesita determinar la deflexión en un punto particular del sistema.</p>
+      <button onclick="closeModal('modal3')" class="bg-blue-900 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Cerrar</button>
+    </div>
+  </div>
+
+  <div id="modal4" class="modal-overlay" onclick="closeModal('modal4')">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-lg w-full mx-4 shadow-2xl" onclick="event.stopPropagation()">
+      <h3 class="font-bold text-blue-900 dark:text-blue-400 text-xl mb-3">Método de la Viga Conjugada</h3>
+      <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 leading-relaxed">Convierte el problema de deflexión en un problema equivalente de estática. Se construye una <strong>viga ficticia (conjugada)</strong> con la misma longitud pero con condiciones de apoyo transformadas. La carga de esta viga ficticia es el diagrama M/EI de la viga real. La cortante en la viga conjugada equivale a la pendiente real, y el momento equivale a la deflexión real.</p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mb-4"><strong>Mejor para:</strong> Vigas con condiciones de apoyo complejas o con variaciones en la rigidez EI.</p>
+      <button onclick="closeModal('modal4')" class="bg-blue-900 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Cerrar</button>
+    </div>
+  </div>
+
+  <div id="modal5" class="modal-overlay" onclick="closeModal('modal5')">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-lg w-full mx-4 shadow-2xl" onclick="event.stopPropagation()">
+      <h3 class="font-bold text-blue-900 dark:text-blue-400 text-xl mb-3">Método de Superposición</h3>
+      <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 leading-relaxed">Determina la deflexión total sumando algebraicamente los efectos individuales de cada carga. Se aprovecha el <strong>principio de superposición</strong> (válido para materiales elásticos lineales) y se usan tablas de fórmulas estándar para casos simples.</p>
+      <div class="formula-box rounded-xl p-4 text-center text-white text-sm mb-4">
+        \[ \delta_{total} = \delta_1 + \delta_2 + \delta_3 + \ldots + \delta_n \]
+      </div>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mb-4"><strong>Mejor para:</strong> Diseño práctico mediante tablas de fórmulas estándar; muy utilizado en ingeniería aplicada.</p>
+      <button onclick="closeModal('modal5')" class="bg-blue-900 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Cerrar</button>
+    </div>
+  </div>
+
+  <div id="modal6" class="modal-overlay" onclick="closeModal('modal6')">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-lg w-full mx-4 shadow-2xl" onclick="event.stopPropagation()">
+      <h3 class="font-bold text-blue-900 dark:text-blue-400 text-xl mb-3">Teorema de Castigliano</h3>
+      <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 leading-relaxed">Basado en la <strong>energía de deformación</strong> almacenada en la estructura. El desplazamiento en la dirección de una fuerza se obtiene derivando parcialmente la energía total de deformación respecto a esa fuerza.</p>
+      <div class="formula-box rounded-xl p-4 text-center text-white text-sm mb-4">
+        \[ \delta_i = \frac{\partial U}{\partial P_i} \]
+      </div>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mb-4"><strong>Mejor para:</strong> Estructuras complejas o sistemas estáticamente indeterminados.</p>
+      <button onclick="closeModal('modal6')" class="bg-blue-900 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Cerrar</button>
+    </div>
+  </div>
+
+  <script src="../js/darkmode.js"></script>
+  <script src="../js/progreso.js"></script>
+  
+  <script>
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / docHeight) * 100;
+      document.getElementById('progressBar').style.width = progress + '%';
+    });
+
+    const fadeEls = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    fadeEls.forEach(el => observer.observe(el));
+
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    let answered = 0;
+    let correct = 0;
+    const total = document.querySelectorAll('.quiz-q').length;
+
+    document.querySelectorAll('.quiz-q').forEach(q => {
+      const correctAns = q.dataset.answer;
+      const options = q.querySelectorAll('.quiz-option');
+      const feedback = q.querySelector('.quiz-feedback');
+      let done = false;
+
+      options.forEach(opt => {
+        opt.addEventListener('click', () => {
+          if (done) return;
+          done = true;
+          answered++;
+
+          options.forEach(o => {
+            if (o.dataset.val === correctAns) o.classList.add('correct');
+          });
+
+          if (opt.dataset.val === correctAns) {
+            correct++;
+            feedback.textContent = '✓ ¡Correcto!';
+            feedback.className = 'quiz-feedback text-sm mt-2 text-green-600 dark:text-green-400 font-semibold';
+          } else {
+            opt.classList.add('wrong');
+            feedback.textContent = '✗ Incorrecto. La respuesta correcta está resaltada en verde.';
+            feedback.className = 'quiz-feedback text-sm mt-2 text-red-400';
+          }
+          feedback.classList.remove('hidden');
+
+          if (answered === total) {
+            const scoreEl = document.getElementById('quiz-score');
+            const scoreText = document.getElementById('score-text');
+            scoreEl.classList.remove('hidden');
+            scoreText.textContent = `Puntaje final: ${correct} / ${total} — ${Math.round(correct/total*100)}%`;
+          }
+        });
+      });
+    });
+
+    if (typeof actualizarBotonEnPagina === 'function') {
+      actualizarBotonEnPagina('deflexion_vigas');
+    }
+  </script>
+</body>
+</html>
