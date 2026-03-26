@@ -61,7 +61,7 @@ tailwind.config = {
     100% { transform: translateX(100%); }
 }
 
-/* Tarjetas con animación suave */
+
 .tema {
     animation: scaleIn 0.3s ease forwards;
     opacity: 0;
@@ -79,7 +79,6 @@ tailwind.config = {
     box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.2);
 }
 
-/* Buscador mejorado */
 #buscador {
     transition: all 0.3s ease;
 }
@@ -88,18 +87,39 @@ tailwind.config = {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-/* Acordeones con efecto suave */
 .acordeon {
-    transition: all 0.3s ease;
-}
-.icono {
-    transition: transform 0.3s ease;
-}
-.acordeon.active .icono {
-    transform: rotate(45deg);
+    transition: background-color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
-/* Hero con gradiente limpio */
+.contenido {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.contenido.hidden {
+    display: none !important;
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+@media (max-width: 768px) {
+    .acordeon:active {
+        transform: scale(0.99);
+    }
+    
+    .contenido {
+        will-change: opacity, transform;
+    }
+    
+    .tema, .acordeon, .contenido {
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+    }
+}
+
 .hero-gradient {
     background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
     position: relative;
@@ -120,7 +140,6 @@ tailwind.config = {
     to { transform: rotate(360deg); }
 }
 
-/* Badge de completado */
 .completado-badge {
     animation: pulse 1.5s infinite;
 }
@@ -129,7 +148,6 @@ tailwind.config = {
     50% { opacity: 0.7; transform: scale(1.05); }
 }
 
-/* Scrollbar personalizada */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -158,7 +176,6 @@ tailwind.config = {
 
 <div id="navbar"></div>
 
-<!-- Hero con diseño limpio -->
 <div id="hero" class="hero-gradient relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 py-16 relative z-10">
         <div class="text-center">
@@ -177,7 +194,6 @@ tailwind.config = {
             </p>
         </div>
     </div>
-    <!-- Ola decorativa -->
     <div class="absolute bottom-0 left-0 right-0">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="w-full">
             <path fill="currentColor" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
@@ -186,7 +202,6 @@ tailwind.config = {
 </div>
 
 <main class="max-w-7xl mx-auto px-6 py-12 relative z-10">
-    <!-- Título de sección -->
     <div class="text-center mb-8">
         <h2 class="text-3xl font-bold bg-gradient-to-r from-blue-800 to-blue-600 dark:from-blue-400 dark:to-blue-300 bg-clip-text text-transparent">
             Temas de Estudio
@@ -194,10 +209,8 @@ tailwind.config = {
         <p class="text-gray-600 dark:text-gray-400 mt-2">Explora y marca tu progreso en cada tema</p>
     </div>
     
-    <!-- Barra de progreso compacta -->
     <div id="contenedorBarraProgreso" class="mb-8"></div>
     
-    <!-- Buscador mejorado -->
     <div class="relative max-w-md mx-auto mb-10">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg class="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -212,10 +225,8 @@ tailwind.config = {
         />
     </div>
     
-    <!-- Contenedor de tarjetas -->
     <div id="tarjetas" class="dark:text-white"></div>
     
-    <!-- Mensaje cuando no hay resultados -->
     <div id="noResultados" class="hidden text-center py-12">
         <svg class="w-20 h-20 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -239,7 +250,6 @@ function limpiarBusqueda() {
     }
 }
 
-// Atajo de teclado Ctrl + K
 document.addEventListener('keydown', function(e) {
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
@@ -257,7 +267,6 @@ document.addEventListener('keydown', function(e) {
 <script src="js/animaciones.js"></script>
 
 <script>
-// Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof barraProgreso !== 'undefined' && barraProgreso.insertar) {
         barraProgreso.insertar('contenedorBarraProgreso');
@@ -270,7 +279,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 500);
 });
 
-// Forzar actualización cuando la página esté completamente cargada
 window.addEventListener('load', function() {
     setTimeout(() => {
         if (typeof window.actualizarEstadosTarjetas === 'function') {
@@ -282,7 +290,6 @@ window.addEventListener('load', function() {
     }, 500);
 });
 
-// Escuchar cambios de progreso desde otras páginas
 window.addEventListener('progresoActualizado', function() {
     setTimeout(() => {
         if (typeof window.actualizarEstadosTarjetas === 'function') {
@@ -294,7 +301,6 @@ window.addEventListener('progresoActualizado', function() {
     }, 100);
 });
 
-// Actualizar cuando la página recibe foco
 window.addEventListener('focus', function() {
     setTimeout(() => {
         if (typeof window.actualizarEstadosTarjetas === 'function') {
@@ -306,7 +312,6 @@ window.addEventListener('focus', function() {
     }, 200);
 });
 
-// Actualizar cuando se abre un acordeón
 document.addEventListener('click', function(e) {
     if (e.target.closest('.acordeon')) {
         setTimeout(() => {
