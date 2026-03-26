@@ -1,46 +1,57 @@
-function iniciarDarkMode(){
+function iniciarDarkMode() {
+  const botonModo = document.getElementById("modoBtn");
+  const switchBtn = document.getElementById("switch");
 
-const botonModo = document.getElementById("modoBtn")
-const switchBtn = document.getElementById("switch")
+  if (!botonModo) return;
 
-if(!botonModo) return
+  function activarOscuro() {
+    document.documentElement.classList.add("dark");
+    if (switchBtn) {
+      switchBtn.style.transform = "translateX(28px)";
+      switchBtn.textContent = "☀️";
+    }
+  }
 
-function activarOscuro(){
+  function activarClaro() {
+    document.documentElement.classList.remove("dark");
+    if (switchBtn) {
+      switchBtn.style.transform = "translateX(0px)";
+      switchBtn.textContent = "🌙";
+    }
+  }
 
-document.documentElement.classList.add("dark")
-switchBtn.style.transform = "translateX(28px)"
-switchBtn.textContent = "☀️"
+  if (document.documentElement.classList.contains("dark")) {
+    if (switchBtn) {
+      switchBtn.style.transform = "translateX(28px)";
+      switchBtn.textContent = "☀️";
+    }
+  } else {
+    if (switchBtn) {
+      switchBtn.style.transform = "translateX(0px)";
+      switchBtn.textContent = "🌙";
+    }
+  }
 
+  if (botonModo._listener) {
+    botonModo.removeEventListener("click", botonModo._listener);
+  }
+  
+  const clickHandler = () => {
+    if (document.documentElement.classList.contains("dark")) {
+      activarClaro();
+      localStorage.setItem("modo", "claro");
+    } else {
+      activarOscuro();
+      localStorage.setItem("modo", "oscuro");
+    }
+  };
+  
+  botonModo._listener = clickHandler;
+  botonModo.addEventListener("click", clickHandler);
 }
 
-function activarClaro(){
-
-document.documentElement.classList.remove("dark")
-switchBtn.style.transform = "translateX(0px)"
-switchBtn.textContent = "🌙"
-
-}
-
-if(localStorage.getItem("modo") === "oscuro"){
-activarOscuro()
-}else{
-activarClaro()
-}
-
-botonModo.addEventListener("click",()=>{
-
-if(document.documentElement.classList.contains("dark")){
-
-activarClaro()
-localStorage.setItem("modo","claro")
-
-}else{
-
-activarOscuro()
-localStorage.setItem("modo","oscuro")
-
-}
-
-})
-
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', iniciarDarkMode);
+} else {
+  iniciarDarkMode();
 }

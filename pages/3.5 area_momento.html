@@ -1,0 +1,357 @@
+<!DOCTYPE html> 
+<html lang="es"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>Guía de Estudio: Área-Momento</title> 
+
+<script src="https://cdn.tailwindcss.com"></script> 
+<script>
+tailwind.config = {
+  darkMode: 'class',
+}
+</script>
+<script>
+const modo = localStorage.getItem("modo")
+
+if(modo === "oscuro"){
+  document.documentElement.classList.add("dark")
+}
+else if(modo === "claro"){
+  document.documentElement.classList.remove("dark")
+}
+else if(window.matchMedia("(prefers-color-scheme: dark)").matches){
+  document.documentElement.classList.add("dark")
+}
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> 
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> 
+<style> 
+.seccion { display: none; } 
+.seccion.activa { display: block; animation: fadeIn 0.3s ease; } 
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } } 
+iframe { width: 100%; height: 650px; border: none; background: white; border-radius: 8px; }
+.dark iframe { background: #1f2937; }
+
+.card-estudio { 
+  background-color: white; 
+  padding: 2rem; 
+  border-radius: 0.5rem; 
+  border-top: 4px solid #1e3a8a; 
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+  margin-bottom: 2rem;
+  transition: background-color 0.2s ease;
+}
+.dark .card-estudio { 
+  background-color: #1f2937;
+  border-top-color: #3b82f6;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.subtitulo-guia { 
+  color: #1e3a8a; 
+  font-weight: 800; 
+  text-transform: uppercase; 
+  border-bottom: 2px solid #1e3a8a; 
+  display: inline-block; 
+  margin-bottom: 1.5rem;
+}
+.dark .subtitulo-guia { 
+  color: #60a5fa; 
+  border-bottom-color: #60a5fa;
+}
+
+.formula-destacada { 
+  background-color: #f9fafb; 
+  padding: 1.25rem; 
+  border-radius: 0.5rem; 
+  border: 1px solid #e5e7eb; 
+  margin: 1rem 0; 
+  text-align: center; 
+  font-size: 1.1rem;
+  transition: background-color 0.2s ease;
+}
+.dark .formula-destacada {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+.card-estudio p, 
+.card-estudio li,
+.card-estudio .leading-relaxed,
+.card-estudio .space-y-6 p,
+.card-estudio .space-y-6 li {
+  color: inherit;
+}
+
+.dark .card-estudio p,
+.dark .card-estudio li,
+.dark .card-estudio .leading-relaxed {
+  color: #e5e7eb;
+}
+
+.dark .card-estudio .border-l-4.border-blue-900 {
+  border-left-color: #3b82f6;
+}
+
+.dark .card-estudio .bg-gray-50 {
+  background-color: #374151;
+}
+
+.dark .card-estudio .text-blue-900 {
+  color: #60a5fa;
+}
+
+.dark .card-estudio .font-bold.text-blue-900 {
+  color: #60a5fa;
+}
+
+.dark .border-t {
+  border-color: #4b5563;
+}
+
+.dark .bg-white {
+  background-color: #1f2937;
+}
+
+.dark .shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.dark .shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+.dark .border-l-8.border-blue-900 {
+  border-left-color: #3b82f6;
+}
+
+#referencias .bg-white {
+  background-color: white;
+  transition: background-color 0.2s ease;
+}
+.dark #referencias .bg-white {
+  background-color: #1f2937;
+}
+
+#referencias .text-blue-900 {
+  color: #1e3a8a;
+}
+.dark #referencias .text-blue-900 {
+  color: #60a5fa;
+}
+
+#referencias .border-l-8 {
+  border-left-width: 8px;
+}
+
+.dark .bg-white.p-4.rounded.shadow-md {
+  background-color: #1f2937;
+}
+</style> 
+</head> 
+<body class="bg-white text-gray-800 dark:bg-gray-900 dark:text-gray-100">
+
+<nav class="bg-blue-900 text-white sticky top-0 z-50 shadow-md"> 
+<div class="container mx-auto flex flex-wrap justify-between items-center p-4"> 
+<span class="font-bold uppercase tracking-tighter">Estructuras II - Grupo 8</span> 
+<div class="flex space-x-1"> 
+<button onclick="cambiarSeccion('teoria')" class="bg-blue-900 hover:bg-blue-700 px-3 py-2 rounded text-xs font-bold transition uppercase">Teoría</button> 
+<button onclick="cambiarSeccion('ejercicio')" class="bg-blue-900 hover:bg-blue-700 px-3 py-2 rounded text-xs font-bold transition uppercase">Ejercicio</button> 
+<button onclick="cambiarSeccion('mapa')" class="bg-blue-900 hover:bg-blue-700 px-3 py-2 rounded text-xs font-bold transition uppercase">Mapa</button> 
+<button onclick="cambiarSeccion('referencias')" class="bg-blue-900 hover:bg-blue-700 px-3 py-2 rounded text-xs font-bold transition uppercase">Fuentes</button> 
+</div> 
+</div> 
+</nav> 
+
+<div id="teoria" class="seccion activa"> 
+<header class="bg-blue-900 text-white py-12 px-4 text-center"> 
+<h1 class="text-3xl font-bold mb-2 uppercase">3.5 Método del Área del diagrama de momento</h1> 
+<p class="opacity-80 italic">Contenido Teórico Íntegro</p> 
+</header> 
+<main class="container mx-auto px-4 py-8 max-w-4xl"> 
+<div class="card-estudio"> 
+<h2 class="subtitulo-guia">Introducción al tema</h2> 
+<p class="leading-relaxed text-justify">El método del área-momento es un procedimiento semigráfico desarrollado por Charles E. Greene en 1873, utilizado primordialmente para determinar las pendientes (giros) y deflexiones en puntos específicos de la curva elástica de vigas y pórticos. A diferencia de los métodos analíticos, este enfoque utiliza la interpretación geométrica de las integrales de la ecuación diferencial de la deflexión en términos de áreas y momentos de área del diagrama de curvatura M/EI. El método es válido únicamente para estructuras que se comporten de manera linealmente elástica y experimenten pendientes pequeñas.</p> 
+</div> 
+
+<div class="card-estudio"> 
+<h2 class="subtitulo-guia">Metodología Comparada</h2> 
+<p class="mb-6 italic">El análisis estructural ofrece diversos caminos para calcular deformaciones, y el método de área-momento presenta características distintivas al compararse con otros:</p> 
+<ul class="space-y-6"> 
+<li class="border-l-4 border-blue-900 pl-4"> 
+<p><strong>● Frente a la Integración Matemática:</strong> Mientras que la integración directa requiere resolver funciones continuas y evaluar constantes de integración (lo cual es laborioso ante cambios de carga o sección), el área-momento simplifica el proceso al tratar estas integrales como figuras geométricas simples. Es especialmente superior cuando la viga tiene rigidez flexional (EI) variable, como en flechas escalonadas.</p> 
+</li> 
+<li class="border-l-4 border-blue-900 pl-4"> 
+<p><strong>● Frente a la Viga Conjugada:</strong> La viga conjugada es una analogía que convierte el cálculo de pendientes en fuerza cortante y deflexiones en momento flector. Aunque requieren esfuerzos de cálculo similares, muchos ingenieros prefieren la viga conjugada porque tiene una convención de signos sistemática y no requiere dibujar previamente la curva elástica.</p> 
+</li> 
+</ul> 
+</div> 
+
+<div class="card-estudio"> 
+<h2 class="subtitulo-guia">● Casos de Resolución Específicos:</h2> 
+<ul class="space-y-4 mt-2 ml-4 list-disc"> 
+<li><strong>Vigas en Voladizo:</strong> Se utiliza el empotramiento como tangente de referencia porque allí la pendiente es cero (θ = 0), facilitando el cálculo directo.</li> 
+<li><strong>Vigas Simétricas:</strong> La tangente en el centro del claro es horizontal por simetría, sirviendo como base para medir desviaciones hacia los apoyos.</li> 
+<li><strong>Vigas asimétricas:</strong> Requieren establecer una tangente de referencia en uno de los apoyos y calcular la desviación tangencial en el apoyo opuesto para hallar la pendiente inicial mediante geometría de triángulos.</li> 
+</ul> 
+</div> 
+
+<div class="card-estudio"> 
+<h2 class="subtitulo-guia">Conclusiones y Estrategias para el Aprendizaje</h2> 
+<p class="mb-4">Para dominar este método, se sugieren las siguientes estrategias basadas en la evidencia técnica:</p> 
+<ul class="space-y-6"> 
+<li> 
+<p class="font-bold text-blue-900 dark:text-blue-400">● Uso de Diagramas por Partes:</p> 
+<p class="ml-4">Para vigas con múltiples cargas, es fundamental dibujar un diagrama M/EI independiente para cada carga. Esto descompone áreas complejas en rectángulos, triángulos y parábolas cuyas propiedades están tabuladas.</p> 
+</li> 
+<li> 
+<p class="font-bold text-blue-900 dark:text-blue-400">● Identificación de la Tangente de Referencia:</p> 
+<p class="ml-4">El paso crítico es definir un punto donde la pendiente sea conocida o fácil de calcular. Sin esta referencia, los teoremas solo proporcionan valores relativos entre dos puntos y no deflexiones absolutas.</p> 
+</li> 
+<li> 
+<p class="font-bold text-blue-900 dark:text-blue-400">● Comprensión de los Teoremas:</p> 
+<div class="ml-4 space-y-3 mt-2"> 
+<p><strong>Teorema 1:</strong> El área bajo el diagrama M/EI entre dos puntos equivale al cambio de ángulo entre sus tangentes.</p> 
+<p><strong>Teorema 2:</strong> El primer momento de dicha área respecto a un punto equivale a la desviación vertical (tangencial) de ese punto respecto a la tangente trazada desde el otro.</p> 
+</div> 
+</li> 
+<li> 
+<p class="font-bold text-blue-900 dark:text-blue-400">● Dominio de Propiedades Geométricas:</p> 
+<p class="ml-4">Es vital memorizar o tener a mano tablas de centroides y áreas de formas comunes para agilizar el cálculo de los momentos estáticos.</p> 
+</li> 
+</ul> 
+</div> 
+</main> 
+</div> 
+
+<div id="ejercicio" class="seccion"> 
+<header class="bg-blue-900 text-white py-12 px-4 text-center"> 
+<h1 class="text-3xl font-bold uppercase">Ejercicio Práctico: Viga en Voladizo</h1> 
+</header> 
+<main class="container mx-auto px-4 py-8 max-w-4xl"> 
+<div class="card-estudio"> 
+<h2 class="subtitulo-guia">Enunciado:</h2> 
+<p class="bg-gray-50 dark:bg-gray-800 p-4 border-l-4 border-blue-900 mb-8 italic dark:text-gray-200"> 
+Determine la pendiente (θB) y la deflexión (δB) en el extremo libre de una viga en voladizo de longitud L y rigidez EI constante, sometida a una carga concentrada P en su extremo libre B. 
+</p> 
+<h2 class="subtitulo-guia">Resolución:</h2> 
+<div class="space-y-6"> 
+<p><strong>● Reacciones y Momento:</strong> El momento en el empotramiento A es MA = -PL. El diagrama de momentos es un triángulo que baja linealmente hasta cero en B.</p> 
+<p><strong>● Diagrama M/EI:</strong> Dado que EI es constante, el diagrama tiene forma de triángulo con altura máxima |PL/EI| en el apoyo A.</p> 
+<div class="border-t dark:border-gray-700 pt-4 mt-4"> 
+<p class="font-bold text-blue-900 dark:text-blue-400">● Aplicación del Teorema 1 (Pendiente):</p> 
+<ul class="ml-6 space-y-2 mt-2"> 
+<li>La pendiente en A es cero (θA = 0).</li> 
+<li>El área del triángulo es: 
+<div class="formula-destacada">$$A_1 = \frac{1}{2} L \frac{PL}{EI} = \frac{PL^2}{2EI}$$</div> 
+</li> 
+<li>$$\theta_B = \theta_A + Area_{A \to B} = \frac{PL^2}{2EI} \text{ (en radianes).}$$</li> 
+</ul> 
+</div> 
+<div class="border-t dark:border-gray-700 pt-4 mt-6"> 
+<p class="font-bold text-blue-900 dark:text-blue-400">● Aplicación del Teorema 2 (Deflexión):</p> 
+<ul class="ml-6 space-y-2 mt-2"> 
+<li>La desviación tangencial tB/A representa la deflexión absoluta \(\delta_B\) porque la tangente en A es horizontal.</li> 
+<li>El centroide del triángulo M/EI está a una distancia desde el punto B: <span class="font-bold">x = 2/3 L</span>.</li> 
+<li> 
+<div class="formula-destacada">$$\delta_B = t_{B/A} = Area \cdot x = \left( \frac{PL^2}{2EI} \right) \left( \frac{2}{3}L \right) = \frac{PL^3}{3EI}$$</div> 
+</li> 
+</ul> 
+</div> 
+</div> 
+</div> 
+</main> 
+</div> 
+
+<div id="mapa" class="seccion"> 
+<main class="container mx-auto px-4 py-8"> 
+<div class="bg-white dark:bg-gray-800 p-4 rounded shadow-md"> 
+<iframe src="markmap.html" class="dark:bg-gray-800"></iframe> 
+</div> 
+</main> 
+</div> 
+
+<div id="referencias" class="seccion"> 
+<main class="container mx-auto px-4 py-12 max-w-4xl"> 
+<h2 class="subtitulo-guia mb-8">Fuentes Utilizadas</h2> 
+<div class="grid gap-4"> 
+<div class="bg-white dark:bg-gray-800 p-6 rounded shadow-sm border-l-8 border-blue-900 dark:border-blue-500 transition-colors"> 
+<p class="font-bold text-blue-900 dark:text-blue-400 text-lg">Uribe Escamilla, Jairo (2da ed.)</p> 
+<p class="italic dark:text-gray-300">Análisis de Estructuras.</p> 
+</div> 
+<div class="bg-white dark:bg-gray-800 p-6 rounded shadow-sm border-l-8 border-blue-900 dark:border-blue-500 transition-colors"> 
+<p class="font-bold text-blue-900 dark:text-blue-400 text-lg">Nash, William A. (Schaum)</p> 
+<p class="italic dark:text-gray-300">Resistencia de Materiales.</p> 
+</div> 
+<div class="bg-white dark:bg-gray-800 p-6 rounded shadow-sm border-l-8 border-blue-900 dark:border-blue-500 transition-colors"> 
+<p class="font-bold text-blue-900 dark:text-blue-400 text-lg">Beer, Johnston, et al. (7ma ed.)</p> 
+<p class="italic dark:text-gray-300">Mecánica de Materiales.</p> 
+</div> 
+<div class="bg-white dark:bg-gray-800 p-6 rounded shadow-sm border-l-8 border-blue-900 dark:border-blue-500 transition-colors"> 
+<p class="font-bold text-blue-900 dark:text-blue-400 text-lg">Gere & Goodno (8va ed.)</p> 
+<p class="italic dark:text-gray-300">Mecánica de Materiales.</p> 
+</div> 
+<div class="bg-white dark:bg-gray-800 p-6 rounded shadow-sm border-l-8 border-blue-900 dark:border-blue-500 transition-colors"> 
+<p class="font-bold text-blue-900 dark:text-blue-400 text-lg">Kassimali, Aslam</p> 
+<p class="italic dark:text-gray-300">Análisis Estructural.</p> 
+</div> 
+</div> 
+</main> 
+</div> 
+
+<footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="flex flex-col items-center space-y-4">
+            <div class="flex space-x-2">
+                <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-100"></div>
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse delay-200"></div>
+            </div>
+            
+            <div class="text-center space-y-1">
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Méndez Agustín Elmer Randolfo</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">200730487</span>
+                </div>
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Mateo Vasquez Naomi Fernanda</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">202230333</span>
+                </div>
+            </div>
+            
+            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+            
+            <div class="flex space-x-3 pt-2">
+                <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                    </svg>
+                </a>
+                <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script> 
+function cambiarSeccion(id) { 
+document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa')); 
+document.getElementById(id).classList.add('activa'); 
+window.scrollTo({top: 0, behavior: 'smooth'}); 
+} 
+</script> 
+</body> 
+</html>
