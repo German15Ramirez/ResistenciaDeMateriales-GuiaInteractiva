@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5.2 Carga Crítica con Diferentes Restricciones</title>
+  
+  <script>
+  (function() {
+      const modoGuardado = localStorage.getItem("modo");
+      if (modoGuardado === "oscuro") {
+          document.documentElement.classList.add("dark");
+      } else {
+          document.documentElement.classList.remove("dark");
+          if (!modoGuardado) {
+              localStorage.setItem("modo", "claro");
+          }
+      }
+  })();
+  </script>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  tailwind.config = {
+      darkMode: 'class'
+  }
+  </script>
+  
+  <style>
+    .formula-box {
+      background: #f0f4ff;
+      border-left: 4px solid #1e3a8a;
+      border-radius: 0.5rem;
+      padding: 1rem 1.25rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.05rem;
+      color: #1e3a8a;
+      overflow-x: auto;
+    }
+    .formula-var { color: #b91c1c; font-weight: 700; }
+    .formula-sym { color: #6b21a8; font-weight: 700; }
+    .answer-panel { max-height:0; overflow:hidden; transition:max-height .45s ease,opacity .35s ease; opacity:0; }
+    .answer-panel.open { max-height:600px; opacity:1; }
+    #quiz-progress-bar { transition:width .4s ease; }
+    .card-lift { transition:transform .2s ease,box-shadow .2s ease; }
+    .card-lift:hover { transform:translateY(-4px); box-shadow:0 12px 30px rgba(30,58,138,.15); }
+    .k-col { transition:transform .25s ease; }
+    .k-col:hover { transform:scaleY(1.04); }
+    html { scroll-behavior:smooth; }
+
+    #buckling-scene {
+      background: linear-gradient(180deg,#0f172a 0%,#1e3a5f 100%);
+      border-radius:1rem;
+      position:relative;
+      overflow:hidden;
+      height:340px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:48px;
+    }
+    .particle {
+      position:absolute;
+      background:rgba(147,197,253,0.4);
+      border-radius:50%;
+      animation:float-up linear infinite;
+    }
+    @keyframes float-up {
+      0%   { transform:translateY(0) scale(1); opacity:.6; }
+      100% { transform:translateY(-340px) scale(0); opacity:0; }
+    }
+    .col-wrapper { display:flex; flex-direction:column; align-items:center; gap:6px; }
+    .col-label { color:#93c5fd; font-size:.7rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; text-align:center; }
+    .col-k-badge { background:rgba(30,58,138,.7); color:#bfdbfe; font-size:.75rem; font-weight:800; padding:2px 10px; border-radius:9999px; border:1px solid #3b82f6; }
+
+    .force-arrow { animation:push-down 1.8s ease-in-out infinite; }
+    @keyframes push-down { 0%,100%{transform:translateY(0);opacity:1;} 50%{transform:translateY(6px);opacity:.7;} }
+
+    @keyframes buckle-wave {
+      0%   { d:path("M 40 22 C 40 80, 40 130, 40 210"); stroke:#60a5fa; }
+      35%  { d:path("M 40 22 C 82 70,  0 130, 40 210"); stroke:#f87171; }
+      65%  { d:path("M 40 22 C  0 70, 82 130, 40 210"); stroke:#fbbf24; }
+      100% { d:path("M 40 22 C 40 80, 40 130, 40 210"); stroke:#60a5fa; }
+    }
+    .buckle-curve { animation:buckle-wave 2.4s ease-in-out infinite; }
+
+    .crack-line { animation:crack-pulse 2s ease-in-out infinite; }
+    @keyframes crack-pulse { 0%,100%{opacity:.3;stroke-width:1.5;} 50%{opacity:1;stroke-width:3;} }
+
+    .energy-ring { animation:ring-expand 2.4s ease-out infinite; }
+    @keyframes ring-expand { 0%{r:4;opacity:.9;stroke-width:3;} 100%{r:28;opacity:0;stroke-width:.5;} }
+
+    .dark .bg-gray-100 { background-color: #111827 !important; }
+    .dark .bg-white { background-color: #1f2937 !important; }
+    .dark .text-gray-800 { color: #f3f4f6 !important; }
+    .dark .text-gray-700 { color: #d1d5db !important; }
+    .dark .text-gray-600 { color: #9ca3af !important; }
+    .dark .border-gray-200 { border-color: #374151 !important; }
+    .dark .bg-gray-50 { background-color: #1f2937 !important; }
+    .dark .bg-blue-50 { background-color: #1e293b !important; }
+    .dark .bg-red-50 { background-color: #7f1d1d !important; }
+    .dark .bg-yellow-50 { background-color: #78350f !important; }
+    .dark .bg-green-50 { background-color: #14532d !important; }
+    .dark .bg-purple-50 { background-color: #4c1d95 !important; }
+    .dark .text-blue-900 { color: #60a5fa !important; }
+    .dark .text-blue-800 { color: #93c5fd !important; }
+    .dark .text-blue-700 { color: #93c5fd !important; }
+    .dark .border-blue-200 { border-color: #1e3a8a !important; }
+    .dark .border-red-200 { border-color: #7f1d1d !important; }
+    .dark .border-yellow-200 { border-color: #78350f !important; }
+    .dark .border-green-200 { border-color: #14532d !important; }
+    .dark .formula-box { background-color: #374151; border-left-color: #3b82f6; color: #93c5fd; }
+    .dark .formula-var { color: #f87171; }
+    .dark .formula-sym { color: #c084fc; }
+    .dark #buckling-scene { background: linear-gradient(180deg,#0a0a2a 0%,#1e293b 100%); }
+    .dark .col-k-badge { background: rgba(30,58,138,.7); border-color: #3b82f6; }
+    .dark .bg-gray-200 { background-color: #374151 !important; }
+  </style>
+</head>
+<body class="font-sans bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100">
+
+  <!-- HEADER -->
+  <header class="bg-blue-900 text-white py-12 shadow-lg">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex justify-end mb-4">
+      </div>
+      <h1 class="text-3xl md:text-4xl font-bold leading-tight mb-4">
+        Carga Crítica con Diferentes Restricciones
+        <span class="block text-blue-300 text-xl font-normal mt-1">(Pandeo de Columnas)</span>
+      </h1>
+      <div class="bg-blue-800 bg-opacity-60 rounded-xl p-5 mt-4 border border-blue-700 dark:bg-blue-900/50">
+        <h2 class="text-blue-200 uppercase text-xs tracking-widest font-semibold mb-2">Resumen</h2>
+        <p class="text-blue-100 leading-relaxed text-sm md:text-base">
+          El pandeo es un fenómeno de <strong>inestabilidad elástica</strong> que ocurre en elementos esbeltos
+          (columnas) sometidos a esfuerzos de compresión axial. A diferencia de las vigas, las columnas pueden
+          fallar mediante una curvatura lateral repentina <em>antes</em> de alcanzar su carga de fluencia.
+          Este colapso representa la pérdida de estabilidad estructural y puede derivar en fallas catastróficas.
+          La resistencia se evalúa mediante la <strong>Fórmula de Euler</strong> y varía drásticamente según
+          las condiciones de apoyo en los extremos, la esbeltez del elemento y la presencia de imperfecciones.
+        </p>
+      </div>
+      <!-- Botón de completado -->
+      <div class="mt-6">
+        <button 
+            id="btnCompletado"
+            onclick="toggleCompletado('5.2_carga_critica')"
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition flex items-center gap-2 shadow-md"
+        >
+            📚 Marcar como completado
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="bg-blue-800 text-white sticky top-0 z-30 shadow dark:bg-blue-700">
+    <div class="max-w-5xl mx-auto flex flex-wrap gap-1 px-4 py-2 text-sm">
+      <a href="#animacion"      class="px-3 py-1 rounded hover:bg-blue-600 transition">Animación</a>
+      <a href="#introduccion"   class="px-3 py-1 rounded hover:bg-blue-600 transition">Introducción</a>
+      <a href="#desarrollo"     class="px-3 py-1 rounded hover:bg-blue-600 transition">Desarrollo</a>
+      <a href="#condiciones"    class="px-3 py-1 rounded hover:bg-blue-600 transition">Condiciones de Apoyo</a>
+      <a href="#imperfecciones" class="px-3 py-1 rounded hover:bg-blue-600 transition">Columnas Reales</a>
+      <a href="#metodologias"   class="px-3 py-1 rounded hover:bg-blue-600 transition">Metodologías</a>
+      <a href="#ejercicios"     class="px-3 py-1 rounded hover:bg-blue-600 transition">Ejercicios</a>
+      <a href="#conclusiones"   class="px-3 py-1 rounded hover:bg-blue-600 transition">Conclusiones</a>
+      <a href="#quiz"           class="px-3 py-1 rounded bg-blue-600 hover:bg-blue-500 transition font-semibold">Quiz ✦</a>
+    </div>
+  </nav>
+
+  <main class="max-w-5xl mx-auto px-4 py-10 space-y-12">
+
+    <section id="animacion">
+      <h2 class="text-2xl font-bold text-blue-900 mb-3 border-b-2 border-blue-200 pb-2 dark:text-blue-400 dark:border-blue-800">
+        Animación: Fenómeno de Pandeo en Columnas
+      </h2>
+      <p class="text-gray-600 text-sm mb-4 dark:text-gray-400">Observa cómo una columna bajo carga axial pasa del estado estable al pandeo según sus condiciones de apoyo y la presencia de fisuras.</p>
+
+      <div id="buckling-scene">
+        <div id="particles"></div>
+
+        <div class="col-wrapper z-10">
+          <div class="col-k-badge dark:bg-blue-900/70">K = 1.0</div>
+          <svg width="80" height="240" viewBox="0 0 80 240" overflow="visible">
+            <g class="force-arrow">
+              <line x1="40" y1="0" x2="40" y2="17" stroke="#fbbf24" stroke-width="2.5"/>
+              <polygon points="40,22 34,10 46,10" fill="#fbbf24"/>
+              <text x="50" y="14" fill="#fbbf24" font-size="9" font-weight="bold">P</text>
+            </g>
+            <polygon points="40,22 30,10 50,10" fill="#93c5fd" opacity=".7"/>
+            <line x1="40" y1="22" x2="40" y2="210" stroke="#60a5fa" stroke-width="7" stroke-linecap="round"/>
+            <polygon points="40,210 30,222 50,222" fill="#93c5fd" opacity=".7"/>
+            <line x1="26" y1="222" x2="54" y2="222" stroke="#93c5fd" stroke-width="2"/>
+            <rect x="4" y="100" width="72" height="20" rx="4" fill="#166534" opacity=".8"/>
+            <text x="40" y="114" text-anchor="middle" fill="#86efac" font-size="9" font-weight="bold">ESTABLE</text>
+          </svg>
+          <div class="col-label dark:text-gray-300">Art. – Art.<br/>P &lt; P<sub>cr</sub></div>
+        </div>
+
+        <div class="col-wrapper z-10">
+          <div class="col-k-badge dark:bg-blue-900/70" style="border-color:#f87171;color:#fca5a5;">K=1.0 · PANDEO</div>
+          <svg width="80" height="240" viewBox="0 0 80 240" overflow="visible">
+            <g class="force-arrow">
+              <line x1="40" y1="0" x2="40" y2="17" stroke="#ef4444" stroke-width="3"/>
+              <polygon points="40,22 34,10 46,10" fill="#ef4444"/>
+              <text x="50" y="14" fill="#ef4444" font-size="9" font-weight="bold">P≥Pcr</text>
+            </g>
+            <polygon points="40,22 30,10 50,10" fill="#fca5a5" opacity=".8"/>
+            <path class="buckle-curve" d="M 40 22 C 40 80, 40 130, 40 210"
+              stroke="#f87171" stroke-width="7" fill="none" stroke-linecap="round"/>
+            <polygon points="40,210 30,222 50,222" fill="#fca5a5" opacity=".8"/>
+            <line x1="26" y1="222" x2="54" y2="222" stroke="#fca5a5" stroke-width="2"/>
+            <circle class="energy-ring" cx="40" cy="116" r="4" fill="none" stroke="#fbbf24"/>
+            <rect x="4" y="100" width="72" height="20" rx="4" fill="#7f1d1d" opacity=".9"/>
+            <text x="40" y="114" text-anchor="middle" fill="#fca5a5" font-size="9" font-weight="bold">PANDEO</text>
+          </svg>
+          <div class="col-label dark:text-gray-300">Inestable<br/>Falla lateral</div>
+        </div>
+
+        <div class="col-wrapper z-10">
+          <div class="col-k-badge dark:bg-blue-900/70" style="border-color:#fb923c;color:#fed7aa;">FISURADA</div>
+          <svg width="80" height="240" viewBox="0 0 80 240" overflow="visible">
+            <g class="force-arrow">
+              <line x1="40" y1="0" x2="40" y2="14" stroke="#fb923c" stroke-width="2.5"/>
+              <polygon points="40,18 34,6 46,6" fill="#fb923c"/>
+              <text x="50" y="12" fill="#fb923c" font-size="9" font-weight="bold">P</text>
+            </g>
+            <rect x="18" y="6" width="44" height="10" fill="#7c3aed" rx="2" opacity=".8"/>
+            <line x1="40" y1="16" x2="40" y2="220" stroke="#a78bfa" stroke-width="7" stroke-linecap="round"/>
+            <path class="crack-line" d="M36 100 L50 108 L36 116" stroke="#ef4444" stroke-width="2" fill="none"/>
+            <path class="crack-line" d="M44 134 L28 142 L44 150" stroke="#ef4444" stroke-width="2" fill="none" style="animation-delay:.4s"/>
+            <rect x="18" y="220" width="44" height="10" fill="#7c3aed" rx="2" opacity=".8"/>
+            <circle class="energy-ring" cx="40" cy="108" r="4" fill="none" stroke="#f87171" style="animation-delay:.8s"/>
+            <rect x="0" y="156" width="80" height="20" rx="4" fill="#78350f" opacity=".85"/>
+            <text x="40" y="170" text-anchor="middle" fill="#fed7aa" font-size="8.5" font-weight="bold">Pcr REDUCIDA</text>
+          </svg>
+          <div class="col-label dark:text-gray-300">Emp. – Emp.<br/>Con fisura</div>
+        </div>
+
+        <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-4 text-xs">
+          <span class="bg-green-900 bg-opacity-80 text-green-300 px-3 py-1 rounded-full">● Estable</span>
+          <span class="bg-red-900 bg-opacity-80 text-red-300 px-3 py-1 rounded-full">● Pandeo activo</span>
+          <span class="bg-orange-900 bg-opacity-80 text-orange-300 px-3 py-1 rounded-full">● Fisura</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="introduccion">
+      <h2 class="text-2xl font-bold text-blue-900 mb-6 border-b-2 border-blue-200 pb-2 dark:text-blue-400 dark:border-blue-800">1. Introducción</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl shadow p-6 card-lift dark:bg-gray-800">
+          <h3 class="font-semibold text-blue-800 text-lg mb-3 dark:text-blue-400">¿Qué es una columna?</h3>
+          <p class="text-gray-700 leading-relaxed text-sm dark:text-gray-300">Las columnas son elementos estructurales fundamentales cuyo objetivo principal es soportar <strong>cargas axiales</strong> y trasladarlas a otros componentes. A diferencia de las vigas, que resisten cargas perpendiculares, las columnas trabajan a lo largo de su propio eje, lo que las hace susceptibles al fenómeno del <em>pandeo</em>.</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-6 card-lift dark:bg-gray-800">
+          <h3 class="font-semibold text-blue-800 text-lg mb-3 dark:text-blue-400">¿Qué es el pandeo?</h3>
+          <p class="text-gray-700 leading-relaxed text-sm dark:text-gray-300">El pandeo es una <strong>inestabilidad elástica</strong> que ocurre en elementos comprimidos y esbeltos; se manifiesta como una deflexión o curvatura lateral repentina <em>antes</em> de que el material alcance su carga de fluencia. Una vez que la columna se pandea, el sistema puede sufrir una falla catastrófica o deformaciones permanentes.</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-6 card-lift md:col-span-2 dark:bg-gray-800">
+          <h3 class="font-semibold text-blue-800 text-lg mb-3 dark:text-blue-400">Importancia de la Carga Crítica</h3>
+          <p class="text-gray-700 leading-relaxed text-sm dark:text-gray-300">El diseño estructural se centra en determinar la <strong>carga crítica (P<sub>cr</sub>)</strong>, que es el valor máximo de fuerza axial que un elemento puede soportar antes de que se inicie el desplazamiento lateral. En condiciones reales, este valor se ve afectado por la excentricidad de la carga, imperfecciones del material, condiciones de apoyo y la presencia de fisuras.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="desarrollo">
+      <h2 class="text-2xl font-bold text-blue-900 mb-6 border-b-2 border-blue-200 pb-2 dark:text-blue-400 dark:border-blue-800">2. Fundamentos Matemáticos — Fórmula de Euler</h2>
+      <div class="bg-white rounded-xl shadow p-6 mb-6 card-lift dark:bg-gray-800">
+        <p class="text-gray-700 mb-4 text-sm leading-relaxed dark:text-gray-300">La base para determinar la resistencia de una columna ideal es la <strong>carga crítica de Euler (P<sub>cr</sub>)</strong>, desarrollada en 1744. Para una columna <em>articulada en ambos extremos</em>:</p>
+        <div class="formula-box mb-4"><span class="formula-var">P<sub>cr</sub></span><span class="formula-sym"> = (π² · E · I) / L²</span></div>
+        <div class="grid sm:grid-cols-3 gap-3 mt-4">
+          <div class="bg-gray-50 rounded-lg p-3 text-sm text-center dark:bg-gray-700"><span class="font-bold text-blue-900 text-lg dark:text-blue-400">E</span><p class="text-gray-600 mt-1 dark:text-gray-400">Módulo de Elasticidad<br/>(rigidez del material)</p></div>
+          <div class="bg-gray-50 rounded-lg p-3 text-sm text-center dark:bg-gray-700"><span class="font-bold text-blue-900 text-lg dark:text-blue-400">I</span><p class="text-gray-600 mt-1 dark:text-gray-400">Momento de Inercia<br/>(resistencia a flexión)</p></div>
+          <div class="bg-gray-50 rounded-lg p-3 text-sm text-center dark:bg-gray-700"><span class="font-bold text-blue-900 text-lg dark:text-blue-400">L</span><p class="text-gray-600 mt-1 dark:text-gray-400">Longitud del elemento<br/>(entre apoyos)</p></div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-6 mb-6 card-lift dark:bg-gray-800">
+        <h3 class="font-semibold text-blue-800 text-lg mb-3 dark:text-blue-400">Fórmula General con Longitud Efectiva</h3>
+        <div class="formula-box mb-3"><span class="formula-var">P<sub>cr</sub></span><span class="formula-sym"> = π² · E · I / (K · L)²</span></div>
+        <p class="text-gray-600 text-sm dark:text-gray-400">Donde <strong>K · L</strong> es la longitud efectiva (L<sub>e</sub>): distancia entre los puntos de inflexión de la curva de pandeo.</p>
+      </div>
+      <div class="bg-white rounded-xl shadow p-6 card-lift dark:bg-gray-800">
+        <h3 class="font-semibold text-blue-800 text-lg mb-3 dark:text-blue-400">Relación de Esbeltez (λ)</h3>
+        <div class="formula-box mb-3"><span class="formula-sym">λ = L<sub>e</sub> / k</span><span class="text-gray-500 text-sm font-normal ml-4 dark:text-gray-400">donde k = √(I / A)</span></div>
+        <p class="text-gray-700 text-sm dark:text-gray-300">A mayor relación de esbeltez, <strong>menor es el esfuerzo crítico</strong>. Una columna esbelta falla por inestabilidad mucho antes de agotar la resistencia del material.</p>
+      </div>
+    </section>
+
+    <section id="condiciones">
+      <h2 class="text-2xl font-bold text-blue-900 mb-6 border-b-2 border-blue-200 pb-2 dark:text-blue-400 dark:border-blue-800">3. Influencia de las Condiciones de Apoyo</h2>
+      <p class="text-gray-700 mb-6 text-sm leading-relaxed bg-white rounded-xl shadow p-5 dark:bg-gray-800 dark:text-gray-300">La capacidad de carga varía drásticamente según las restricciones en los extremos, gestionadas mediante el <strong>factor de longitud efectiva K</strong>. Un valor de K menor implica mayor rigidez efectiva y mayor carga crítica.</p>
+      <div class="bg-white rounded-xl shadow p-6 mb-6 dark:bg-gray-800">
+        <h3 class="font-semibold text-blue-800 text-lg mb-5 text-center dark:text-blue-400">Comparador Visual de Condiciones de Apoyo</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="k-col bg-blue-50 rounded-xl p-4 text-center border-2 border-blue-200 dark:bg-blue-900/30 dark:border-blue-800">
+            <div class="flex justify-center mb-3">
+              <svg width="60" height="110" viewBox="0 0 60 110">
+                <line x1="30" y1="10" x2="30" y2="100" stroke="#1e3a8a" stroke-width="4"/>
+                <line x1="30" y1="2" x2="30" y2="10" stroke="#dc2626" stroke-width="2" marker-end="url(#a1)"/>
+                <polygon points="30,100 20,110 40,110" fill="#1e3a8a"/>
+                <polygon points="30,10 20,0 40,0" fill="#1e3a8a"/>
+                <defs><marker id="a1" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#dc2626"/></marker></defs>
+              </svg>
+            </div>
+            <p class="font-bold text-blue-900 text-xl dark:text-blue-400">K = 1.0</p>
+            <p class="text-xs text-gray-600 mt-1 dark:text-gray-400">Articulada–Articulada</p>
+            <p class="text-xs text-blue-700 font-semibold mt-2 dark:text-blue-400">Caso base</p>
+            <div class="formula-box mt-3 text-xs dark:bg-gray-700">P<sub>cr</sub> = π²EI/L²</div>
+          </div>
+          <div class="k-col bg-red-50 rounded-xl p-4 text-center border-2 border-red-200 dark:bg-red-900/30 dark:border-red-800">
+            <div class="flex justify-center mb-3">
+              <svg width="60" height="110" viewBox="0 0 60 110">
+                <rect x="5" y="95" width="50" height="10" fill="#7f1d1d" rx="2"/>
+                <line x1="30" y1="95" x2="30" y2="15" stroke="#1e3a8a" stroke-width="4"/>
+                <line x1="30" y1="5" x2="30" y2="15" stroke="#dc2626" stroke-width="2" marker-end="url(#a2)"/>
+                <defs><marker id="a2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#dc2626"/></marker></defs>
+              </svg>
+            </div>
+            <p class="font-bold text-red-700 text-xl dark:text-red-400">K = 2.0</p>
+            <p class="text-xs text-gray-600 mt-1 dark:text-gray-400">Empotrada–Libre</p>
+            <p class="text-xs text-red-600 font-semibold mt-2 dark:text-red-400">Solo 1/4 de la base</p>
+            <div class="formula-box mt-3 text-xs dark:bg-gray-700">P<sub>cr</sub> = π²EI/(2L)²</div>
+          </div>
+          <div class="k-col bg-yellow-50 rounded-xl p-4 text-center border-2 border-yellow-200 dark:bg-yellow-900/30 dark:border-yellow-800">
+            <div class="flex justify-center mb-3">
+              <svg width="60" height="110" viewBox="0 0 60 110">
+                <rect x="5" y="95" width="50" height="10" fill="#78350f" rx="2"/>
+                <line x1="30" y1="95" x2="30" y2="10" stroke="#1e3a8a" stroke-width="4"/>
+                <polygon points="30,10 20,0 40,0" fill="#1e3a8a"/>
+                <line x1="30" y1="2" x2="30" y2="10" stroke="#dc2626" stroke-width="2" marker-end="url(#a3)"/>
+                <defs><marker id="a3" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#dc2626"/></marker></defs>
+              </svg>
+            </div>
+            <p class="font-bold text-yellow-700 text-xl dark:text-yellow-400">K ≈ 0.7</p>
+            <p class="text-xs text-gray-600 mt-1 dark:text-gray-400">Empotrada–Articulada</p>
+            <p class="text-xs text-yellow-700 font-semibold mt-2 dark:text-yellow-400">Mejor que base</p>
+            <div class="formula-box mt-3 text-xs dark:bg-gray-700">P<sub>cr</sub> = π²EI/(0.7L)²</div>
+          </div>
+          <div class="k-col bg-green-50 rounded-xl p-4 text-center border-2 border-green-200 dark:bg-green-900/30 dark:border-green-800">
+            <div class="flex justify-center mb-3">
+              <svg width="60" height="110" viewBox="0 0 60 110">
+                <rect x="5" y="95" width="50" height="10" fill="#14532d" rx="2"/>
+                <rect x="5" y="5" width="50" height="10" fill="#14532d" rx="2"/>
+                <line x1="30" y1="15" x2="30" y2="95" stroke="#1e3a8a" stroke-width="4"/>
+                <line x1="30" y1="2" x2="30" y2="10" stroke="#dc2626" stroke-width="2" marker-end="url(#a4)"/>
+                <defs><marker id="a4" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#dc2626"/></marker></defs>
+              </svg>
+            </div>
+            <p class="font-bold text-green-700 text-xl dark:text-green-400">K = 0.5</p>
+            <p class="text-xs text-gray-600 mt-1 dark:text-gray-400">Empotrada–Empotrada</p>
+            <p class="text-xs text-green-700 font-semibold mt-2 dark:text-green-400">Mayor estabilidad</p>
+            <div class="formula-box mt-3 text-xs dark:bg-gray-700">P<sub>cr</sub> = π²EI/(0.5L)²</div>
+          </div>
+        </div>
+        <div class="mt-8">
+          <h4 class="text-sm font-semibold text-gray-700 mb-3 text-center dark:text-gray-300">Resistencia relativa al pandeo (base = K 1.0 → 100%)</h4>
+          <div class="space-y-3 px-4">
+            <div><div class="flex justify-between text-xs text-gray-600 mb-1 dark:text-gray-400"><span>Articulada–Articulada (K=1.0)</span><span>100 %</span></div><div class="bg-gray-200 rounded-full h-4 dark:bg-gray-700"><div class="bg-blue-600 h-4 rounded-full" style="width:50%"></div></div></div>
+            <div><div class="flex justify-between text-xs text-gray-600 mb-1 dark:text-gray-400"><span>Empotrada–Articulada (K≈0.7)</span><span>204 %</span></div><div class="bg-gray-200 rounded-full h-4 dark:bg-gray-700"><div class="bg-yellow-500 h-4 rounded-full" style="width:80%"></div></div></div>
+            <div><div class="flex justify-between text-xs text-gray-600 mb-1 dark:text-gray-400"><span>Empotrada–Empotrada (K=0.5)</span><span>400 %</span></div><div class="bg-gray-200 rounded-full h-4 dark:bg-gray-700"><div class="bg-green-600 h-4 rounded-full" style="width:100%"></div></div></div>
+            <div><div class="flex justify-between text-xs text-gray-600 mb-1 dark:text-gray-400"><span>Empotrada–Libre (K=2.0)</span><span>25 %</span></div><div class="bg-gray-200 rounded-full h-4 dark:bg-gray-700"><div class="bg-red-500 h-4 rounded-full" style="width:12%"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="imperfecciones">
+      <h2 class="text-2xl font-bold text-blue-900 mb-6 border-b-2 border-blue-200 pb-2 dark:text-blue-400 dark:border-blue-800">4. Análisis de Columnas Reales e Imperfecciones</h2>
+      <div class="grid md:grid-cols-3 gap-5">
+        <div class="bg-white rounded-xl shadow p-5 card-lift dark:bg-gray-800">
+          <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mb-3 dark:bg-orange-900/30"><span class="text-orange-600 font-bold text-lg dark:text-orange-400">⟳</span></div>
+          <h3 class="font-semibold text-blue-800 mb-2 dark:text-blue-400">Cargas Excéntricas</h3>
+          <p class="text-gray-600 text-sm leading-relaxed dark:text-gray-400">Cuando la carga no se aplica en el centroide se utiliza la <strong>fórmula de la secante</strong> para analizar la flexión adicional y el esfuerzo elástico máximo.</p>
+          <div class="formula-box mt-3 text-xs dark:bg-gray-700">σ<sub>máx</sub> = (P/A)·[1 + (e·c/k²)·sec(KL/2·√(P/EI))]</div>
+        </div>
+        <div class="bg-white rounded-xl shadow p-5 card-lift dark:bg-gray-800">
+          <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mb-3 dark:bg-red-900/30"><span class="text-red-600 font-bold text-lg dark:text-red-400">⚡</span></div>
+          <h3 class="font-semibold text-blue-800 mb-2 dark:text-blue-400">Presencia de Fisuras</h3>
+          <p class="text-gray-600 text-sm leading-relaxed dark:text-gray-400">Las grietas reducen la <strong>rigidez local</strong> y la carga crítica. Se modelan como <em>muelles rotacionales</em>; el efecto es más severo según profundidad y posición.</p>
+          <div class="bg-red-50 rounded-lg p-2 mt-3 text-xs text-red-700 dark:bg-red-900/30 dark:text-red-400">Mayor profundidad + posición en momento máximo = mayor reducción de P<sub>cr</sub></div>
+        </div>
+        <div class="bg-white rounded-xl shadow p-5 card-lift dark:bg-gray-800">
+          <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mb-3 dark:bg-purple-900/30"><span class="text-purple-600 font-bold text-lg dark:text-purple-400">◈</span></div>
+          <h3 class="font-semibold text-blue-800 mb-2 dark:text-blue-400">Secciones Variables</h3>
+          <p class="text-gray-600 text-sm leading-relaxed dark:text-gray-400">En cilindros hidráulicos o columnas cónicas el <strong>momento de inercia varía</strong> a lo largo del eje, requiriendo métodos más complejos que la fórmula estándar.</p>
+          <div class="bg-purple-50 rounded-lg p-2 mt-3 text-xs text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">Se aplica la norma ISO/TS 13725 para cilindros oleohidráulicos.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="metodologias">
+      <h2 class="text-2xl font-bold text-blue-900 mb-6 border-b-2 border-blue-200 pb-2 dark:text-blue-400 dark:border-blue-800">5. Metodologías de Cálculo</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl shadow p-6 card-lift border-t-4 border-blue-600 dark:bg-gray-800">
+          <h3 class="font-semibold text-blue-800 text-lg mb-3 dark:text-blue-400">Planteamiento Diferencial</h3>
+          <p class="text-gray-700 text-sm leading-relaxed mb-3 dark:text-gray-300">Basado en <strong>ecuaciones diferenciales de equilibrio</strong>. Proporciona soluciones exactas para la carga crítica y el desplazamiento, pero su complejidad aumenta en casos no uniformes.</p>
+          <ul class="text-sm text-gray-600 space-y-1 list-disc list-inside dark:text-gray-400"><li>Soluciones exactas</li><li>Ideal para secciones constantes</li><li>Mayor rigor matemático</li></ul>
+        </div>
+        <div class="bg-white rounded-xl shadow p-6 card-lift border-t-4 border-green-600 dark:bg-gray-800">
+          <h3 class="font-semibold text-blue-800 text-lg mb-3 dark:text-blue-400">Método Energético</h3>
+          <p class="text-gray-700 text-sm leading-relaxed mb-3 dark:text-gray-300">Relaciona la <strong>energía de deformación interna</strong> con el trabajo de la carga externa. Muy eficaz para columnas con secciones variables o fisuras.</p>
+          <ul class="text-sm text-gray-600 space-y-1 list-disc list-inside dark:text-gray-400"><li>Resultados aproximados</li><li>Útil en geometrías complejas</li><li>Base del método de Timoshenko</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="ejercicios">
+      <h2 class="text-2xl font-bold text-blue-900 mb-6 border-b-2 border-blue-200 pb-2 dark:text-blue-400 dark:border-blue-800">6. Ejercicios Prácticos</h2>
+      <div class="bg-white rounded-xl shadow p-6 mb-6 card-lift dark:bg-gray-800">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="bg-blue-900 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm dark:bg-blue-700">1</span>
+          <h3 class="font-semibold text-blue-800 text-lg dark:text-blue-400">Diseño de columna cuadrada de madera</h3>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-4 mb-4 text-sm dark:bg-gray-700">
+          <p class="font-semibold text-gray-700 mb-2 dark:text-gray-300">Datos:</p>
+          <ul class="text-gray-600 space-y-1 list-disc list-inside dark:text-gray-400">
+            <li>L = 2 m · Extremos articulados</li>
+            <li>P = 100 kN (a) y 200 kN (b)</li>
+            <li>FS = 2 · E = 13 GPa · σ<sub>perm</sub> = 12 MPa</li>
+          </ul>
+        </div>
+        <div class="space-y-3">
+          <div class="flex gap-3 items-start"><span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 dark:bg-blue-900/50 dark:text-blue-400">1</span><div class="text-sm"><p class="font-semibold text-gray-700 dark:text-gray-300">Carga crítica de diseño</p><div class="formula-box mt-1 dark:bg-gray-700">P<sub>cr</sub> = P × FS = 100 kN × 2 = <span class="formula-var">200 kN</span></div></div></div>
+          <div class="flex gap-3 items-start"><span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 dark:bg-blue-900/50 dark:text-blue-400">2</span><div class="text-sm"><p class="font-semibold text-gray-700 dark:text-gray-300">Aplicar Euler — sección cuadrada (I = a⁴/12)</p><div class="formula-box mt-1 dark:bg-gray-700">200 000 = (π² × 13×10⁹ × a⁴/12) / 2²</div></div></div>
+          <div class="flex gap-3 items-start"><span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 dark:bg-blue-900/50 dark:text-blue-400">3</span><div class="text-sm"><p class="font-semibold text-gray-700 dark:text-gray-300">Despejar "a"</p><div class="formula-box mt-1 dark:bg-gray-700">a⁴ ≈ 7.48×10⁻⁵ m⁴ → <span class="formula-var">a ≈ 93 mm</span></div></div></div>
+          <div class="flex gap-3 items-start"><span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 dark:bg-blue-900/50 dark:text-blue-400">4</span><div class="text-sm"><p class="font-semibold text-gray-700 dark:text-gray-300">Verificar esfuerzo de compresión</p><div class="formula-box mt-1 dark:bg-gray-700">σ = 100 000 / 0.093² ≈ <span class="formula-var">11.5 MPa &lt; 12 MPa ✓</span></div></div></div>
+        </div>
+        <div class="bg-yellow-50 border border-yellow-300 rounded-lg p-3 mt-4 text-sm text-yellow-800 dark:bg-yellow-900/30 dark:border-yellow-800 dark:text-yellow-400"><strong>Caso b (200 kN):</strong> Por pandeo daría a ≈ 110 mm, pero σ ≈ 16.5 MPa supera el límite. Se diseña por compresión simple: a = √(200 000 / 12 000 000) ≈ <strong>129 mm</strong>.</div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-6 card-lift dark:bg-gray-800">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="bg-blue-900 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm dark:bg-blue-700">2</span>
+          <h3 class="font-semibold text-blue-800 text-lg dark:text-blue-400">Relación de esbeltez — columna rectangular</h3>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-4 mb-4 text-sm dark:bg-gray-700"><p class="text-gray-700 dark:text-gray-300">Columna rectangular (b × h) articulada en extremos. A media altura hay una restricción lateral que limita el pandeo a L/2 en un plano. Determinar h/b para que P<sub>cr</sub> sea igual en ambos planos.</p></div>
+        <div class="space-y-3 text-sm">
+          <div class="flex gap-3 items-start"><span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 dark:bg-blue-900/50 dark:text-blue-400">1</span><div><p class="font-semibold text-gray-700 dark:text-gray-300">Pandeo en plano restringido (L/2)</p><div class="formula-box mt-1 dark:bg-gray-700">P<sub>cr1</sub> = π²·E·I<sub>x</sub> / (L/2)² &nbsp;·&nbsp; I<sub>x</sub> = hb³/12</div></div></div>
+          <div class="flex gap-3 items-start"><span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 dark:bg-blue-900/50 dark:text-blue-400">2</span><div><p class="font-semibold text-gray-700 dark:text-gray-300">Pandeo en plano libre (L)</p><div class="formula-box mt-1 dark:bg-gray-700">P<sub>cr2</sub> = π²·E·I<sub>y</sub> / L² &nbsp;·&nbsp; I<sub>y</sub> = bh³/12</div></div></div>
+          <div class="flex gap-3 items-start"><span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 dark:bg-blue-900/50 dark:text-blue-400">3</span><div><p class="font-semibold text-gray-700 dark:text-gray-300">Igualar P<sub>cr1</sub> = P<sub>cr2</sub></p><div class="formula-box mt-1 dark:bg-gray-700">4 · hb³ = bh³ → 4b² = h² → <span class="formula-var">h/b = 2</span></div></div></div>
+        </div>
+        <div class="bg-green-50 border border-green-300 rounded-lg p-3 mt-4 text-sm text-green-800 dark:bg-green-900/30 dark:border-green-800 dark:text-green-400"><strong>Resultado:</strong> La altura debe ser el <strong>doble</strong> de la base para que no exista un eje más débil.</div>
+      </div>
+    </section>
+
+    <section id="conclusiones">
+      <h2 class="text-2xl font-bold text-blue-900 mb-6 border-b-2 border-blue-200 pb-2 dark:text-blue-400 dark:border-blue-800">7. Conclusiones</h2>
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="bg-white rounded-xl shadow p-5 card-lift border-l-4 border-blue-600 dark:bg-gray-800"><p class="text-gray-700 text-sm leading-relaxed dark:text-gray-300">La capacidad de carga de una columna <strong>no depende únicamente de su material</strong>, sino de manera fundamental de sus <em>condiciones de apoyo</em>. Las restricciones en los extremos alteran la forma de deformarse, cuantificada por la longitud efectiva (L<sub>e</sub> = K·L).</p></div>
+        <div class="bg-white rounded-xl shadow p-5 card-lift border-l-4 border-green-600 dark:bg-gray-800"><p class="text-gray-700 text-sm leading-relaxed dark:text-gray-300">La carga crítica es <strong>proporcional a E e I</strong>; la columna siempre pandea en el plano de menor rigidez (I<sub>mín</sub>). Es <strong>inversamente proporcional a L²</strong>: a mayor longitud, mayor riesgo de falla.</p></div>
+        <div class="bg-blue-900 rounded-xl shadow p-5 card-lift md:col-span-2 text-white dark:bg-blue-800"><p class="text-sm leading-relaxed">Para garantizar la estabilidad estructural, el diseño debe <strong>optimizar la rigidez de los apoyos</strong> y considerar imperfecciones del montaje, ya que pequeños cambios en las restricciones pueden triplicar o reducir a una fracción la carga que la columna es capaz de soportar.</p></div>
+      </div>
+    </section>
+
+    <section id="quiz">
+      <h2 class="text-2xl font-bold text-blue-900 mb-2 border-b-2 border-blue-200 pb-2 dark:text-blue-400 dark:border-blue-800">8. Quiz de Comprensión</h2>
+      <p class="text-gray-600 text-sm mb-6 dark:text-gray-400">Comprueba tu comprensión. Selecciona una respuesta y revela la explicación.</p>
+      <div class="bg-gray-200 rounded-full h-3 mb-2 dark:bg-gray-700"><div id="quiz-progress-bar" class="bg-blue-600 h-3 rounded-full" style="width:0%"></div></div>
+      <p class="text-xs text-gray-500 mb-6 dark:text-gray-400" id="quiz-status">0 de 10 respondidas</p>
+      <div id="quiz-container" class="space-y-6"></div>
+      <div id="quiz-result" class="hidden mt-8 bg-blue-900 text-white rounded-xl p-6 text-center dark:bg-blue-800">
+        <p class="text-2xl font-bold mb-2">Resultado Final</p>
+        <p id="quiz-score-text" class="text-4xl font-extrabold my-3"></p>
+        <p id="quiz-feedback" class="text-blue-200 text-sm"></p>
+        <button onclick="resetQuiz()" class="mt-4 bg-white text-blue-900 font-semibold px-6 py-2 rounded-full hover:bg-blue-100 transition">Reintentar</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="flex flex-col items-center space-y-4">
+            <div class="flex space-x-2">
+                <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-100"></div>
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse delay-200"></div>
+            </div>
+            
+            <div class="text-center space-y-1">
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Evelin Johana Pérez García</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">202231716</span>
+                </div>
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Emiria Analy Armas Rodríguez</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">202131095</span>
+                </div>
+            </div>
+            
+            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+            
+            <div class="flex space-x-3 pt-2">
+                <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                    </svg>
+                </a>
+                <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+  <script src="../js/darkmode.js"></script>
+  <script src="../js/progreso.js"></script>
+  
+  <script>
+    const scene = document.getElementById('particles');
+    for (let i = 0; i < 22; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left   = Math.random() * 100 + '%';
+      p.style.top    = (60 + Math.random() * 40) + '%';
+      p.style.animationDuration = (3 + Math.random() * 5) + 's';
+      p.style.animationDelay   = (Math.random() * 5) + 's';
+      const sz = (2 + Math.random() * 3) + 'px';
+      p.style.width = sz; p.style.height = sz;
+      scene.appendChild(p);
+    }
+
+    const quizData = [
+      { q:"¿Cuál es la principal diferencia entre una columna y una viga?",
+        options:["Las columnas resisten cargas perpendiculares al eje; las vigas, cargas axiales.","Las columnas resisten cargas axiales de compresión; las vigas, cargas perpendiculares.","No existe diferencia estructural relevante entre ambas.","Las columnas solo se usan en estructuras metálicas."],
+        correct:1, explanation:"Las columnas soportan cargas a lo largo de su eje (axiales), lo que las hace susceptibles al pandeo. Las vigas resisten cargas perpendiculares generando deflexión." },
+      { q:"¿Qué es el fenómeno del pandeo?",
+        options:["La deformación por temperatura en elementos metálicos.","La rotura frágil del material al superar la carga de fluencia.","Una inestabilidad elástica que provoca curvatura lateral antes de alcanzar la fluencia.","El aumento de la sección transversal bajo compresión."],
+        correct:2, explanation:"El pandeo es una inestabilidad elástica: la columna se curva lateralmente antes de que el material llegue a su carga de fluencia." },
+      { q:"¿Qué representa la Carga Crítica (P_cr)?",
+        options:["La carga que rompe el material por tracción.","La carga máxima que la columna soporta permaneciendo recta y estable.","La carga mínima necesaria para mantener la columna en pie.","El peso propio de la columna."],
+        correct:1, explanation:"P_cr es el valor máximo de fuerza axial que una columna puede soportar sin volverse inestable." },
+      { q:"Si se duplica la longitud L de una columna, ¿qué ocurre con P_cr?",
+        options:["P_cr se duplica.","P_cr se reduce a la mitad.","P_cr se reduce a una cuarta parte.","P_cr no varía con la longitud."],
+        correct:2, explanation:"P_cr es inversamente proporcional a L². Si L se duplica, P_cr disminuye a 1/4." },
+      { q:"¿Qué condición de apoyo produce la MENOR carga crítica?",
+        options:["Empotrada–Empotrada (K = 0.5)","Articulada–Articulada (K = 1.0)","Empotrada–Articulada (K ≈ 0.7)","Empotrada–Libre (K = 2.0)"],
+        correct:3, explanation:"Con K = 2.0 (empotrada–libre), la longitud efectiva es el doble, reduciendo P_cr a 1/4." },
+      { q:"¿Qué condición de apoyo produce la MAYOR carga crítica?",
+        options:["Empotrada–Empotrada (K = 0.5)","Articulada–Articulada (K = 1.0)","Empotrada–Articulada (K ≈ 0.7)","Empotrada–Libre (K = 2.0)"],
+        correct:0, explanation:"Con K = 0.5, la longitud efectiva es L/2, incrementando P_cr en 4 veces." },
+      { q:"¿Qué es la Longitud Efectiva (Le)?",
+        options:["La longitud total de la columna más sus apoyos.","La distancia entre los puntos de inflexión de la curva de pandeo.","La longitud mínima para que ocurra el pandeo.","El radio de giro de la sección transversal."],
+        correct:1, explanation:"La longitud efectiva es la distancia entre dos puntos de inflexión de la curva de pandeo (Le = K·L)." },
+      { q:"¿Cómo afectan las fisuras a la carga crítica de una columna?",
+        options:["No afectan si el material es homogéneo.","Aumentan la rigidez local y elevan P_cr.","Reducen la rigidez local y disminuyen P_cr.","Solo afectan en columnas de concreto, no en acero."],
+        correct:2, explanation:"Las fisuras reducen la rigidez local y disminuyen la carga crítica." },
+      { q:"¿Cuál es la diferencia principal entre el Método Diferencial y el Método Energético?",
+        options:["El Energético es exacto; el Diferencial es aproximado.","El Diferencial da soluciones exactas; el Energético es aproximado pero útil en geometrías complejas.","Son exactamente iguales en resultados.","El Diferencial no puede usarse en columnas."],
+        correct:1, explanation:"El planteamiento diferencial da soluciones exactas, mientras que el método energético es aproximado pero eficaz para geometrías complejas." },
+      { q:"¿Qué relación h/b debe tener una columna rectangular para que P_cr sea igual en ambos planos, dado que en uno el pandeo ocurre en L/2?",
+        options:["h/b = 1 (sección cuadrada)","h/b = √2","h/b = 2","h/b = 4"],
+        correct:2, explanation:"Al igualar las cargas críticas: 4b² = h², por lo tanto h/b = 2." }
+    ];
+
+    let answered = new Array(quizData.length).fill(false);
+    let correctCount = 0;
+
+    function buildQuiz() {
+      const c = document.getElementById('quiz-container');
+      c.innerHTML = '';
+      answered = new Array(quizData.length).fill(false);
+      correctCount = 0;
+      updateProgress();
+      quizData.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-xl shadow p-6 dark:bg-gray-800';
+        const opts = item.options.map((o, oi) =>
+          `<button onclick="selectAnswer(${idx},${oi})" id="opt-${idx}-${oi}"
+            class="w-full text-left px-4 py-3 rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-blue-50 hover:border-blue-400 transition mb-2 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-blue-900/30">
+            <span class="font-semibold text-blue-800 mr-2 dark:text-blue-400">${String.fromCharCode(65+oi)}.</span>${o}
+           </button>`).join('');
+        card.innerHTML = `<p class="text-xs text-gray-400 font-semibold uppercase tracking-widest mb-2">Pregunta ${idx+1} de ${quizData.length}</p>
+          <p class="font-semibold text-gray-800 mb-4 text-base dark:text-gray-200">${item.q}</p>
+          <div id="opts-${idx}">${opts}</div>
+          <div id="answer-${idx}" class="answer-panel"><div class="mt-3 p-4 rounded-lg text-sm" id="answer-inner-${idx}"></div></div>`;
+        c.appendChild(card);
+      });
+    }
+
+    function selectAnswer(qIdx, optIdx) {
+      if (answered[qIdx]) return;
+      answered[qIdx] = true;
+      const item = quizData[qIdx];
+      const ok = optIdx === item.correct;
+      if (ok) correctCount++;
+      for (let i = 0; i < item.options.length; i++) {
+        const btn = document.getElementById(`opt-${qIdx}-${i}`);
+        btn.disabled = true;
+        if (i === item.correct) btn.classList.add('bg-green-100','border-green-500','text-green-800','dark:bg-green-900/50','dark:text-green-400');
+        else if (i === optIdx && !ok) btn.classList.add('bg-red-100','border-red-500','text-red-700','dark:bg-red-900/50','dark:text-red-400');
+        else btn.classList.add('opacity-50');
+      }
+      const inner = document.getElementById(`answer-inner-${qIdx}`);
+      inner.className = `mt-3 p-4 rounded-lg text-sm ${ok ? 'bg-green-50 text-green-800 border border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800' : 'bg-red-50 text-red-800 border border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800'}`;
+      inner.innerHTML = `<span class="font-bold">${ok ? '✓ ¡Correcto!' : '✗ Incorrecto.'}</span><p class="mt-1">${item.explanation}</p>`;
+      document.getElementById(`answer-${qIdx}`).classList.add('open');
+      updateProgress();
+      if (answered.every(Boolean)) setTimeout(showResult, 600);
+    }
+
+    function updateProgress() {
+      const done = answered.filter(Boolean).length;
+      document.getElementById('quiz-progress-bar').style.width = Math.round(done/quizData.length*100)+'%';
+      document.getElementById('quiz-status').textContent = `${done} de ${quizData.length} respondidas`;
+    }
+
+    function showResult() {
+      const r = document.getElementById('quiz-result');
+      r.classList.remove('hidden');
+      document.getElementById('quiz-score-text').textContent = `${correctCount} / ${quizData.length}`;
+      const pct = Math.round(correctCount/quizData.length*100);
+      document.getElementById('quiz-feedback').textContent =
+        pct===100 ? '¡Perfecto! Dominas completamente el tema.' :
+        pct>=70   ? 'Buen resultado. Repasa los conceptos donde fallaste.' :
+        pct>=50   ? 'En proceso. Revisa la sección de fundamentos y condiciones de apoyo.' :
+                    'Sigue estudiando. Lee con calma la introducción y el desarrollo del tema.';
+      r.scrollIntoView({behavior:'smooth',block:'center'});
+    }
+
+    function resetQuiz() {
+      document.getElementById('quiz-result').classList.add('hidden');
+      buildQuiz();
+      document.getElementById('quiz').scrollIntoView({behavior:'smooth'});
+    }
+
+    buildQuiz();
+    
+    // Actualizar botón de completado
+    if (typeof actualizarBotonEnPagina === 'function') {
+        actualizarBotonEnPagina('5.2_carga_critica');
+    }
+  </script>
+</body>
+</html>

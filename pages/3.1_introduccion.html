@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Deflexión en Vigas – Introducción</title>
   
-  <!-- Script para modo oscuro (evita flash) - INMEDIATO -->
   <script>
   (function() {
     const modoGuardado = localStorage.getItem("modo");
@@ -42,7 +41,6 @@
       transform: translateY(0);
     }
 
-    /* Beam animation */
     .beam-container {
       position: relative;
       width: 100%;
@@ -87,7 +85,6 @@
     .quiz-option.correct { background-color: #14532d !important; border-color: #22c55e !important; color: white !important; }
     .quiz-option.wrong   { background-color: #7f1d1d !important; border-color: #ef4444 !important; color: white !important; }
 
-    /* Method cards hover */
     .method-card {
       transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
@@ -99,7 +96,6 @@
       background-color: #1f2937 !important;
     }
 
-    /* Formula highlight */
     .formula-box {
       background: linear-gradient(135deg, #0f2044 0%, #1a3a6b 100%);
       border-left: 4px solid #3b82f6;
@@ -108,7 +104,6 @@
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
     }
 
-    /* Modal */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -126,12 +121,10 @@
       color: #f3f4f6;
     }
 
-    /* Progress bar */
     #progressBar {
       transition: width 0.3s ease;
     }
 
-    /* Dark mode adjustments */
     .dark .bg-gray-100 {
       background-color: #111827 !important;
     }
@@ -190,7 +183,6 @@
 </head>
 <body class="font-sans bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100">
 
-  <!-- HEADER con botón de modo oscuro -->
   <header class="bg-blue-900 text-white shadow-lg sticky top-0 z-40">
     <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
       <div>
@@ -205,13 +197,11 @@
           <a href="#ejercicio" class="hover:text-white transition">Ejercicio</a>
         </nav>
 
-    <!-- Scroll progress -->
     <div class="w-full h-1 bg-blue-800 overflow-hidden">
       <div id="progressBar" class="w-full bg-blue-400 rounded-full" style="height:100%"></div>
     </div>
   </header>
 
-  <!-- HERO -->
   <section class="bg-blue-900 text-white pt-16 pb-20 px-4">
     <div class="max-w-4xl mx-auto text-center">
       <h2 class="text-3xl md:text-5xl font-bold mb-4 leading-tight">Introducción a la<br>Deflexión en Vigas</h2>
@@ -226,7 +216,6 @@
         📚 Marcar como completado
       </button>
 
-      <!-- Animated beam -->
       <div class="beam-container mx-auto my-6">
         <svg class="beam-svg" viewBox="0 0 500 120" fill="none" xmlns="http://www.w3.org/2000/svg">
           <polygon points="20,80 35,100 5,100" fill="#3b82f6"/>
@@ -775,7 +764,7 @@
     });
 
     if (typeof actualizarBotonEnPagina === 'function') {
-      actualizarBotonEnPagina('deflexion_vigas');
+      actualizarBotonEnPagina('3.1_introduccion');
     }
   </script>
 </body>

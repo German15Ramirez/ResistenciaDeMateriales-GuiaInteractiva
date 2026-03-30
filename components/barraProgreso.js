@@ -1,6 +1,3 @@
-// components/barraProgreso.js
-// Componente de barra de progreso con diseño mejorado
-
 function renderBarraProgreso() {
     return `
         <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800 rounded-2xl shadow-lg p-6 mb-8 border border-blue-100 dark:border-gray-700">

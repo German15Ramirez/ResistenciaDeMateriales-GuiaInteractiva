@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Vigas Indeterminadas</title>
+    
+    <script>
+    (function() {
+        const modoGuardado = localStorage.getItem("modo");
+        if (modoGuardado === "oscuro") {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+            if (!modoGuardado) {
+                localStorage.setItem("modo", "claro");
+            }
+        }
+    })();
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        darkMode: 'class'
+    }
+    </script>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
+        
+        .dark .bg-gray-100 { background-color: #111827 !important; }
+        .dark .bg-white { background-color: #1f2937 !important; }
+        .dark .text-gray-800 { color: #f3f4f6 !important; }
+        .dark .text-gray-700 { color: #d1d5db !important; }
+        .dark .text-gray-600 { color: #9ca3af !important; }
+        .dark .border-gray-200 { border-color: #374151 !important; }
+        .dark .bg-gray-50 { background-color: #1f2937 !important; }
+        .dark .bg-blue-50 { background-color: #1e293b !important; }
+        .dark .text-blue-900 { color: #60a5fa !important; }
+        .dark .text-blue-800 { color: #93c5fd !important; }
+        .dark .border-blue-900 { border-color: #3b82f6 !important; }
+        .dark .bg-blue-100 { background-color: #1e3a8a !important; }
+        .dark .bg-blue-800 { background-color: #1e3a8a !important; }
+        .dark .bg-blue-900 { background-color: #0f172a !important; }
+        .dark .bg-gray-800 { background-color: #1f2937 !important; }
+        .dark .bg-gray-900 { background-color: #030712 !important; }
+        .dark .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
+        .dark .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 antialiased flex flex-col min-h-screen dark:bg-gray-900 dark:text-gray-100">
+
+    <header class="bg-blue-900 shadow-md sticky top-0 z-50 dark:bg-blue-800">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-white text-2xl font-bold tracking-wider cursor-pointer" onclick="showSection('home')">Vigas Indeterminadas</h1>
+            <div class="flex items-center space-x-4">
+                <nav class="hidden md:flex space-x-6">
+                    <button onclick="showSection('home')" class="text-white hover:text-blue-200 transition">Inicio</button>
+                    <button onclick="showSection('superposicion')" class="text-white hover:text-blue-200 transition">Superposición</button>
+                    <button onclick="showSection('area-momento')" class="text-white hover:text-blue-200 transition">Área de Momento</button>
+                    <button onclick="showSection('tres-momentos')" class="text-white hover:text-blue-200 transition">Tres Momentos</button>
+                </nav>
+                <button class="md:hidden text-white focus:outline-none" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-blue-800 dark:bg-blue-700">
+            <button onclick="showSection('home')" class="block w-full text-left px-6 py-2 text-white hover:bg-blue-700">Inicio</button>
+            <button onclick="showSection('superposicion')" class="block w-full text-left px-6 py-2 text-white hover:bg-blue-700">Superposición</button>
+            <button onclick="showSection('area-momento')" class="block w-full text-left px-6 py-2 text-white hover:bg-blue-700">Área de Momento</button>
+            <button onclick="showSection('tres-momentos')" class="block w-full text-left px-6 py-2 text-white hover:bg-blue-700">Tres Momentos</button>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        
+        <section id="home" class="spa-section fade-in block">
+            <div class="bg-blue-900 text-white rounded-xl shadow-lg p-8 md:p-12 mb-10 text-center dark:bg-blue-800">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4">Ejercicios Resueltos de Métodos de Análisis para Vigas Indeterminadas</h2>
+                <p class="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto">Comprende la teoría estructural y domina la resolución de problemas hiperestáticos mediante metodologías prácticas y detalladas paso a paso.</p>
+                <!-- Botón de completado -->
+                <div class="mt-6">
+                    <button 
+                        id="btnCompletado"
+                        onclick="toggleCompletado('4.5_solucion_problemas')"
+                        class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition flex items-center gap-2 shadow-md mx-auto"
+                    >
+                        📚 Marcar como completado
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-8 mb-10 border-l-4 border-blue-900 dark:bg-gray-800 dark:border-blue-500">
+                <h3 class="text-2xl font-bold text-blue-900 mb-4 dark:text-blue-400">¿Qué es una viga indeterminada?</h3>
+                <p class="mb-4 text-gray-700 text-lg leading-relaxed dark:text-gray-300">
+                    Imagina que estás cargando una caja muy pesada junto con un amigo. Tú sostienes un extremo y tu amigo el otro (esos son los "apoyos"). Como solo hay dos puntos de apoyo y el peso empuja hacia abajo, usando física básica (la estática) podemos calcular exactamente cuánto peso está soportando cada uno. A este escenario simple se le conoce como un sistema o <strong>viga estáticamente determinada</strong>.
+                </p>
+                <p class="text-gray-700 text-lg leading-relaxed dark:text-gray-300">
+                    Ahora, imagina que la caja es tan larga y pesada que se empieza a doblar en el centro. Llega un tercer amigo y pone su mano justo debajo de la caja, en el medio, para ayudar a sostenerla. ¡Ahora tenemos tres puntos de apoyo! La física básica ya no nos basta para saber exactamente cuánto peso levanta cada persona, porque hay un apoyo "extra" que sobra para el equilibrio fundamental. Ese apoyo adicional hace que el sistema sea <strong>estáticamente indeterminado</strong> o <strong>hiperestático</strong>. Para descubrir cuánto peso carga cada amigo, ya no solo miramos las fuerzas, sino que tenemos que analizar cuánto se dobla o deforma la caja elástica.
+                </p>
+            </div>
+
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center dark:text-gray-200">Metodologías de Análisis</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col hover:shadow-xl transition duration-300 dark:bg-gray-800">
+                    <div class="bg-blue-900 text-white p-4 dark:bg-blue-700">
+                        <h4 class="text-xl font-bold text-center">Método de la Superposición</h4>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col justify-between">
+                        <p class="text-gray-600 mb-6 dark:text-gray-400">Descompone una viga hiperestática en sistemas isostáticos más simples, separando las cargas y sumando sus efectos individuales.</p>
+                        <button onclick="showSection('superposicion')" class="w-full bg-blue-900 text-white font-semibold py-2 rounded hover:bg-blue-700 transition dark:bg-blue-700">Ver Subtema</button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col hover:shadow-xl transition duration-300 dark:bg-gray-800">
+                    <div class="bg-blue-900 text-white p-4 dark:bg-blue-700">
+                        <h4 class="text-xl font-bold text-center">Área del Diagrama de Momento</h4>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col justify-between">
+                        <p class="text-gray-600 mb-6 dark:text-gray-400">Procedimiento semigráfico basado en los Teoremas de Mohr. Calcula pendientes y deflexiones mediante el análisis de las áreas del diagrama de momentos.</p>
+                        <button onclick="showSection('area-momento')" class="w-full bg-blue-900 text-white font-semibold py-2 rounded hover:bg-blue-700 transition dark:bg-blue-700">Ver Subtema</button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col hover:shadow-xl transition duration-300 dark:bg-gray-800">
+                    <div class="bg-blue-900 text-white p-4 dark:bg-blue-700">
+                        <h4 class="text-xl font-bold text-center">Ecuación de los Tres Momentos</h4>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col justify-between">
+                        <p class="text-gray-600 mb-6 dark:text-gray-400">Método de Clapeyron ideal para vigas continuas con múltiples apoyos. Relaciona los momentos flectores en tres apoyos consecutivos de forma sistemática.</p>
+                        <button onclick="showSection('tres-momentos')" class="w-full bg-blue-900 text-white font-semibold py-2 rounded hover:bg-blue-700 transition dark:bg-blue-700">Ver Subtema</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="superposicion" class="spa-section fade-in hidden">
+            <div class="bg-white rounded-xl shadow-md p-8 md:p-12 mb-8 dark:bg-gray-800">
+                <h2 class="text-3xl font-bold text-blue-900 mb-6 border-b-2 border-gray-200 pb-4 dark:text-blue-400 dark:border-gray-700">Método de la Superposición</h2>
+                
+                <div class="mb-8 text-gray-700 space-y-4 dark:text-gray-300">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200">Introducción y Teoría Completa</h3>
+                    <p>Una viga se denomina estáticamente indeterminada cuando está sujeta a cargas laterales (perpendiculares a su eje longitudinal) y el número de reacciones en sus apoyos supera al número de ecuaciones de equilibrio estático disponibles \( (\sum F_x=0, \sum F_y=0, \sum M=0) \). En estos sistemas, las condiciones de estabilidad de la estructura provocan que la estática por sí sola no sea suficiente para determinar las fuerzas y momentos internos.</p>
+                    <p>La indeterminación se mide mediante el grado de indeterminación (GI), que representa el número de acciones "redundantes" o exceso de reacciones que no pueden calcularse mediante el equilibrio. Matemáticamente se expresa como \( GI = NI - EE \), donde NI es el Número de incógnitas y EE representa las Ecuaciones de equilibrio estático disponibles.</p>
+                    <p>Debido a que la estática es insuficiente, la solución requiere analizar su comportamiento elástico y sus deformaciones. Para resolver este tipo de estructuras, es necesario introducir ecuaciones adicionales basadas en el análisis de las deformaciones (pendientes y deflexiones) y en sus condiciones de contorno, satisfaciendo tres relaciones clave: Ecuaciones de equilibrio, Ecuaciones de compatibilidad, y Relaciones fuerza-desplazamiento.</p>
+                    <p>El Método de Superposición es un método práctico que se basa en el principio de superposición, el cual establece que los efectos que un sistema de cargas produce sobre una estructura son iguales a la suma de los efectos que cada carga originaría por separado. Sus condiciones de validez incluyen que el material cumpla con la ley de Hooke y que las deflexiones sean pequeñas.</p>
+                    <p>Los pasos fundamentales para su aplicación son:</p>
+                    <ol class="list-decimal list-inside pl-4 space-y-2">
+                        <li>Identificar y seleccionar las reacciones sobrantes (redundantes) según el grado de indeterminación.</li>
+                        <li>Eliminar o modificar los apoyos correspondientes a esas redundantes para convertir la viga en una estructura estáticamente determinada y estable.</li>
+                        <li>Calcular por separado las deformaciones (pendientes o deflexiones) en los puntos de los apoyos modificados, tanto para las cargas externas originales como para las reacciones redundantes tratadas como incógnitas.</li>
+                        <li>Plantear ecuaciones de compatibilidad de deformación que igualen la suma de estos efectos a los valores reales de los apoyos originales (generalmente cero) y despejar las redundantes.</li>
+                    </ol>
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 dark:text-gray-200">Conclusiones</h3>
+                    <p>El Método de Superposición destaca por su capacidad de descomponer una carga compleja en casos más simples de estudiar, siempre que el material cumpla con la Ley de Hooke y los desplazamientos sean pequeños. Su efectividad radica en convertir la viga hiperestática en una estructura determinada (viga primaria) eliminando las redundantes para luego sumar sus efectos individuales.</p>
+                </div>
+
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8 dark:bg-gray-700 dark:border-gray-600">
+                    <h3 class="text-2xl font-bold text-blue-900 mb-4 dark:text-blue-400">Ejercicio Práctico</h3>
+                    
+                    <h4 class="font-bold text-gray-800 mt-4 dark:text-gray-200">1. Problema a resolver</h4>
+                    <p class="mb-4 dark:text-gray-300">El documento muestra un diagrama donde una viga hiperestática (empotrada en A y con un apoyo simple en B, bajo una carga uniforme \(w\)) se descompone en dos sistemas isostáticos:</p>
+                    <ul class="list-disc list-inside mb-4 pl-4 dark:text-gray-300">
+                        <li>Una viga en voladizo con la carga uniforme \(w\) que genera una deflexión hacia abajo \( (y_B)_w \).</li>
+                        <li>La misma viga en voladizo pero sin carga uniforme, afectada únicamente por una fuerza puntual hacia arriba \(R_B\) (la redundante) que genera una deflexión \( (y_B)_R \).</li>
+                    </ul>
+
+                    <h4 class="font-bold text-gray-800 mt-4 dark:text-gray-200">2. Fórmulas necesarias</h4>
+                    <p class="mb-2 dark:text-gray-300">Deflexión en el extremo libre B (Estado 1 con carga uniforme):</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ (y_B)_w = -\frac{wL^4}{8EI} \]</p>
+                    <p class="mb-2 dark:text-gray-300">Deflexión en B por fuerza concentrada (Estado 2 con redundante):</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ (y_B)_R = \frac{R_B L^3}{3EI} \]</p>
+                    <p class="mb-2 dark:text-gray-300">Condición de compatibilidad:</p>
+                    <p class="text-center mb-4 dark:text-gray-300">\[ y_B = (y_B)_w + (y_B)_R = 0 \]</p>
+
+                    <h4 class="font-bold text-gray-800 mt-4 dark:text-gray-200">3. Procedimiento detallado paso a paso</h4>
+                    <p class="font-semibold mt-2 dark:text-gray-200">1.1 Selección de la Redundante y Estructura Primaria</p>
+                    <p class="mb-2 dark:text-gray-300">Se considera una viga prismática de longitud \(L\) con rigidez constante \(EI\) y carga \(w\). Al tener 4 reacciones y solo 3 ecuaciones, el grado de indeterminación es uno. Se libera el apoyo en B, tratando a \(R_B\) como la carga redundante.</p>
+                    
+                    <p class="font-semibold mt-2 dark:text-gray-200">1.2 Análisis por Estados Separados</p>
+                    <p class="mb-1 dark:text-gray-300"><strong>Estado 1 (Carga uniforme w):</strong> Deflexión en el extremo libre B:</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ (y_B)_w = -\frac{wL^4}{8EI} \]</p>
+                    <p class="mb-1 dark:text-gray-300"><strong>Estado 2 (Reacción redundante \(R_B\)):</strong> Deflexión en B por la fuerza concentrada vertical:</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ (y_B)_R = \frac{R_B L^3}{3EI} \]</p>
+                    
+                    <p class="font-semibold mt-2 dark:text-gray-200">1.3 Condición de Compatibilidad</p>
+                    <p class="mb-2 dark:text-gray-300">Debido al apoyo físico en B, el desplazamiento total debe ser nulo:</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ y_B = (y_B)_w + (y_B)_R = 0 \]</p>
+                    
+                    <p class="font-semibold mt-2 dark:text-gray-200">1.4 Resolución Final de Reacciones</p>
+                    <p class="mb-2 dark:text-gray-300">Sustituyendo las expresiones:</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ -\frac{wL^4}{8EI} + \frac{R_B L^3}{3EI} = 0 \]</p>
+                    <p class="mb-2 dark:text-gray-300">Despejando el valor de la reacción redundante:</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ R_B = \frac{3wL}{8} \]</p>
+                    <p class="mb-2 dark:text-gray-300">Mediante equilibrio estático, se hallan las reacciones en el empotramiento A:</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ \sum F_y = 0 \implies R_A = wL - \frac{3wL}{8} = \frac{5wL}{8} \]</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ \sum M_A = 0 \implies M_A = \frac{wL^2}{2} - R_B L = \frac{wL^2}{2} - \frac{3wL^2}{8} = \frac{wL^2}{8} \]</p>
+
+                    <h4 class="font-bold text-gray-800 mt-4 dark:text-gray-200">4. Resultados finales destacados</h4>
+                    <div class="bg-blue-100 p-4 rounded text-center font-bold text-blue-900 mt-2 dark:bg-blue-900/30 dark:text-blue-400">
+                        <p>\[ R_B = \frac{3wL}{8} \]</p>
+                        <p>\[ R_A = \frac{5wL}{8} \]</p>
+                        <p>\[ M_A = \frac{wL^2}{8} \]</p>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 rounded-lg p-6 dark:bg-blue-900/30">
+                    <h3 class="text-xl font-bold text-blue-900 mb-4 dark:text-blue-400">Prueba de Conocimiento</h3>
+                    <form id="quiz-superposicion" class="space-y-4">
+                        <div>
+                            <p class="font-semibold dark:text-gray-200">1. ¿En qué se basa el método de superposición?</p>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q1_sup" value="a" class="mr-2"> a) Separar cargas y sumar efectos individuales</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q1_sup" value="b" class="mr-2"> b) Restar momentos flectores</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q1_sup" value="c" class="mr-2"> c) Multiplicar la rigidez de la viga</label>
+                        </div>
+                        <div>
+                            <p class="font-semibold dark:text-gray-200">2. ¿Qué representa una reacción redundante?</p>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q2_sup" value="a" class="mr-2"> a) Una reacción necesaria para el equilibrio básico</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q2_sup" value="b" class="mr-2"> b) Un exceso de reacciones o reacción sobrante</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q2_sup" value="c" class="mr-2"> c) Una carga externa aplicada directamente</label>
+                        </div>
+                        <div>
+                            <p class="font-semibold dark:text-gray-200">3. ¿Cuál es una condición de validez para este método?</p>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q3_sup" value="a" class="mr-2"> a) Que las deflexiones sean extremadamente grandes</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q3_sup" value="b" class="mr-2"> b) Que el material sea netamente plástico</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q3_sup" value="c" class="mr-2"> c) Que el material cumpla con la Ley de Hooke</label>
+                        </div>
+                        <div>
+                            <p class="font-semibold dark:text-gray-200">4. ¿Qué ecuación se plantea al final del análisis?</p>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q4_sup" value="a" class="mr-2"> a) Ecuación de compatibilidad de deformación</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q4_sup" value="b" class="mr-2"> b) Ecuación diferencial general</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q4_sup" value="c" class="mr-2"> c) Matriz de rigidez estructural</label>
+                        </div>
+                        <div>
+                            <p class="font-semibold dark:text-gray-200">5. Tras modificar los apoyos (quitar redundantes), ¿cuál es el siguiente paso?</p>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q5_sup" value="a" class="mr-2"> a) Calcular las deformaciones por separado</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q5_sup" value="b" class="mr-2"> b) Calcular el área del diagrama M/EI</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q5_sup" value="c" class="mr-2"> c) Multiplicar los momentos por las distancias</label>
+                        </div>
+                        <button type="button" onclick="checkQuiz('quiz-superposicion', ['a', 'b', 'c', 'a', 'a'])" class="bg-blue-900 text-white font-semibold py-2 px-6 rounded hover:bg-blue-700 transition mt-4 dark:bg-blue-700">Confirmar Respuestas</button>
+                    </form>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <button onclick="showSection('home')" class="bg-gray-800 text-white font-semibold py-2 px-6 rounded hover:bg-gray-700 transition dark:bg-gray-700">Volver al inicio</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="area-momento" class="spa-section fade-in hidden">
+            <div class="bg-white rounded-xl shadow-md p-8 md:p-12 mb-8 dark:bg-gray-800">
+                <h2 class="text-3xl font-bold text-blue-900 mb-6 border-b-2 border-gray-200 pb-4 dark:text-blue-400 dark:border-gray-700">Método del Área del Diagrama de Momento</h2>
+                
+                <div class="mb-8 text-gray-700 space-y-4 dark:text-gray-300">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200">Introducción y Teoría Completa</h3>
+                    <p>Es un procedimiento semigráfico utilizado para encontrar la pendiente y el desplazamiento en puntos específicos de la curva elástica de una viga. Este método se basa en los Teoremas de Mohr y requiere el cálculo de áreas asociadas al diagrama de momento flector dividido por la rigidez a la flexión \( (M/EI) \).</p>
+                    <ul class="list-disc list-inside pl-4 space-y-2">
+                        <li><strong>Primer Teorema:</strong> El cambio de pendiente entre las tangentes de dos puntos cualesquiera es igual al área del diagrama \(M/EI\) entre esos dos puntos.</li>
+                        <li><strong>Segundo Teorema:</strong> La desviación vertical de un punto respecto a la tangente trazada por otro punto es igual al momento del área del diagrama \(M/EI\) entre ambos, calculado respecto al punto donde se busca la desviación.</li>
+                    </ul>
+                    <p>Para resolver vigas indeterminadas con este método, se debe dibujar el diagrama de momentos representando las redundantes como incógnitas y aplicar los teoremas para satisfacer las condiciones de desplazamiento en los soportes.</p>
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 dark:text-gray-200">Conclusiones</h3>
+                    <p>Las guías concluyen que este procedimiento semigráfico es ideal cuando los diagramas de momento presentan formas geométricas sencillas, como ocurre con fuerzas y momentos concentrados. Al basarse en los Teoremas de Mohr, permite calcular con rapidez la pendiente y el desplazamiento en puntos específicos mediante el cálculo de áreas y centroides del diagrama \(M/EI\).</p>
+                </div>
+
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8 dark:bg-gray-700 dark:border-gray-600">
+                    <h3 class="text-2xl font-bold text-blue-900 mb-4 dark:text-blue-400">Ejercicio Práctico</h3>
+                    
+                    <h4 class="font-bold text-gray-800 mt-4 dark:text-gray-200">1. Problema a resolver</h4>
+                    <p class="mb-4 dark:text-gray-300">Se presenta una viga de longitud \(L\) con tres apoyos simples (A, B y C). El apoyo B está ubicado a una distancia de \(2L/3\) desde A y \(L/3\) desde C. La viga soporta una carga uniforme \(w\) en toda su longitud. Los diagramas muestran la viga deformada y su relación con las tangentes de referencia, así como los diagramas de \(M/EI\) desglosados por áreas (\(A_1\) a \(A_5\)) para facilitar el cálculo de las desviaciones tangenciales.</p>
+
+                    <h4 class="font-bold text-gray-800 mt-4 dark:text-gray-200">2. Fórmulas necesarias</h4>
+                    <p class="mb-2 dark:text-gray-300">Semejanza de triángulos con la tangente en A:</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ t_{C/A} = \frac{3}{2} t_{B/A} \]</p>
+                    <p class="mb-2 dark:text-gray-300">Desviación tangencial en un punto \(X\) (Carga distribuida):</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ (t_{X/A})_w = A_1\left(\frac{x}{3}\right) + A_2\left(\frac{x}{4}\right) \]</p>
+
+                    <h4 class="font-bold text-gray-800 mt-4 dark:text-gray-200">3. Procedimiento detallado paso a paso</h4>
+                    <p class="font-semibold mt-2 dark:text-gray-200">2.1 Análisis del sistema</p>
+                    <p class="mb-2 dark:text-gray-300">La viga es indeterminada de primer grado. Se selecciona la tangente en A como referencia. Por semejanza de triángulos:</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ \frac{t_{C/A}}{L} = \frac{t_{B/A}}{\frac{2L}{3}} \implies t_{C/A} = \frac{3}{2} t_{B/A} \]</p>
+                    
+                    <p class="font-semibold mt-2 dark:text-gray-200">2.2 Diagramas (M/EI) y Análisis de Cargas</p>
+                    <p class="mb-1 dark:text-gray-300"><strong>Carga distribuida:</strong> El diagrama de momentos genera una curva parabólica. La desviación tangencial en un punto \(X\) es:</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ (t_{X/A})_w = \left(\frac{1}{2} \frac{wx^2}{2EI} x\right)\frac{x}{3} + \left(-\frac{1}{3} \frac{wx^2}{2EI} x\right)\frac{x}{4} = \frac{wx^3}{24EI}(2L - x) \]</p>
+                    <ul class="list-disc list-inside mb-2 pl-4 dark:text-gray-300">
+                        <li>Para \(x = L\): \[ (t_{C/A})_w = \frac{wL^4}{24EI} \]</li>
+                        <li>Para \(x = \frac{2L}{3}\): \[ (t_{B/A})_w = \frac{4wL^4}{243EI} \]</li>
+                    </ul>
+                    
+                    <p class="mb-1 dark:text-gray-300"><strong>Carga de reacción redundante:</strong> Genera diagramas triangulares cuyas desviaciones son:</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ (t_{C/A})_R = -\frac{14 R_B L^3}{81EI} \]</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ (t_{B/A})_R = -\frac{4 R_B L^3}{243EI} \]</p>
+                    
+                    <p class="font-semibold mt-2 dark:text-gray-200">2.4 Cálculo de la reacción \(R_B\)</p>
+                    <p class="mb-2 dark:text-gray-300">Sustituyendo los valores combinados en la ecuación de semejanza de triángulos y despejando obtenemos la reacción buscada.</p>
+
+                    <h4 class="font-bold text-gray-800 mt-4 dark:text-gray-200">4. Resultados finales destacados</h4>
+                    <div class="bg-blue-100 p-4 rounded text-center font-bold text-blue-900 mt-2 dark:bg-blue-900/30 dark:text-blue-400">
+                        <p>\[ R_B = 0.6875 wL \]</p>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 rounded-lg p-6 dark:bg-blue-900/30">
+                    <h3 class="text-xl font-bold text-blue-900 mb-4 dark:text-blue-400">Prueba de Conocimiento</h3>
+                    <form id="quiz-area" class="space-y-4">
+                        <div>
+                            <p class="font-semibold dark:text-gray-200">1. ¿En qué teoremas se basa este método?</p>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q1_area" value="a" class="mr-2"> a) Castigliano</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q1_area" value="b" class="mr-2"> b) Teoremas de Mohr</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q1_area" value="c" class="mr-2"> c) Ecuación de Clapeyron</label>
+                        </div>
+                        <div>
+                            <p class="font-semibold dark:text-gray-200">2. ¿Qué relaciona el primer teorema?</p>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q2_area" value="a" class="mr-2"> a) La deflexión máxima de la viga</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q2_area" value="b" class="mr-2"> b) El cambio de pendiente entre dos puntos</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q2_area" value="c" class="mr-2"> c) Los momentos de inercia de la sección</label>
+                        </div>
+                        <div>
+                            <p class="font-semibold dark:text-gray-200">3. ¿Qué representa el área utilizada en este método?</p>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q3_area" value="a" class="mr-2"> a) El área del diagrama M/EI</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q3_area" value="b" class="mr-2"> b) El área del diagrama de cortante V/EI</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q3_area" value="c" class="mr-2"> c) El área de la sección transversal de la viga</label>
+                        </div>
+                        <div>
+                            <p class="font-semibold dark:text-gray-200">4. ¿Para qué tipos de carga es más recomendable su uso?</p>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q4_area" value="a" class="mr-2"> a) Cargas térmicas</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q4_area" value="b" class="mr-2"> b) Cargas distribuidas polinómicas complejas</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q4_area" value="c" class="mr-2"> c) Fuerzas y momentos concentrados</label>
+                        </div>
+                        <div>
+                            <p class="font-semibold dark:text-gray-200">5. ¿Qué indica el segundo teorema?</p>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q5_area" value="a" class="mr-2"> a) La pendiente absoluta en los apoyos</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q5_area" value="b" class="mr-2"> b) La desviación vertical respecto a una tangente trazada por otro punto</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q5_area" value="c" class="mr-2"> c) El valor directo de la reacción en el apoyo</label>
+                        </div>
+                        <button type="button" onclick="checkQuiz('quiz-area', ['b', 'b', 'a', 'c', 'b'])" class="bg-blue-900 text-white font-semibold py-2 px-6 rounded hover:bg-blue-700 transition mt-4 dark:bg-blue-700">Confirmar Respuestas</button>
+                    </form>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <button onclick="showSection('home')" class="bg-gray-800 text-white font-semibold py-2 px-6 rounded hover:bg-gray-700 transition dark:bg-gray-700">Volver al inicio</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="tres-momentos" class="spa-section fade-in hidden">
+            <div class="bg-white rounded-xl shadow-md p-8 md:p-12 mb-8 dark:bg-gray-800">
+                <h2 class="text-3xl font-bold text-blue-900 mb-6 border-b-2 border-gray-200 pb-4 dark:text-blue-400 dark:border-gray-700">Ecuación de los Tres Momentos (Clapeyron)</h2>
+                
+                <div class="mb-8 text-gray-700 space-y-4 dark:text-gray-300">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200">Introducción y Teoría Completa</h3>
+                    <p>El teorema de los tres momentos, desarrollado por Clapeyron, es un método operativo específicamente diseñado para el cálculo de vigas continuas (aquellas apoyadas en más de dos soportes). Su aplicación se basa en las condiciones de continuidad de la tangente de la curva elástica en los apoyos intermedios.</p>
+                    <p>La ecuación relaciona los momentos flectores en tres apoyos consecutivos de una viga cargada. Al aplicarla sucesivamente a pares de tramos adyacentes, se genera un sistema de ecuaciones lineales cuyas incógnitas son los momentos en los apoyos. Una vez encontrados estos momentos, las reacciones restantes pueden determinarse mediante las leyes básicas de la estática.</p>
+                    <p>Para aplicar el método en un empotramiento, se debe satisfacer la condición de frontera donde la pendiente \( \theta_A = 0 \). Esto se logra agregando un tramo imaginario a la izquierda del apoyo, con longitud cero y momento cero, transformando el empotramiento en un nodo interno.</p>
+                    <p>Ecuación General para una viga con rigidez a la flexión (EI) constante:</p>
+                    <p class="text-center font-semibold mb-2 dark:text-gray-300">\[ M_1 L_1 + 2 M_2 (L_1 + L_2) + M_3 L_2 = -6 \alpha_1 - 6 \alpha_2 \]</p>
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 dark:text-gray-200">Conclusiones</h3>
+                    <p>Para el caso específico de vigas continuas (con más de dos apoyos), este método es el más operativo. Permite relacionar los momentos en tres apoyos consecutivos de forma sistemática, resultando en un sistema de ecuaciones lineales que facilita enormemente el cálculo de múltiples tramos, e incluso garantiza una redistribución eficiente de las cargas a través de los apoyos continuos.</p>
+                </div>
+
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8 dark:bg-gray-700 dark:border-gray-600">
+                    <h3 class="text-2xl font-bold text-blue-900 mb-4 dark:text-blue-400">Ejercicio Práctico</h3>
+                    
+                    <h4 class="font-bold text-gray-800 mt-4 dark:text-gray-200">1. Problema a resolver</h4>
+                    <p class="mb-4 dark:text-gray-300">Se analiza una viga continua de 12 metros de longitud total, dividida en tres tramos de 4 metros cada uno (AB, BC y CD).</p>
+                    <ul class="list-disc list-inside mb-4 pl-4 dark:text-gray-300">
+                        <li>Apoyo A: Empotramiento.</li>
+                        <li>Apoyos B, C y D: Apoyos móviles (rodillos).</li>
+                        <li>Cargas: Tramo AB tiene \(w=2\) kN/m; Tramo BC tiene carga puntual \(P=10\) kN al centro; Tramo CD tiene \(w=2\) kN/m.</li>
+                    </ul>
+
+                    <h4 class="font-bold text-gray-800 mt-4 dark:text-gray-200">2. Fórmulas necesarias</h4>
+                    <p class="mb-2 dark:text-gray-300">Ecuación de Clapeyron:</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ M_1 L_1 + 2 M_2 (L_1 + L_2) + M_3 L_2 = -6 \alpha_1 - 6 \alpha_2 \]</p>
+                    <p class="mb-2 dark:text-gray-300">Término de carga \( \alpha \) para carga distribuida:</p>
+                    <p class="text-center mb-2 dark:text-gray-300">\[ \alpha = \frac{wL^3}{24} \]</p>
+                    <p class="mb-2 dark:text-gray-300">Término de carga \( \alpha \) para carga puntual al centro:</p>
+                    <p class="text-center mb-4 dark:text-gray-300">\[ \alpha = \frac{PL^2}{16} \]</p>
+
+                    <h4 class="font-bold text-gray-800 mt-4 dark:text-gray-200">3. Procedimiento detallado paso a paso</h4>
+                    <p class="font-semibold mt-2 dark:text-gray-200">3.1 Descripción del Sistema</p>
+                    <p class="mb-2 dark:text-gray-300">Grado de hiperestaticidad GH = 2. Para el empotramiento en A, se utiliza un tramo imaginario A'A de longitud \(L_{A'A} = 0\) y momento \(M_{A'} = 0\) para satisfacer la condición de pendiente nula.</p>
+                    
+                    <p class="font-semibold mt-2 dark:text-gray-200">3.2 Fundamentación Teórica</p>
+                    <p class="mb-2 dark:text-gray-300">Uso de la Ecuación de Clapeyron para \(EI\) constante y cálculo de los términos \( \alpha \).</p>
+
+                    <p class="font-semibold mt-2 dark:text-gray-200">3.3 Cálculo de Alfas (\( \alpha \))</p>
+                    <ul class="list-disc list-inside mb-2 pl-4 dark:text-gray-300">
+                        <li>Tramo AB (\(w=2, L=4\)): \[ \alpha_{AB} = \frac{2(4^3)}{24} = \frac{16}{3} \approx 5.33 \]</li>
+                        <li>Tramo BC (\(P=10, L=4\)): \[ \alpha_{BC} = \frac{10(4^2)}{16} = 10 \]</li>
+                        <li>Tramo CD (\(w=2, L=4\)): \[ \alpha_{CD} = \frac{16}{3} \approx 5.33 \]</li>
+                    </ul>
+
+                    <p class="font-semibold mt-2 dark:text-gray-200">3.4 Planteamiento del Sistema de Ecuaciones</p>
+                    <ul class="list-disc list-inside mb-2 pl-4 dark:text-gray-300">
+                        <li><strong>Nodos A', A, B:</strong> \[ M_{A'}(0) + 2M_A(0+4) + M_B(4) = -6(0) - 6\left(\frac{16}{3}\right) \implies 8M_A + 4M_B = -32 \]</li>
+                        <li><strong>Nodos A, B, C:</strong> \[ M_A(4) + 2M_B(4+4) + M_C(4) = -6\left(\frac{16}{3}\right) - 6(10) \implies 4M_A + 16M_B + 4M_C = -92 \]</li>
+                        <li><strong>Nodos B, C, D:</strong> \[ M_B(4) + 2M_C(4+4) + M_D(4) = -6(10) - 6\left(\frac{16}{3}\right) \implies 4M_B + 16M_C = -92 \] (con \(M_D = 0\))</li>
+                    </ul>
+
+                    <p class="font-semibold mt-2 dark:text-gray-200">3.5 Resolución de Momentos y 3.6 Cálculo de Reacciones Finales</p>
+                    <p class="mb-2 dark:text-gray-300">Se resuelve el sistema y se utiliza la isostatización por tramos: \( V_{ij} = V_{\text{isostática}} + \frac{M_i - M_j}{L} \). Se halla la validación del equilibrio: \( \sum F_y = 26.01 \) kN vs Carga Total = \( 26.00 \) kN (error por redondeo).</p>
+
+                    <h4 class="font-bold text-gray-800 mt-4 dark:text-gray-200">4. Resultados finales destacados</h4>
+                    <div class="bg-blue-100 p-4 rounded text-center font-bold text-blue-900 mt-2 dark:bg-blue-900/30 dark:text-blue-400 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p>Momentos:</p>
+                            <p>\[ M_A = -1.96 \text{ kN}\cdot\text{m} \]</p>
+                            <p>\[ M_B = -4.08 \text{ kN}\cdot\text{m} \]</p>
+                            <p>\[ M_C = -4.73 \text{ kN}\cdot\text{m} \]</p>
+                            <p>\[ M_D = 0.00 \text{ kN}\cdot\text{m} \]</p>
+                        </div>
+                        <div>
+                            <p>Reacciones Finales:</p>
+                            <p>\[ R_A = 3.47 \text{ kN} \]</p>
+                            <p>\[ R_B = 9.38 \text{ kN} \]</p>
+                            <p>\[ R_C = 10.34 \text{ kN} \]</p>
+                            <p>\[ R_D = 2.82 \text{ kN} \]</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 rounded-lg p-6 dark:bg-blue-900/30">
+                    <h3 class="text-xl font-bold text-blue-900 mb-4 dark:text-blue-400">Prueba de Conocimiento</h3>
+                    <form id="quiz-tres-momentos" class="space-y-4">
+                        <div>
+                            <p class="font-semibold dark:text-gray-200">1. ¿Quién desarrolló el método de los tres momentos?</p>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q1_tm" value="a" class="mr-2"> a) Mohr</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q1_tm" value="b" class="mr-2"> b) Clapeyron</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q1_tm" value="c" class="mr-2"> c) Hooke</label>
+                        </div>
+                        <div>
+                            <p class="font-semibold dark:text-gray-200">2. ¿Para qué tipo de vigas está específicamente diseñado?</p>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q2_tm" value="a" class="mr-2"> a) Vigas en voladizo</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q2_tm" value="b" class="mr-2"> b) Vigas simplemente apoyadas</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q2_tm" value="c" class="mr-2"> c) Vigas continuas</label>
+                        </div>
+                        <div>
+                            <p class="font-semibold dark:text-gray-200">3. ¿Qué artificio se utiliza para modelar un empotramiento?</p>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q3_tm" value="a" class="mr-2"> a) Añadir un tramo imaginario de longitud y momento cero</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q3_tm" value="b" class="mr-2"> b) Asumir una reacción nula y despreciar el apoyo</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q3_tm" value="c" class="mr-2"> c) Sustituir el apoyo por una fuerza axial constante</label>
+                        </div>
+                        <div>
+                            <p class="font-semibold dark:text-gray-200">4. ¿Qué representa el término \( \alpha \) en la ecuación general?</p>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q4_tm" value="a" class="mr-2"> a) Una reacción redundante</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q4_tm" value="b" class="mr-2"> b) El término de carga y su efecto en la rotación</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q4_tm" value="c" class="mr-2"> c) La deflexión máxima del tramo</label>
+                        </div>
+                        <div>
+                            <p class="font-semibold dark:text-gray-200">5. ¿Qué asegura el análisis mediante este método?</p>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q5_tm" value="a" class="mr-2"> a) Una redistribución eficiente de las cargas en los apoyos</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q5_tm" value="b" class="mr-2"> b) El aumento de momentos flectores máximos</label>
+                            <label class="block dark:text-gray-300"><input type="radio" name="q5_tm" value="c" class="mr-2"> c) La eliminación física de apoyos intermedios</label>
+                        </div>
+                        <button type="button" onclick="checkQuiz('quiz-tres-momentos', ['b', 'c', 'a', 'b', 'a'])" class="bg-blue-900 text-white font-semibold py-2 px-6 rounded hover:bg-blue-700 transition mt-4 dark:bg-blue-700">Confirmar Respuestas</button>
+                    </form>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <button onclick="showSection('home')" class="bg-gray-800 text-white font-semibold py-2 px-6 rounded hover:bg-gray-700 transition dark:bg-gray-700">Volver al inicio</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+   <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="flex flex-col items-center space-y-4">
+            <div class="flex space-x-2">
+                <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-100"></div>
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse delay-200"></div>
+            </div>
+            
+            <div class="text-center space-y-1">
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Carlos Alexander Roblero Pérez</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">202132552</span>
+                </div>
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Carlos Eduardo Signor Aguilar</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">202330333</span>
+                </div>
+            </div>
+            
+            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+            
+            <div class="flex space-x-3 pt-2">
+                <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                    </svg>
+                </a>
+                <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script src="../js/darkmode.js"></script>
+    <script src="../js/progreso.js"></script>
+    
+    <script>
+        // SPA Routing Logic
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.spa-section');
+            sections.forEach(sec => sec.classList.add('hidden'));
+            
+            const target = document.getElementById(sectionId);
+            if(target) {
+                target.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                const mobileMenu = document.getElementById('mobile-menu');
+                if(mobileMenu) mobileMenu.classList.add('hidden');
+            }
+        }
+
+        // Quiz Evaluation Logic
+        function checkQuiz(formId, correctAnswers) {
+            const form = document.getElementById(formId);
+            const formData = new FormData(form);
+            let score = 0;
+            let answered = 0;
+            let i = 0;
+
+            for (let [name, value] of formData.entries()) {
+                if (value === correctAnswers[i]) {
+                    score++;
+                }
+                answered++;
+                i++;
+            }
+
+            if (answered < 5) {
+                alert("Por favor responde todas las 5 preguntas antes de confirmar.");
+            } else {
+                alert(`¡Has obtenido ${score} de 5 respuestas correctas!`);
+            }
+        }
+        
+        // Actualizar botón de completado
+        if (typeof actualizarBotonEnPagina === 'function') {
+            actualizarBotonEnPagina('4.5_solucion_problemas');
+        }
+    </script>
+</body>
+</html>

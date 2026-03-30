@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecuación de la Elástica - Resolución Paso a Paso</title>
+    
+    <!-- Script para modo oscuro (evita flash) - INMEDIATO -->
+    <script>
+    (function() {
+        const modoGuardado = localStorage.getItem("modo");
+        if (modoGuardado === "oscuro") {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+            if (!modoGuardado) {
+                localStorage.setItem("modo", "claro");
+            }
+        }
+    })();
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        darkMode: 'class'
+    }
+    </script>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .font-sans { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        .step-hidden { display: none; }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        body { display: flex; flex-direction: column; min-height: 100vh; transition: background-color 0.3s ease, color 0.3s ease; }
+        main { flex: 1; }
+        
+        /* Dark mode adjustments */
+        .dark .bg-gray-100 { background-color: #111827 !important; }
+        .dark .bg-white { background-color: #1f2937 !important; }
+        .dark .text-gray-800 { color: #f3f4f6 !important; }
+        .dark .text-gray-700 { color: #d1d5db !important; }
+        .dark .text-gray-600 { color: #9ca3af !important; }
+        .dark .border-gray-200 { border-color: #374151 !important; }
+        .dark .bg-gray-50 { background-color: #1f2937 !important; }
+        .dark .bg-blue-50 { background-color: #1e293b !important; }
+        .dark .text-blue-800 { color: #60a5fa !important; }
+        .dark .text-blue-700 { color: #93c5fd !important; }
+        .dark .text-blue-100 { color: #bfdbfe !important; }
+        .dark .bg-red-50 { background-color: #7f1d1d !important; }
+        .dark .border-red-500 { border-color: #ef4444 !important; }
+        .dark .text-red-800 { color: #fecaca !important; }
+        .dark .text-red-700 { color: #fecaca !important; }
+        .dark .bg-blue-900 { background-color: #1e3a8a !important; }
+        .dark .bg-gray-800 { background-color: #1f2937 !important; }
+        .dark .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
+        .dark .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans leading-relaxed dark:bg-gray-900 dark:text-gray-100">
+
+    <header class="bg-blue-900 text-white py-8 shadow-lg mb-8">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-end mb-4">
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold">Ecuación Diferencial de la Elástica</h1>
+            <p class="mt-2 text-blue-100 italic">Resistencia de Materiales II</p>
+            <!-- Botón de completado -->
+            <div class="mt-6">
+                <button 
+                    id="btnCompletado"
+                    onclick="toggleCompletado('3.3_ecuacion_elastica')"
+                    class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition flex items-center gap-2 shadow-md mx-auto"
+                >
+                    📚 Marcar como completado
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 max-w-5xl mb-12">
+        <section class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8 border-l-8 border-blue-900 dark:border-blue-500">
+            <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-4">1. Introducción</h2>
+            <p class="mb-4 dark:text-gray-300">
+                La elástica de una viga se define como la forma que adopta el eje neutro cuando el miembro es sometido a cargas transversales. Matemáticamente, es la función \(y=f(x)\) que describe el desplazamiento vertical de cada punto de la viga respecto a su posición original.
+            </p>
+            <div class="grid md:grid-cols-2 gap-6 mt-6">
+                <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
+                    <h3 class="font-bold text-blue-800 dark:text-blue-400 mb-2">Criterios de Rigidez</h3>
+                    <p class="text-sm dark:text-gray-300">El diseño suele estar limitado más por rigidez que por resistencia para evitar grietas en materiales frágiles como yeso o concreto.</p>
+                </div>
+                <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
+                    <h3 class="font-bold text-blue-800 dark:text-blue-400 mb-2">Sistemas Indeterminados</h3>
+                    <p class="text-sm dark:text-gray-300">Es obligatoria para resolver vigas donde las ecuaciones de la estática son insuficientes.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8">
+            <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-4">2. Desarrollo y Deducción</h2>
+            <p class="mb-6 dark:text-gray-300">
+                La deducción se basa en la relación entre el momento flexionante \(M\) y el radio de curvatura \(\rho\) de la viga deformada, fundamentada en la Ley de Hooke y la fórmula de flexión.
+            </p>
+            
+            <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl border border-gray-200 dark:border-gray-600 mb-6 text-center">
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-2 italic">Relación Momento-Curvatura:</p>
+                <div class="text-xl dark:text-gray-200">$$\frac{1}{\rho} = \frac{M}{EI}$$</div>
+            </div>
+
+            <p class="mb-4 dark:text-gray-300">
+                Bajo la <strong>hipótesis de pequeñas deflexiones</strong>, la pendiente \(\frac{dy}{dx}\) es tan pequeña que su cuadrado es despreciable, simplificando la curvatura a la segunda derivada:
+            </p>
+
+            <div class="bg-blue-900 dark:bg-blue-800 text-white p-6 rounded-xl shadow-inner text-center my-8">
+                <p class="text-lg font-semibold mb-2">Ecuación Fundamental de la Elástica</p>
+                <div class="text-3xl font-mono">$$EI \frac{d^2y}{dx^2} = M(x)$$</div>
+            </div>
+
+            <h3 class="font-bold text-lg mb-3 dark:text-gray-200">Variables y Convención:</h3>
+            <ul class="list-disc ml-8 space-y-2 text-sm dark:text-gray-300">
+                <li><strong>\(y\) (Deflexión):</strong> Desplazamiento vertical (positivo hacia arriba).</li>
+                <li><strong>\(E\) (Módulo de Young):</strong> Rigidez del material.</li>
+                <li><strong>\(I\) (Inercia):</strong> Propiedad geométrica de la sección.</li>
+                <li><strong>Momento Positivo:</strong> Produce concavidad hacia arriba (las fibras superiores se comprimen).</li>
+            </ul>
+        </section>
+
+        <section class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8">
+            <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-4 text-center">Relaciones Matemáticas</h2>
+            <div class="flex flex-wrap justify-center gap-4 text-center text-xs font-bold uppercase tracking-wider">
+                <div class="w-32 p-3 bg-gray-800 text-white rounded shadow">Carga (w)<br>\(EI y^{iv}\)</div>
+                <div class="self-center">→</div>
+                <div class="w-32 p-3 bg-blue-700 text-white rounded shadow">Cortante (V)<br>\(EI y'''\)</div>
+                <div class="self-center">→</div>
+                <div class="w-32 p-3 bg-blue-900 text-white rounded shadow">Momento (M)<br>\(EI y''\)</div>
+                <div class="self-center">→</div>
+                <div class="w-32 p-3 bg-blue-700 text-white rounded shadow">Pendiente (\(\theta\))<br>\(y'\)</div>
+                <div class="self-center">→</div>
+                <div class="w-32 p-3 bg-gray-800 text-white rounded shadow">Deflexión (y)<br>\(y\)</div>
+            </div>
+            <p class="mt-6 text-sm italic text-center text-gray-600 dark:text-gray-400">Cada integración matemática revela un correlato físico: rotación y desplazamiento.</p>
+        </section>
+
+        <section class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8">
+            <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-6 text-center">3. Metodología de Resolución</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="flex items-start gap-4 p-4 border rounded dark:border-gray-700">
+                    <span class="bg-blue-900 text-white rounded-full h-8 w-8 flex items-center justify-center shrink-0">1</span>
+                    <p class="text-sm dark:text-gray-300">Cálculo de reacciones y Diagrama de Cuerpo Libre (DCL).</p>
+                </div>
+                <div class="flex items-start gap-4 p-4 border rounded dark:border-gray-700">
+                    <span class="bg-blue-900 text-white rounded-full h-8 w-8 flex items-center justify-center shrink-0">2</span>
+                    <p class="text-sm dark:text-gray-300">Establecer sistema de coordenadas (Origen en extremo izquierdo).</p>
+                </div>
+                <div class="flex items-start gap-4 p-4 border rounded dark:border-gray-700">
+                    <span class="bg-blue-900 text-white rounded-full h-8 w-8 flex items-center justify-center shrink-0">3</span>
+                    <p class="text-sm dark:text-gray-300">Determinar la ecuación del momento flexionante \(M(x)\).</p>
+                </div>
+                <div class="flex items-start gap-4 p-4 border rounded dark:border-gray-700">
+                    <span class="bg-blue-900 text-white rounded-full h-8 w-8 flex items-center justify-center shrink-0">4</span>
+                    <p class="text-sm dark:text-gray-300">Integración sucesiva para obtener \(\theta\) e \(y\).</p>
+                </div>
+                <div class="flex items-start gap-4 p-4 border rounded dark:border-gray-700">
+                    <span class="bg-blue-900 text-white rounded-full h-8 w-8 flex items-center justify-center shrink-0">5</span>
+                    <p class="text-sm dark:text-gray-300">Aplicar condiciones de frontera (Apoyos) para hallar \(C_1\) y \(C_2\).</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 mb-8 border-l-8 border-blue-900 dark:border-blue-500">
+            <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-4">4. Ejercicio Práctico</h2>
+            <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-4">Planteamiento del Problema</h2>
+            <p class="text-gray-700 dark:text-gray-300">
+                Se analiza una viga de longitud \(L\) empotrada en el origen (\(x=0\)) con una carga puntual \(P\) en su extremo libre (\(x=L\)). El objetivo es deducir la ecuación de la elástica y determinar la deflexión máxima mediante el método de integración.
+            </p>
+        </section>
+
+        <section class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-xl font-bold text-blue-900 dark:text-blue-400 mb-6 flex items-center">
+                <span class="bg-blue-900 text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 text-sm">!</span>
+                Procedimiento de Resolución Paso a Paso
+            </h2>
+
+            <div id="paso1" class="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 fade-in">
+                <h3 class="font-bold text-blue-800 dark:text-blue-400 mb-2">Paso 1: Ecuación del Momento \(M(x)\)</h3>
+                <p class="text-sm mb-3 text-justify dark:text-gray-300">Realizando un corte a una distancia \(x\) desde el empotramiento, el momento interno es:</p>
+                <div class="text-center bg-white dark:bg-gray-800 p-3 rounded border dark:border-gray-600 font-mono dark:text-gray-200">
+                    $$M(x) = -P(L - x)$$
+                </div>
+                <button onclick="mostrarPaso(2)" class="mt-4 bg-blue-900 hover:bg-blue-700 text-white text-xs font-bold py-2 px-4 rounded transition">Siguiente: Primera Integración</button>
+            </div>
+
+            <div id="paso2" class="step-hidden mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                <h3 class="font-bold text-blue-800 dark:text-blue-400 mb-2">Paso 2: Primera Integración (Pendiente)</h3>
+                <p class="text-sm mb-3 dark:text-gray-300">Sustituimos en la ecuación diferencial \(EI y'' = M(x)\) e integramos:</p>
+                <div class="text-center bg-white dark:bg-gray-800 p-3 rounded border dark:border-gray-600 font-mono dark:text-gray-200">
+                    $$EI \frac{dy}{dx} = \int -P(L - x) dx = -P(Lx - \frac{x^2}{2}) + C_1$$
+                </div>
+                <p class="text-xs mt-2 italic text-blue-700 dark:text-blue-400 font-semibold">Condición de frontera: En \(x=0\), \(\theta=0\) \(\rightarrow\) \(C_1 = 0\).</p>
+                <button onclick="mostrarPaso(3)" class="mt-4 bg-blue-900 hover:bg-blue-700 text-white text-xs font-bold py-2 px-4 rounded transition">Siguiente: Segunda Integración</button>
+            </div>
+
+            <div id="paso3" class="step-hidden mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                <h3 class="font-bold text-blue-800 dark:text-blue-400 mb-2">Paso 3: Segunda Integración (Deflexión)</h3>
+                <p class="text-sm mb-3 dark:text-gray-300">Integramos nuevamente para obtener la ecuación de la curva elástica:</p>
+                <div class="text-center bg-white dark:bg-gray-800 p-3 rounded border dark:border-gray-600 font-mono dark:text-gray-200">
+                    $$EI y = -P(\frac{Lx^2}{2} - \frac{x^3}{6}) + C_2$$
+                </div>
+                <p class="text-xs mt-2 italic text-blue-700 dark:text-blue-400 font-semibold">Condición de frontera: En \(x=0\), \(y=0\) \(\rightarrow\) \(C_2 = 0\).</p>
+                <button onclick="mostrarPaso(4)" class="mt-4 bg-blue-900 hover:bg-blue-700 text-white text-xs font-bold py-2 px-4 rounded transition">Finalizar: Fórmula de Deflexión Máxima</button>
+            </div>
+
+            <div id="paso4" class="step-hidden p-6 bg-blue-900 text-white rounded-xl shadow-inner text-center">
+                <h3 class="font-bold mb-4 uppercase tracking-widest text-blue-200">Fórmula Final de Deflexión Máxima</h3>
+                <p class="text-sm mb-4">Evaluando en el extremo libre (\(x = L\)):</p>
+                <div class="text-4xl font-bold mb-4">
+                    $$\delta_{max} = -\frac{PL^3}{3EI}$$
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8">
+            <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-4">5. Conclusiones</h2>
+            <p class="mb-4 dark:text-gray-300">
+                El estudio de la elástica marca la transición donde el estudiante deja de ver las estructuras como rígidas y comprende la flexibilidad real de los materiales. Es vital entender que cada integración matemática tiene un correlato físico directo: rotación y desplazamiento.
+            </p>
+            <div class="bg-red-50 dark:bg-red-900/30 p-4 rounded-lg border-l-4 border-red-500">
+                <h4 class="font-bold text-red-800 dark:text-red-300 text-sm mb-1">Errores Comunes a Evitar:</h4>
+                <ul class="text-xs space-y-1 text-red-700 dark:text-red-300">
+                    <li>• Inconsistencia de unidades (mezclar mm con metros).</li>
+                    <li>• Confusión en signos de momentos (concavidad).</li>
+                    <li>• Omisión de constantes de integración \(C_1, C_2\).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8">
+            <h2 class="text-xl font-bold text-blue-900 dark:text-blue-400 mb-4">Bibliografía</h2>
+            <ul class="text-sm space-y-2 dark:text-gray-300">
+                <li>Hibbeler, R. C. (2017). <em>Mecánica de materiales</em> (9na ed.). Pearson Educación.</li>
+                <li>Pytel, A., &amp; Singer, F. L. (1994). <em>Resistencia de materiales</em> (4ta ed.). Harla.</li>
+                <li>Beer, F. P., &amp; Johnston, E. R. <em>Mecánica de materiales</em> (6ta ed.). McGraw-Hill.</li>
+            </ul>
+            <a href="https://drive.google.com/drive/folders/1IpxtVtVxnhFg1VX5Yis0vuuj7goLiaon?usp=sharing" target="_blank" class="inline-block mt-4 text-blue-700 dark:text-blue-400 hover:underline font-bold">
+                → Acceder a Carpeta de Recursos (Drive)
+            </a>
+        </section>
+    </main>
+
+    <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="flex flex-col items-center space-y-4">
+            <div class="flex space-x-2">
+                <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-100"></div>
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse delay-200"></div>
+            </div>
+            
+            <div class="text-center space-y-1">
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Rudy Mynor de Paz Velasco</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">202330452</span>
+                </div>
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Cesar Roberto Pérez Altuve</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">202330043</span>
+                </div>
+            </div>
+            
+            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+            
+            <div class="flex space-x-3 pt-2">
+                <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                    </svg>
+                </a>
+                <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script src="../js/darkmode.js"></script>
+    <script src="../js/progreso.js"></script>
+    
+    <script>
+        function mostrarPaso(num) {
+            const paso = document.getElementById('paso' + num);
+            paso.classList.remove('step-hidden');
+            paso.classList.add('fade-in');
+            paso.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        // Actualizar botón de completado
+        if (typeof actualizarBotonEnPagina === 'function') {
+            actualizarBotonEnPagina('3.3_ecuacion_elastica');
+        }
+    </script>
+</body>
+</html>
