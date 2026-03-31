@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 1 - Ejercicios Resueltos</title>
+
+    <script>
+    (function() {
+        const modoGuardado = localStorage.getItem("modo");
+        if (modoGuardado === "oscuro") {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+            if (!modoGuardado) {
+                localStorage.setItem("modo", "claro");
+            }
+        }
+    })();
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        darkMode: 'class'
+    }
+    </script>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.2);
+        }
+
+        .formula-box {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6edff 100%);
+            border-left: 4px solid #1e3a8a;
+            border-radius: 0.5rem;
+            padding: 1rem 1.25rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            overflow-x: auto;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: #1e3a8a;
+            color: white;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .tema-badge {
+            display: inline-block;
+            background: #1e3a8a;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Dark mode adjustments */
+        .dark .bg-gray-100 { background-color: #111827 !important; }
+        .dark .bg-white { background-color: #1f2937 !important; }
+        .dark .text-gray-800 { color: #f3f4f6 !important; }
+        .dark .text-gray-700 { color: #d1d5db !important; }
+        .dark .text-gray-600 { color: #9ca3af !important; }
+        .dark .border-gray-200 { border-color: #374151 !important; }
+        .dark .bg-gray-50 { background-color: #1f2937 !important; }
+        .dark .bg-blue-50 { background-color: #1e293b !important; }
+        .dark .bg-green-50 { background-color: #14532d !important; }
+        .dark .bg-amber-50 { background-color: #78350f !important; }
+        .dark .text-blue-900 { color: #60a5fa !important; }
+        .dark .text-blue-800 { color: #93c5fd !important; }
+        .dark .text-blue-700 { color: #93c5fd !important; }
+        .dark .border-blue-200 { border-color: #1e3a8a !important; }
+        .dark .border-blue-900 { border-color: #3b82f6 !important; }
+        .dark .formula-box { background: #374151; border-left-color: #3b82f6; color: #93c5fd; }
+        .dark .step-number { background: #3b82f6; }
+        .dark .tema-badge { background: #3b82f6; }
+        .dark .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
+        .dark .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased dark:bg-gray-900 dark:text-gray-100">
+
+    <!-- HERO SECTION -->
+    <section class="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-16 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="1"/></pattern></defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
+        </div>
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Ejercicios Resueltos</h1>
+            <p class="text-xl text-blue-200 max-w-3xl mx-auto">Superposición y Esfuerzos en Miembros Estructurales</p>
+            <div class="flex flex-wrap justify-center gap-3 mt-4">
+                <span class="bg-blue-800/50 px-3 py-1 rounded-full text-sm">1.1 Superposición y Limitaciones</span>
+                <span class="bg-blue-800/50 px-3 py-1 rounded-full text-sm">1.2 Miembros Excéntricos</span>
+                <span class="bg-blue-800/50 px-3 py-1 rounded-full text-sm">1.3 Superposición de Cortante</span>
+            </div>
+            <!-- Botón de completado -->
+            <div class="mt-8">
+                <button
+                    id="btnCompletado"
+                    onclick="toggleCompletado('1.4_solucion_problemas')"
+                    class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition flex items-center gap-2 shadow-md mx-auto"
+                >
+                    📚 Marcar unidad como completada
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <main class="max-w-5xl mx-auto px-6 py-12 space-y-12">
+
+        <!-- INTRODUCCIÓN -->
+        <section id="introduccion" class="fade-in">
+            <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-md border-l-4 border-blue-900 dark:border-blue-500">
+                <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-4 flex items-center gap-2">
+                    <span>📖</span> Introducción a la Unidad
+                </h2>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                    El principio de superposición es fundamental en el análisis estructural, permitiendo descomponer sistemas de cargas complejos en casos más simples. En esta unidad, exploramos las limitaciones de este principio, el análisis de miembros sometidos a cargas excéntricas, y la aplicación del método de superposición para el cálculo de esfuerzos cortantes.
+                </p>
+                <div class="grid md:grid-cols-3 gap-4 mt-6">
+                    <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg text-center">
+                        <div class="text-2xl mb-2">⚡</div>
+                        <p class="font-bold text-blue-800 dark:text-blue-400">Superposición</p>
+                        <p class="text-xs text-gray-600 dark:text-gray-400">Suma de efectos individuales</p>
+                    </div>
+                    <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg text-center">
+                        <div class="text-2xl mb-2">📐</div>
+                        <p class="font-bold text-blue-800 dark:text-blue-400">Carga Excéntrica</p>
+                        <p class="text-xs text-gray-600 dark:text-gray-400">Flexión + Axial</p>
+                    </div>
+                    <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg text-center">
+                        <div class="text-2xl mb-2">✂️</div>
+                        <p class="font-bold text-blue-800 dark:text-blue-400">Esfuerzo Cortante</p>
+                        <p class="text-xs text-gray-600 dark:text-gray-400">Distribución de tensiones</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EJERCICIO 1.1: SUPERPOSICIÓN Y LIMITACIONES -->
+        <section id="ejercicio1-1" class="fade-in">
+            <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-6 border-b-2 border-blue-200 dark:border-blue-800 pb-2 flex items-center gap-3">
+                <span class="bg-blue-900 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">1.1</span>
+                Superposición y Limitaciones
+            </h2>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+                <div class="bg-blue-900 dark:bg-blue-800 text-white p-4">
+                    <h3 class="font-bold text-lg">Problema</h3>
+                    <p class="text-blue-100 text-sm">Una viga simplemente apoyada de 6 m de longitud soporta una carga puntual de 12 kN en el centro y una carga distribuida uniforme de 8 kN/m en toda su longitud. Determine la deflexión máxima en el centro utilizando el principio de superposición. Considere \(EI = 12000 \text{ kN·m}^2\). Analice también las limitaciones del método.</p>
+                </div>
+                <div class="p-6 space-y-6">
+                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-bold text-blue-800 dark:text-blue-400 mb-2">📌 Principio de Superposición</h4>
+                        <p class="text-sm text-gray-700 dark:text-gray-300">El principio establece que la respuesta total de un sistema lineal es igual a la suma de las respuestas individuales de cada carga actuando por separado. Sus limitaciones incluyen:</p>
+                        <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 mt-2 space-y-1">
+                            <li>Material debe tener comportamiento lineal-elástico (Ley de Hooke)</li>
+                            <li>Las deformaciones deben ser pequeñas (\(\delta \ll L\))</li>
+                            <li>La geometría no debe cambiar significativamente bajo carga</li>
+                            <li>No aplica para pandeo o inestabilidades</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="font-bold text-blue-800 dark:text-blue-400">Solución paso a paso:</h4>
+                    <div class="space-y-4">
+                        <div class="flex gap-3">
+                            <div class="step-number">1</div>
+                            <div>
+                                <p class="font-semibold">Deflexión por carga puntual central:</p>
+                                <div class="formula-box mt-2">
+                                    \[ \delta_p = \frac{P L^3}{48 EI} = \frac{12 \times 6^3}{48 \times 12000} = \frac{2592}{576000} = 0.0045 \text{ m} = 4.5 \text{ mm} \]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="step-number">2</div>
+                            <div>
+                                <p class="font-semibold">Deflexión por carga distribuida uniforme:</p>
+                                <div class="formula-box mt-2">
+                                    \[ \delta_w = \frac{5 w L^4}{384 EI} = \frac{5 \times 8 \times 6^4}{384 \times 12000} = \frac{5 \times 8 \times 1296}{4608000} = \frac{51840}{4608000} = 0.01125 \text{ m} = 11.25 \text{ mm} \]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="step-number">3</div>
+                            <div>
+                                <p class="font-semibold">Superposición - Deflexión total:</p>
+                                <div class="formula-box mt-2">
+                                    \[ \delta_{total} = \delta_p + \delta_w = 4.5 + 11.25 = 15.75 \text{ mm} \]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg border-l-4 border-green-500">
+                            <p class="font-bold text-green-800 dark:text-green-400">Resultado:</p>
+                            <p class="text-lg font-mono">\(\delta_{max} = 15.75 \text{ mm}\)</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">La deflexión máxima en el centro es de 15.75 mm, que representa aproximadamente \(L/381\), cumpliendo con la hipótesis de pequeñas deformaciones (\(\delta \ll L\)).</p>
+                        </div>
+                        <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg border-l-4 border-blue-500">
+                            <p class="font-bold text-blue-800 dark:text-blue-400">✅ Verificación de la hipótesis:</p>
+                            <p class="text-sm text-gray-700 dark:text-gray-300 mt-1">Relación \(\delta/L = 0.01575 / 6 = 0.002625\) (0.26%), que es significativamente menor que el límite típico del 5% para considerar deformaciones pequeñas. Por lo tanto, la superposición es válida en este caso.</p>
+                        </div>
+                        <div class="bg-amber-50 dark:bg-amber-900/30 p-4 rounded-lg border-l-4 border-amber-500">
+                            <p class="font-bold text-amber-800 dark:text-amber-400">⚠️ Limitación del Método:</p>
+                            <p class="text-sm text-gray-700 dark:text-gray-300">La superposición solo es válida cuando se cumplen tres condiciones fundamentales: (1) comportamiento lineal del material, (2) deformaciones pequeñas, y (3) geometría constante. Si alguna de estas condiciones no se cumple (por ejemplo, si la rigidez \(EI\) fuera mucho menor, produciendo deflexiones comparables a la longitud de la viga), el análisis lineal dejaría de ser aplicable y se requeriría un análisis no lineal.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EJERCICIO 1.2: MIEMBROS EXCÉNTRICOS -->
+        <section id="ejercicio1-2" class="fade-in">
+            <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-6 border-b-2 border-blue-200 dark:border-blue-800 pb-2 flex items-center gap-3">
+                <span class="bg-blue-900 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">1.2</span>
+                Miembros Excéntricos
+            </h2>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+                <div class="bg-blue-900 dark:bg-blue-800 text-white p-4">
+                    <h3 class="font-bold text-lg">Problema</h3>
+                    <p class="text-blue-100 text-sm">Una columna de acero de sección rectangular de 100 mm × 150 mm está sometida a una carga axial de 200 kN aplicada con una excentricidad de 40 mm respecto al eje centroidal. Determine los esfuerzos máximos de compresión y tracción en la sección crítica.</p>
+                </div>
+                <div class="p-6 space-y-6">
+                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-bold text-blue-800 dark:text-blue-400 mb-2">📐 Concepto de Carga Excéntrica</h4>
+                        <p class="text-sm text-gray-700 dark:text-gray-300">Una carga excéntrica genera un momento flector además del esfuerzo axial. El esfuerzo total es la suma del esfuerzo axial uniforme más el esfuerzo por flexión.</p>
+                        <div class="mt-3 p-3 bg-blue-50 dark:bg-blue-900/30 rounded text-center">
+                            <span class="font-mono text-sm">\(\sigma_{total} = \sigma_{axial} \pm \sigma_{flexión} = \frac{P}{A} \pm \frac{M \cdot c}{I}\)</span>
+                        </div>
+                    </div>
+
+                    <h4 class="font-bold text-blue-800 dark:text-blue-400">Datos:</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                        <div><span class="font-bold">P =</span> 200 kN</div>
+                        <div><span class="font-bold">e =</span> 40 mm</div>
+                        <div><span class="font-bold">b =</span> 100 mm</div>
+                        <div><span class="font-bold">h =</span> 150 mm</div>
+                    </div>
+
+                    <h4 class="font-bold text-blue-800 dark:text-blue-400">Solución paso a paso:</h4>
+                    <div class="space-y-4">
+                        <div class="flex gap-3">
+                            <div class="step-number">1</div>
+                            <div>
+                                <p class="font-semibold">Área de la sección transversal:</p>
+                                <div class="formula-box mt-2">
+                                    \[ A = b \times h = 0.10 \times 0.15 = 0.015 \text{ m}^2 \]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="step-number">2</div>
+                            <div>
+                                <p class="font-semibold">Momento de inercia:</p>
+                                <div class="formula-box mt-2">
+                                    \[ I = \frac{b h^3}{12} = \frac{0.10 \times (0.15)^3}{12} = \frac{0.10 \times 0.003375}{12} = 2.8125 \times 10^{-5} \text{ m}^4 \]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="step-number">3</div>
+                            <div>
+                                <p class="font-semibold">Momento flector debido a la excentricidad:</p>
+                                <div class="formula-box mt-2">
+                                    \[ M = P \times e = 200 \times 10^3 \times 0.04 = 8000 \text{ N·m} \]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="step-number">4</div>
+                            <div>
+                                <p class="font-semibold">Distancia a la fibra extrema:</p>
+                                <div class="formula-box mt-2">
+                                    \[ c = \frac{h}{2} = \frac{0.15}{2} = 0.075 \text{ m} \]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="step-number">5</div>
+                            <div>
+                                <p class="font-semibold">Esfuerzos:</p>
+                                <div class="formula-box mt-2">
+                                    \[ \sigma_{axial} = \frac{P}{A} = \frac{200 \times 10^3}{0.015} = 13.33 \text{ MPa} \]
+                                    \[ \sigma_{flexión} = \frac{M \cdot c}{I} = \frac{8000 \times 0.075}{2.8125 \times 10^{-5}} = 21.33 \text{ MPa} \]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg border-l-4 border-green-500">
+                            <p class="font-bold text-green-800 dark:text-green-400">Resultados:</p>
+                            <p class="text-lg font-mono">\(\sigma_{compresión} = 13.33 + 21.33 = 34.66 \text{ MPa}\)</p>
+                            <p class="text-lg font-mono">\(\sigma_{tracción} = 13.33 - 21.33 = -8.00 \text{ MPa}\)</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">La sección está sometida a compresión máxima de 34.66 MPa en la fibra más cercana a la carga, y a tracción de 8.00 MPa en la fibra opuesta.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EJERCICIO 1.3: SUPERPOSICIÓN DE CORTANTE -->
+        <section id="ejercicio1-3" class="fade-in">
+            <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-6 border-b-2 border-blue-200 dark:border-blue-800 pb-2 flex items-center gap-3">
+                <span class="bg-blue-900 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">1.3</span>
+                Superposición de Cortante
+            </h2>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+                <div class="bg-blue-900 dark:bg-blue-800 text-white p-4">
+                    <h3 class="font-bold text-lg">Problema</h3>
+                    <p class="text-blue-100 text-sm">Un perno de acero de 16 mm de diámetro está sometido a dos fuerzas cortantes simultáneas: una fuerza horizontal de 25 kN y una fuerza vertical de 15 kN. Determine el esfuerzo cortante máximo en el perno utilizando el principio de superposición.</p>
+                </div>
+                <div class="p-6 space-y-6">
+                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-bold text-blue-800 dark:text-blue-400 mb-2">✂️ Esfuerzo Cortante por Superposición</h4>
+                        <p class="text-sm text-gray-700 dark:text-gray-300">Para un perno en corte simple, el esfuerzo cortante se calcula como la fuerza dividida entre el área transversal. Cuando hay múltiples fuerzas, el esfuerzo cortante resultante es la suma vectorial de los esfuerzos individuales.</p>
+                        <div class="mt-3 p-3 bg-blue-50 dark:bg-blue-900/30 rounded text-center">
+                            <span class="font-mono text-sm">\(\tau_{resultante} = \sqrt{\tau_x^2 + \tau_y^2}\)</span>
+                        </div>
+                    </div>
+
+                    <h4 class="font-bold text-blue-800 dark:text-blue-400">Datos:</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                        <div><span class="font-bold">d =</span> 16 mm</div>
+                        <div><span class="font-bold">F_x =</span> 25 kN</div>
+                        <div><span class="font-bold">F_y =</span> 15 kN</div>
+                    </div>
+
+                    <h4 class="font-bold text-blue-800 dark:text-blue-400">Solución paso a paso:</h4>
+                    <div class="space-y-4">
+                        <div class="flex gap-3">
+                            <div class="step-number">1</div>
+                            <div>
+                                <p class="font-semibold">Área transversal del perno:</p>
+                                <div class="formula-box mt-2">
+                                    \[ A = \frac{\pi d^2}{4} = \frac{\pi (0.016)^2}{4} = 2.011 \times 10^{-4} \text{ m}^2 \]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="step-number">2</div>
+                            <div>
+                                <p class="font-semibold">Esfuerzo cortante horizontal:</p>
+                                <div class="formula-box mt-2">
+                                    \[ \tau_x = \frac{F_x}{A} = \frac{25 \times 10^3}{2.011 \times 10^{-4}} = 124.3 \text{ MPa} \]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="step-number">3</div>
+                            <div>
+                                <p class="font-semibold">Esfuerzo cortante vertical:</p>
+                                <div class="formula-box mt-2">
+                                    \[ \tau_y = \frac{F_y}{A} = \frac{15 \times 10^3}{2.011 \times 10^{-4}} = 74.6 \text{ MPa} \]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="step-number">4</div>
+                            <div>
+                                <p class="font-semibold">Superposición - Esfuerzo cortante resultante:</p>
+                                <div class="formula-box mt-2">
+                                    \[ \tau_{res} = \sqrt{\tau_x^2 + \tau_y^2} = \sqrt{(124.3)^2 + (74.6)^2} \]
+                                    \[ \tau_{res} = \sqrt{15452 + 5565} = \sqrt{21017} = 145.0 \text{ MPa} \]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg border-l-4 border-green-500">
+                            <p class="font-bold text-green-800 dark:text-green-400">Resultado:</p>
+                            <p class="text-lg font-mono">\(\tau_{máx} = 145.0 \text{ MPa}\)</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">El esfuerzo cortante máximo en el perno es de 145.0 MPa, actuando en la dirección resultante de las dos fuerzas.</p>
+                        </div>
+                        <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
+                            <p class="font-bold text-blue-800 dark:text-blue-400">🔍 Interpretación:</p>
+                            <p class="text-sm text-gray-700 dark:text-gray-300">La superposición de esfuerzos cortantes se realiza vectorialmente debido a que son magnitudes con dirección. Este principio es válido porque el material se comporta linealmente y los esfuerzos son pequeños en relación con la resistencia del acero.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FÓRMULAS CLAVE -->
+        <section id="formulas" class="fade-in">
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800 p-8 rounded-2xl shadow-md">
+                <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-6 text-center">Fórmulas Clave de la Unidad</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Deflexión por Superposición</p>
+                        <div class="formula-box text-center dark:bg-gray-700">
+                            \[ \delta_{total} = \sum \delta_i \]
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Esfuerzo en Miembro Excéntrico</p>
+                        <div class="formula-box text-center dark:bg-gray-700">
+                            \[ \sigma = \frac{P}{A} \pm \frac{M \cdot c}{I} \]
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Superposición de Cortante</p>
+                        <div class="formula-box text-center dark:bg-gray-700">
+                            \[ \tau_{res} = \sqrt{\tau_x^2 + \tau_y^2} \]
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONCLUSIONES -->
+        <section id="conclusiones" class="fade-in">
+            <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-md border-t-4 border-blue-900 dark:border-blue-500">
+                <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-4 flex items-center gap-2">
+                    <span>🎯</span> Conclusiones de la Unidad
+                </h2>
+                <div class="space-y-4">
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                        El principio de superposición es una herramienta poderosa en el análisis estructural, pero debe aplicarse con cuidado respetando sus limitaciones fundamentales: comportamiento lineal del material, pequeñas deformaciones y geometría constante.
+                    </p>
+                    <div class="grid md:grid-cols-3 gap-4 mt-4">
+                        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg text-center">
+                            <p class="font-bold text-blue-800 dark:text-blue-400">1.1</p>
+                            <p class="text-sm">La superposición no es válida cuando las deformaciones son grandes o el material no es lineal.</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg text-center">
+                            <p class="font-bold text-blue-800 dark:text-blue-400">1.2</p>
+                            <p class="text-sm">Las cargas excéntricas generan flexión adicional que puede producir tracción donde solo se esperaba compresión.</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg text-center">
+                            <p class="font-bold text-blue-800 dark:text-blue-400">1.3</p>
+                            <p class="text-sm">Los esfuerzos cortantes de diferentes direcciones se combinan vectorialmente por superposición.</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 p-4 bg-amber-50 dark:bg-amber-900/30 rounded-lg border-l-4 border-amber-500">
+                        <p class="text-sm text-amber-800 dark:text-amber-300">
+                            <strong>💡 Tip de Estudio:</strong> Al resolver problemas de superposición, identifica primero si el sistema cumple con las condiciones de linealidad. Si las deformaciones son grandes o el material está cerca de la fluencia, el análisis lineal puede no ser adecuado.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="flex flex-col items-center space-y-4">
+            <div class="flex space-x-2">
+                <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-100"></div>
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse delay-200"></div>
+            </div>
+            
+            <div class="text-center space-y-1">
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Petrona Ordoñez</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">201731435</span>
+                </div>
+            </div>
+            
+            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+            
+            <div class="flex space-x-3 pt-2">
+                <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                    </svg>
+                </a>
+                <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script src="../js/darkmode.js"></script>
+    <script src="../js/progreso.js"></script>
+
+    <script>
+        // Fade-in animation on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        fadeElements.forEach(el => observer.observe(el));
+
+        // Actualizar botón de completado
+        if (typeof actualizarBotonEnPagina === 'function') {
+            actualizarBotonEnPagina('1.4_solucion_problemas');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problemas - Transformación de Esfuerzos</title>
+    
+    <script>
+    (function() {
+        const modoGuardado = localStorage.getItem("modo");
+        if (modoGuardado === "oscuro") {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+            if (!modoGuardado) {
+                localStorage.setItem("modo", "claro");
+            }
+        }
+    })();
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        darkMode: 'class'
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; transition: background-color 0.3s ease, color 0.3s ease; }
+        .eng-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); }
+        .card-hover:hover { transform: translateY(-5px); transition: all 0.3s ease; }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 18px; height: 18px;
+            background: #2563eb; cursor: pointer; border-radius: 50%; border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .dark .bg-slate-50 { background-color: #111827 !important; }
+        .dark .bg-white { background-color: #1f2937 !important; }
+        .dark .text-slate-900 { color: #f3f4f6 !important; }
+        .dark .text-slate-800 { color: #f3f4f6 !important; }
+        .dark .text-slate-700 { color: #d1d5db !important; }
+        .dark .text-slate-600 { color: #9ca3af !important; }
+        .dark .text-slate-500 { color: #6b7280 !important; }
+        .dark .text-slate-400 { color: #9ca3af !important; }
+        .dark .border-slate-100 { border-color: #374151 !important; }
+        .dark .border-slate-200 { border-color: #4b5563 !important; }
+        .dark .border-slate-300 { border-color: #4b5563 !important; }
+        .dark .bg-blue-50 { background-color: #1e293b !important; }
+        .dark .bg-emerald-50 { background-color: #14532d !important; }
+        .dark .bg-slate-900 { background-color: #030712 !important; }
+        .dark .bg-slate-800 { background-color: #1f2937 !important; }
+        .dark .bg-slate-950 { background-color: #030712 !important; }
+        .dark .text-blue-900 { color: #60a5fa !important; }
+        .dark .text-blue-800 { color: #93c5fd !important; }
+        .dark .text-blue-600 { color: #60a5fa !important; }
+        .dark .text-blue-400 { color: #60a5fa !important; }
+        .dark .text-emerald-950 { color: #86efac !important; }
+        .dark .text-emerald-600 { color: #86efac !important; }
+        .dark .border-blue-100 { border-color: #1e3a8a !important; }
+        .dark .border-emerald-100 { border-color: #14532d !important; }
+        .dark .border-slate-800 { border-color: #374151 !important; }
+        .dark .bg-slate-50\/50 { background-color: rgba(17, 24, 39, 0.5) !important; }
+        .dark .bg-white\/10 { background-color: rgba(255, 255, 255, 0.1) !important; }
+        .dark .bg-blue-600 { background-color: #2563eb !important; }
+        .dark .bg-slate-800 { background-color: #1f2937 !important; }
+        .dark .bg-slate-700 { background-color: #374151 !important; }
+        .dark input, .dark input.border { background-color: #374151; color: #f3f4f6; border-color: #4b5563; }
+        .dark input::placeholder { color: #9ca3af; }
+        .dark .bg-slate-50.p-4 { background-color: #1f2937 !important; }
+        .dark .bg-blue-50.p-6 { background-color: #1e293b !important; }
+        .dark .bg-slate-900.text-white { background-color: #030712 !important; }
+        .dark .eng-gradient { background: linear-gradient(135deg, #030712 0%, #1e3a8a 100%); }
+        .dark .bg-slate-800.hover\:bg-slate-700:hover { background-color: #374151 !important; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-gray-900 dark:text-gray-100">
+
+    <header class="eng-gradient text-white py-24 px-6 text-center shadow-2xl relative overflow-hidden dark:bg-gradient-to-r dark:from-gray-900 dark:to-blue-900">
+        <div class="absolute inset-0 opacity-10 pointer-events-none">
+            <svg width="100%" height="100%"><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="white" stroke-width="1"/></pattern><rect width="100%" height="100%" fill="url(#grid)" /></svg>
+        </div>
+        <div class="max-w-5xl mx-auto relative z-10">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">Transformación de Esfuerzos - Problema Básico</h1>
+            <p class="text-xl md:text-2xl text-blue-100 mb-8 font-light italic text-pretty">Análisis de estado plano y círculo de Mohr para diseño estructural.</p>
+            <!-- Botón de completado -->
+            <div class="mt-10">
+                <button 
+                    id="btnCompletado"
+                    onclick="toggleCompletado('2.2_problema_basico')"
+                    class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition flex items-center gap-2 shadow-md mx-auto"
+                >
+                    📚 Marcar como completado
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+
+        <section class="mb-20">
+            <div class="bg-white p-10 rounded-3xl shadow-sm border border-slate-100 dark:bg-gray-800 dark:border-gray-700">
+                <h2 class="text-3xl font-bold mb-6 text-slate-800 flex items-center gap-3 dark:text-gray-200">
+                    <span class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center text-sm font-bold">01</span>
+                    Introducción
+                </h2>
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div class="text-slate-600 leading-relaxed space-y-4 text-pretty dark:text-gray-300">
+                        <p>La transformación de esfuerzos es una herramienta fundamental en la mecánica de sólidos que permite calcular los componentes de esfuerzo en planos con orientaciones arbitrarias. En ingeniería, es común que las fallas de los materiales no ocurran en los ejes de carga principal, sino en planos inclinados donde el esfuerzo normal o cortante alcanza un valor crítico.</p>
+                        <p>El estudio de este fenómeno, basado en el equilibrio estático de un elemento infinitesimal, nos permite determinar los Esfuerzos Principales ($\sigma_1, \sigma_2$), que definen los límites de seguridad de cualquier diseño estructural.</p>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-2xl border-l-4 border-blue-500 italic text-slate-500 dark:bg-gray-700 dark:text-gray-400 dark:border-blue-400">
+                        "Comprender cómo cambian los esfuerzos al rotar el sistema de coordenadas es la clave para predecir la falla en materiales dúctiles y frágiles."
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold mb-8 text-slate-800 flex items-center gap-3 dark:text-gray-200">
+                <span class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center text-sm font-bold">02</span>
+                Metodología de Resolución
+            </h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm border-t-4 border-blue-500 dark:bg-gray-800 dark:border-gray-700">
+                    <h3 class="font-bold text-slate-800 mb-4 uppercase tracking-wider text-xs dark:text-gray-200">Paso 1: Parámetros Iniciales</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed dark:text-gray-400">Identificación de los esfuerzos en el plano $x-y$ ($\sigma_x, \sigma_y, \tau_{xy}$). Es crucial establecer correctamente la convención de signos: tracción es positivo (+) y compresión negativo (-).</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm border-t-4 border-blue-500 dark:bg-gray-800 dark:border-gray-700">
+                    <h3 class="font-bold text-slate-800 mb-4 uppercase tracking-wider text-xs dark:text-gray-200">Paso 2: Ecuaciones de Transformación</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed dark:text-gray-400">Se aplican las fórmulas trigonométricas para un ángulo $\theta$ determinado o se calculan las propiedades del círculo: el centro $C = (\sigma_x + \sigma_y)/2$ y el radio $R$.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm border-t-4 border-blue-500 dark:bg-gray-800 dark:border-gray-700">
+                    <h3 class="font-bold text-slate-800 mb-4 uppercase tracking-wider text-xs dark:text-gray-200">Paso 3: Determinación de Críticos</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed dark:text-gray-400">Se obtienen los esfuerzos principales y el cortante máximo. Los resultados se verifican gráficamente en el círculo de Mohr para asegurar la consistencia física.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12 bg-white rounded-3xl shadow-lg border border-slate-100 p-10 relative overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+            <div class="absolute top-0 right-0 bg-blue-600 text-white px-6 py-2 rounded-bl-xl font-bold text-sm uppercase tracking-tighter dark:bg-blue-700">Ejemplo de Referencia</div>
+            <h3 class="text-2xl font-bold mb-6 text-slate-800 dark:text-gray-200">Cálculo de Esfuerzos Rotados</h3>
+            <div class="grid md:grid-cols-2 gap-10">
+                <div class="space-y-4 font-mono">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex justify-between dark:bg-gray-700 dark:border-gray-600"><span class="dark:text-gray-300">$\sigma_x$:</span> <span class="font-bold text-blue-600 dark:text-blue-400">100 MPa</span></div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex justify-between dark:bg-gray-700 dark:border-gray-600"><span class="dark:text-gray-300">$\sigma_y$:</span> <span class="font-bold text-blue-600 dark:text-blue-400">50 MPa</span></div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex justify-between dark:bg-gray-700 dark:border-gray-600"><span class="dark:text-gray-300">$\tau_{xy}$:</span> <span class="font-bold text-blue-600 dark:text-blue-400">40 MPa</span></div>
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 flex justify-between text-blue-800 dark:bg-blue-900/30 dark:border-blue-700 dark:text-blue-400"><span>Ángulo $\theta$:</span> <span class="font-bold">30°</span></div>
+                </div>
+                <div class="bg-emerald-50 p-8 rounded-2xl border border-emerald-100 flex flex-col justify-center dark:bg-emerald-900/30 dark:border-emerald-800">
+                    <h4 class="text-xs font-bold text-emerald-600 uppercase mb-4 tracking-widest dark:text-emerald-400">Resultado Analítico</h4>
+                    <p class="text-3xl font-bold text-emerald-950 dark:text-emerald-300">$\sigma_{x'} = 122.14$ MPa</p>
+                    <p class="text-3xl font-bold text-emerald-950 mt-2 dark:text-emerald-300">$\tau_{x'y'} = -1.65$ MPa</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="calculadora" class="bg-white rounded-3xl shadow-2xl overflow-hidden mb-20 border border-slate-200 dark:bg-gray-800 dark:border-gray-700">
+            <div class="bg-slate-900 text-white px-10 py-7 dark:bg-gray-900">
+                <h2 class="text-3xl font-bold tracking-tight">Ejercicio Interactivo Modificable</h2>
+                <p class="text-slate-400 dark:text-gray-400">Modifica los valores para observar la transformación dinámica del estado de esfuerzos.</p>
+            </div>
+            <div class="grid lg:grid-cols-3">
+                <div class="p-10 bg-slate-50 border-r border-slate-100 dark:bg-gray-700 dark:border-gray-600">
+                    <div class="space-y-7">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2 dark:text-gray-300">Esfuerzo $\sigma_x$ (MPa)</label>
+                            <input type="number" id="sigX" value="80" class="w-full p-4 border border-slate-200 rounded-xl font-mono text-lg outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" oninput="calcular()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2 dark:text-gray-300">Esfuerzo $\sigma_y$ (MPa)</label>
+                            <input type="number" id="sigY" value="-40" class="w-full p-4 border border-slate-200 rounded-xl font-mono text-lg outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" oninput="calcular()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2 dark:text-gray-300">Cortante $\tau_{xy}$ (MPa)</label>
+                            <input type="number" id="tauXY" value="30" class="w-full p-4 border border-slate-200 rounded-xl font-mono text-lg outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" oninput="calcular()">
+                        </div>
+                        <div class="pt-6 border-t border-slate-200 dark:border-gray-600">
+                            <label class="block text-sm font-semibold text-slate-700 mb-4 flex justify-between dark:text-gray-300">Ángulo de Rotación: <span id="thetaVal" class="text-blue-600 font-bold text-xl dark:text-blue-400">30°</span></label>
+                            <input type="range" id="theta" min="0" max="180" value="30" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-600" oninput="calcular()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-10 flex flex-col justify-center gap-6">
+                    <div class="p-6 bg-blue-50 rounded-2xl border border-blue-100 dark:bg-blue-900/30 dark:border-blue-800">
+                        <p class="text-[10px] text-blue-600 font-black uppercase mb-2 dark:text-blue-400">Esfuerzos Principales</p>
+                        <div class="flex justify-between items-baseline"><span class="text-sm text-slate-500 dark:text-gray-400">$\sigma_1$:</span><span class="text-2xl font-bold font-mono text-blue-900 dark:text-blue-400" id="resS1">0</span></div>
+                        <div class="flex justify-between items-baseline mt-1"><span class="text-sm text-slate-500 dark:text-gray-400">$\sigma_2$:</span><span class="text-2xl font-bold font-mono text-blue-900 dark:text-blue-400" id="resS2">0</span></div>
+                    </div>
+                    <div class="p-6 bg-slate-900 text-white rounded-2xl shadow-xl dark:bg-gray-800">
+                        <p class="text-[10px] text-blue-400 font-black uppercase mb-2 dark:text-blue-400">Estado en Ángulo $\theta$</p>
+                        <div class="flex justify-between items-baseline"><span class="text-sm text-slate-400">$\sigma_{x'}$:</span><span class="text-2xl font-bold font-mono" id="resSxP">0</span></div>
+                        <div class="flex justify-between items-baseline mt-1"><span class="text-sm text-slate-400">$\tau_{x'y'}$:</span><span class="text-2xl font-bold font-mono" id="resTxyP">0</span></div>
+                    </div>
+                </div>
+
+                <div class="p-10 flex items-center justify-center bg-slate-50/50 dark:bg-gray-700/50">
+                    <div class="w-full aspect-square bg-white rounded-full shadow-inner border border-slate-200 relative dark:bg-gray-800 dark:border-gray-600">
+                        <svg id="mohrSVG" viewBox="0 0 200 200" class="w-full h-full p-4">
+                            <line x1="0" y1="100" x2="200" y2="100" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="2 2" class="dark:stroke-gray-600"/>
+                            <line x1="100" y1="0" x2="100" y2="200" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="2 2" class="dark:stroke-gray-600"/>
+                            <circle id="svgCircle" cx="100" cy="100" r="40" fill="none" stroke="#2563eb" stroke-width="2.5" class="dark:stroke-blue-500"/>
+                            <line id="svgLine" x1="60" y1="130" x2="140" y2="70" stroke="#f43f5e" stroke-width="2" class="dark:stroke-rose-500"/>
+                            <circle id="svgP1" cx="140" cy="70" r="3.5" fill="#f43f5e" class="dark:fill-rose-500"/>
+                            <circle id="svgP2" cx="60" cy="130" r="3.5" fill="#f43f5e" class="dark:fill-rose-500"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold mb-8 text-slate-800 dark:text-gray-200">Preguntas Frecuentes</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                    <h4 class="font-bold text-blue-600 mb-3 dark:text-blue-400">¿Por qué el ángulo en el círculo de Mohr es $2\theta$?</h4>
+                    <p class="text-sm text-slate-600 leading-relaxed dark:text-gray-400">Esto se debe a las identidades trigonométricas de ángulo doble en las ecuaciones de transformación. Una rotación física de $\theta$ en el material se traduce en un giro de $2\theta$ en la representación gráfica del círculo.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                    <h4 class="font-bold text-blue-600 mb-3 dark:text-blue-400">¿Qué indica que el esfuerzo cortante sea cero?</h4>
+                    <p class="text-sm text-slate-600 leading-relaxed dark:text-gray-400">Indica que el plano orientado en ese ángulo es un Plano Principal. En estos planos, el material solo experimenta tracción o compresión máxima, eliminando la tendencia al deslizamiento interno.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20">
+            <div class="bg-blue-50 p-10 rounded-3xl border border-blue-100 dark:bg-blue-900/30 dark:border-blue-800">
+                <h2 class="text-3xl font-bold mb-6 text-slate-800 flex items-center gap-3 dark:text-gray-200">
+                    <span class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center text-sm font-bold">03</span>
+                    Conclusión
+                </h2>
+                <div class="text-slate-700 space-y-4 leading-relaxed text-pretty dark:text-gray-300">
+                    <p>El análisis de la transformación de esfuerzos confirma que la integridad de un material no depende únicamente de la magnitud de las fuerzas externas, sino de la orientación de los planos internos. A través del uso de herramientas analíticas y gráficas como el Círculo de Mohr, el ingeniero puede identificar con precisión las condiciones críticas de carga.</p>
+                    <p>Dominar estos conceptos es indispensable para aplicar criterios de falla modernos (como Tresca o Von Mises), garantizando que las estructuras sean no solo funcionales, sino seguras ante cualquier solicitación compleja de carga.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="flex flex-col items-center space-y-4">
+            <div class="flex space-x-2">
+                <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-100"></div>
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse delay-200"></div>
+            </div>
+            
+            <div class="text-center space-y-1">
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Cristopher Joseph Estuardo Flores Chávez</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">202330299</span>
+                </div>
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Wilzon Jhancarlo Guarcax Barrios</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">202231040</span>
+                </div>
+            </div>
+            
+            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+            
+            <div class="flex space-x-3 pt-2">
+                <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                    </svg>
+                </a>
+                <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script src="../js/darkmode.js"></script>
+    <script src="../js/progreso.js"></script>
+    
+    <script>
+        function calcular() {
+            const sx = parseFloat(document.getElementById('sigX').value) || 0;
+            const sy = parseFloat(document.getElementById('sigY').value) || 0;
+            const txy = parseFloat(document.getElementById('tauXY').value) || 0;
+            const thetaDeg = parseFloat(document.getElementById('theta').value);
+            const thetaRad = thetaDeg * (Math.PI / 180);
+
+            document.getElementById('thetaVal').innerText = thetaDeg + "°";
+
+            const sAvg = (sx + sy) / 2;
+            const R = Math.sqrt(Math.pow((sx - sy) / 2, 2) + Math.pow(txy, 2));
+
+            const s1 = sAvg + R;
+            const s2 = sAvg - R;
+
+            const sxP = sAvg + ((sx - sy) / 2) * Math.cos(2 * thetaRad) + txy * Math.sin(2 * thetaRad);
+            const txyP = -((sx - sy) / 2) * Math.sin(2 * thetaRad) + txy * Math.cos(2 * thetaRad);
+
+            document.getElementById('resS1').innerText = s1.toFixed(2) + " MPa";
+            document.getElementById('resS2').innerText = s2.toFixed(2) + " MPa";
+            document.getElementById('resSxP').innerText = sxP.toFixed(2) + " MPa";
+            document.getElementById('resTxyP').innerText = txyP.toFixed(2) + " MPa";
+
+            updateSVG(sx, sy, txy, sAvg, R);
+        }
+
+        function updateSVG(sx, sy, txy, sAvg, R) {
+            const svgCircle = document.getElementById('svgCircle');
+            const svgLine = document.getElementById('svgLine');
+            const svgP1 = document.getElementById('svgP1');
+            const svgP2 = document.getElementById('svgP2');
+            const baseCenter = 100;
+            
+            let visualR = R > 0 ? Math.min(Math.max(R * 0.8, 10), 80) : 2;
+            let scale = R > 0 ? visualR / R : 1;
+
+            svgCircle.setAttribute('r', visualR);
+            const dx = ((sx - sy) / 2) * scale;
+            const dy = txy * scale;
+
+            svgLine.setAttribute('x1', baseCenter + dx);
+            svgLine.setAttribute('y1', baseCenter - dy);
+            svgLine.setAttribute('x2', baseCenter - dx);
+            svgLine.setAttribute('y2', baseCenter + dy);
+
+            svgP1.setAttribute('cx', baseCenter + dx);
+            svgP1.setAttribute('cy', baseCenter - dy);
+            svgP2.setAttribute('cx', baseCenter - dx);
+            svgP2.setAttribute('cy', baseCenter + dy);
+        }
+
+        calcular();
+        
+        // Actualizar botón de completado
+        if (typeof actualizarBotonEnPagina === 'function') {
+            actualizarBotonEnPagina('2.2_problema_basico');
+        }
+    </script>
+</body>
+</html>

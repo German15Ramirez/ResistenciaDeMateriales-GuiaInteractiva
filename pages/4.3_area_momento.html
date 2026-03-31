@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Método del Área del Diagrama de Momento</title>
+  
+  <script>
+  (function() {
+      const modoGuardado = localStorage.getItem("modo");
+      if (modoGuardado === "oscuro") {
+          document.documentElement.classList.add("dark");
+      } else {
+          document.documentElement.classList.remove("dark");
+          if (!modoGuardado) {
+              localStorage.setItem("modo", "claro");
+          }
+      }
+  })();
+  </script>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  tailwind.config = {
+      darkMode: 'class'
+  }
+  </script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { transition: background-color 0.3s ease, color 0.3s ease; }
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .method-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .method-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.15); }
+    .formula-box { background: linear-gradient(135deg, #0f2044 0%, #1a3a6b 100%); border-left: 4px solid #3b82f6; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 50; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .quiz-option { cursor: pointer; transition: background 0.2s, border-color 0.2s; }
+    .quiz-option:hover { background-color: #1d4ed8; border-color: #1d4ed8; color: white; }
+    .quiz-option.correct { background-color: #14532d !important; border-color: #22c55e !important; }
+    .quiz-option.wrong   { background-color: #7f1d1d !important; border-color: #ef4444 !important; }
+    #progressBar { transition: width 0.3s ease; }
+    .fade-el { opacity: 0; animation: fadeEl 0.5s ease forwards; }
+    .fade-el-1 { animation-delay: 0.5s; }
+    .fade-el-2 { animation-delay: 1s; }
+    .fade-el-3 { animation-delay: 1.4s; }
+    @keyframes fadeEl { to { opacity: 1; } }
+    
+    .dark .bg-gray-100 { background-color: #111827 !important; }
+    .dark .bg-white { background-color: #1f2937 !important; }
+    .dark .text-gray-800 { color: #f3f4f6 !important; }
+    .dark .text-gray-700 { color: #d1d5db !important; }
+    .dark .text-gray-600 { color: #9ca3af !important; }
+    .dark .border-gray-200 { border-color: #374151 !important; }
+    .dark .bg-gray-50 { background-color: #1f2937 !important; }
+    .dark .bg-blue-50 { background-color: #1e293b !important; }
+    .dark .bg-green-50 { background-color: #14532d !important; }
+    .dark .bg-amber-50 { background-color: #78350f !important; }
+    .dark .text-blue-900 { color: #60a5fa !important; }
+    .dark .text-blue-800 { color: #93c5fd !important; }
+    .dark .text-blue-700 { color: #93c5fd !important; }
+    .dark .border-blue-200 { border-color: #1e3a8a !important; }
+    .dark .border-blue-100 { border-color: #1e3a8a !important; }
+    .dark .border-gray-100 { border-color: #374151 !important; }
+    .dark .bg-blue-800 { background-color: #1e3a8a !important; }
+    .dark .bg-blue-900 { background-color: #0f172a !important; }
+    .dark .bg-gray-900 { background-color: #030712 !important; }
+    .dark .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
+    .dark .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
+    .dark .formula-box { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+    .dark .bg-white.rounded-2xl { background-color: #1f2937 !important; }
+    .dark .bg-gray-50.rounded-xl { background-color: #1f2937 !important; }
+    .dark .bg-blue-50.border { background-color: #1e293b !important; border-color: #3b82f6 !important; }
+    .dark .bg-green-900 { background-color: #14532d !important; }
+    .dark .text-green-300 { color: #86efac !important; }
+    .dark .text-green-800 { color: #86efac !important; }
+    .dark .border-green-500 { border-color: #22c55e !important; }
+    .dark .bg-red-50 { background-color: #7f1d1d !important; }
+    .dark .text-red-700 { color: #fecaca !important; }
+    .dark .border-red-200 { border-color: #991b1b !important; }
+    .dark .text-amber-800 { color: #fcd34d !important; }
+    .dark .border-amber-200 { border-color: #b45309 !important; }
+    .dark .bg-amber-50 { background-color: #78350f !important; }
+    .dark .bg-gray-800 { background-color: #1f2937 !important; }
+    .dark .bg-gray-700 { background-color: #374151 !important; }
+    .dark .text-gray-500 { color: #9ca3af !important; }
+    .dark .text-gray-400 { color: #9ca3af !important; }
+    .dark .text-blue-100 { color: #bfdbfe !important; }
+    .dark .text-blue-200 { color: #bfdbfe !important; }
+    .dark .bg-blue-800.text-white { background-color: #1e3a8a !important; }
+    .dark svg rect { fill: #4b5563 !important; }
+    .dark svg polygon { fill: #1e3a8a !important; }
+    .dark svg line { stroke: #6b7280 !important; }
+    .dark svg text { fill: #9ca3af !important; }
+    .dark .bg-white.rounded-lg { background-color: #1f2937 !important; }
+    .dark .bg-gray-50.border { background-color: #1f2937 !important; border-color: #374151 !important; }
+    .dark .bg-green-900 { background-color: #14532d !important; }
+    .dark .bg-red-900 { background-color: #7f1d1d !important; }
+  </style>
+</head>
+<body class="font-sans bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100">
+
+  <header class="bg-blue-900 text-white shadow-lg sticky top-0 z-40 dark:bg-blue-800">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold leading-tight">Método del Área-Momento</h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <nav class="hidden md:flex gap-5 text-sm text-blue-200">
+          <a href="#introduccion" class="hover:text-white transition">Introducción</a>
+          <a href="#fundamentos" class="hover:text-white transition">Fundamentos</a>
+          <a href="#teoremas" class="hover:text-white transition">Teoremas</a>
+          <a href="#conclusiones" class="hover:text-white transition">Conclusiones</a>
+          <a href="#ejercicio" class="hover:text-white transition">Ejercicio</a>
+        </nav>
+      </div>
+    </div>
+    <div class="w-full h-1 bg-blue-800 overflow-hidden">
+      <div id="progressBar" class="w-full bg-blue-400 rounded-full" style="height:0%"></div>
+    </div>
+  </header>
+
+  <section class="bg-blue-900 text-white pt-16 pb-20 px-4 dark:bg-blue-800">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl md:text-5xl font-bold mb-4 leading-tight">Método del Área del<br>Diagrama de Momento</h2>
+      <p class="text-blue-200 text-lg max-w-2xl mx-auto mb-8">Herramienta semi-gráfica basada en los Teoremas de Mohr para calcular pendientes y deflexiones en vigas, vinculando las propiedades geométricas del diagrama M/EI con la cinemática de las deformaciones estructurales.</p>
+      <!-- Botón de completado -->
+      <div class="mt-6">
+        <button 
+            id="btnCompletado"
+            onclick="toggleCompletado('4.3_area_momento')"
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition flex items-center gap-2 shadow-md mx-auto"
+        >
+            📚 Marcar como completado
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-5xl mx-auto px-4 py-12 space-y-16">
+
+    <section id="introduccion" class="fade-in">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg dark:bg-blue-700">1</div>
+        <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Introducción</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-2xl p-6 shadow-md border-t-4 border-blue-900 dark:bg-gray-800 dark:border-blue-500">
+          <div class="text-3xl mb-3">📏</div>
+          <h3 class="font-bold text-blue-900 text-lg mb-2 dark:text-blue-400">Contexto del método</h3>
+          <p class="text-gray-600 text-sm leading-relaxed dark:text-gray-400">En ingeniería estructural, la limitación de deformaciones transversales es tan imperativa como el diseño por resistencia. El método área-momento evalúa la <strong>rigidez flexural</strong> y garantiza el cumplimiento de normas con límites como L/240.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-md border-t-4 border-blue-700 dark:bg-gray-800 dark:border-blue-500">
+          <div class="text-3xl mb-3">📐</div>
+          <h3 class="font-bold text-blue-900 text-lg mb-2 dark:text-blue-400">Ventaja sobre integración</h3>
+          <p class="text-gray-600 text-sm leading-relaxed dark:text-gray-400">A diferencia de la doble integración, el método área-momento ofrece una <strong>aproximación semi-gráfica</strong> más eficiente, sin necesidad de resolver ecuaciones diferenciales por cada discontinuidad de carga.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-md border-t-4 border-blue-500 dark:bg-gray-800 dark:border-blue-500">
+          <div class="text-3xl mb-3">🏗️</div>
+          <h3 class="font-bold text-blue-900 text-lg mb-2 dark:text-blue-400">Aplicación práctica</h3>
+          <p class="text-gray-600 text-sm leading-relaxed dark:text-gray-400">Vincula las propiedades geométricas del diagrama M con los parámetros de pendiente y desplazamiento, facilitando la transición entre la <strong>estática</strong> y la cinemática de las deformaciones.</p>
+        </div>
+      </div>
+      <div class="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-5 flex gap-4 dark:bg-blue-900/30 dark:border-blue-800">
+        <div class="text-2xl">💡</div>
+        <div>
+          <h4 class="font-semibold text-blue-900 mb-1 dark:text-blue-400">Curva Elástica</h4>
+          <p class="text-blue-800 text-sm leading-relaxed dark:text-blue-300">Este análisis se fundamenta en la <strong>curva elástica</strong>: la configuración geométrica que adopta el eje neutro del elemento bajo la acción de cargas puntuales, distribuidas o momentos concentrados que alteran su geometría original.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="objetivos" class="fade-in">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg dark:bg-blue-700">2</div>
+        <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Objetivos</h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="bg-white rounded-2xl p-6 shadow-md border-t-4 border-blue-900 dark:bg-gray-800 dark:border-blue-500">
+          <h3 class="font-bold text-blue-900 mb-3 dark:text-blue-400">🎯 Objetivo General</h3>
+          <p class="text-gray-600 text-sm leading-relaxed dark:text-gray-400">Analizar el comportamiento de vigas sometidas a diferentes tipos de carga mediante el método del área del diagrama de momento, determinando pendientes y deflexiones en puntos específicos de la estructura.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-md border-t-4 border-blue-700 dark:bg-gray-800 dark:border-blue-500">
+          <h3 class="font-bold text-blue-900 mb-3 dark:text-blue-400">📋 Objetivos Específicos</h3>
+          <ul class="text-gray-600 text-sm space-y-2 dark:text-gray-400">
+            <li class="flex gap-2"><span class="text-blue-500 shrink-0">▸</span>Comprender la relación entre carga, fuerza cortante y momento flector.</li>
+            <li class="flex gap-2"><span class="text-blue-500 shrink-0">▸</span>Construir diagramas V y M para diferentes condiciones de carga.</li>
+            <li class="flex gap-2"><span class="text-blue-500 shrink-0">▸</span>Aplicar los teoremas del área-momento para pendientes y desviaciones.</li>
+            <li class="flex gap-2"><span class="text-blue-500 shrink-0">▸</span>Identificar zonas críticas de esfuerzo y deformación estructural.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="fundamentos" class="fade-in">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg dark:bg-blue-700">3</div>
+        <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Fundamentos — Preguntas Frecuentes</h2>
+      </div>
+      <div class="space-y-3">
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden dark:bg-gray-800">
+          <button onclick="toggleFaq(this)" class="w-full text-left p-5 font-semibold text-blue-900 flex justify-between items-center hover:bg-blue-50 transition dark:text-blue-400 dark:hover:bg-gray-700">
+            <span>¿Qué son los diagramas de cortante y momento?</span>
+            <span class="faq-icon text-blue-500 text-xl font-bold">+</span>
+          </button>
+          <div class="faq-body hidden px-5 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-4 dark:text-gray-400 dark:border-gray-700">
+            Son representaciones gráficas que muestran cómo varían la <strong>fuerza cortante interna (V)</strong> y el <strong>momento flector (M)</strong> a lo largo de la viga. El diagrama V muestra la variación de fuerza transversal; el diagrama M muestra la variación del momento de flexión en cada segmento.
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden dark:bg-gray-800">
+          <button onclick="toggleFaq(this)" class="w-full text-left p-5 font-semibold text-blue-900 flex justify-between items-center hover:bg-blue-50 transition dark:text-blue-400 dark:hover:bg-gray-700">
+            <span>¿Cuál es la relación matemática entre carga, cortante y momento?</span>
+            <span class="faq-icon text-blue-500 text-xl font-bold">+</span>
+          </button>
+          <div class="faq-body hidden px-5 pb-5 border-t border-gray-100 pt-4 dark:border-gray-700">
+            <div class="formula-box rounded-xl p-4 text-center mb-3">
+              <div class="text-white text-sm">\[ \frac{dV}{dx} = -w(x) \qquad \frac{dM}{dx} = V(x) \]</div>
+            </div>
+            <p class="text-gray-600 text-sm dark:text-gray-400">El cambio en el momento entre dos puntos es igual al <strong>área bajo el diagrama de cortante</strong>. El cambio en el cortante es el área bajo el diagrama de carga.</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden dark:bg-gray-800">
+          <button onclick="toggleFaq(this)" class="w-full text-left p-5 font-semibold text-blue-900 flex justify-between items-center hover:bg-blue-50 transition dark:text-blue-400 dark:hover:bg-gray-700">
+            <span>¿Cómo influye el tipo de carga en la forma de los diagramas?</span>
+            <span class="faq-icon text-blue-500 text-xl font-bold">+</span>
+          </button>
+          <div class="faq-body hidden px-5 pb-5 border-t border-gray-100 pt-4 dark:border-gray-700">
+            <div class="grid grid-cols-3 gap-3 mt-2">
+              <div class="bg-blue-50 rounded-xl p-3 text-center dark:bg-blue-900/30">
+                <p class="text-xs font-bold text-blue-900 mb-1 dark:text-blue-400">Carga = 0</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400">V constante · M lineal</p>
+              </div>
+              <div class="bg-blue-50 rounded-xl p-3 text-center dark:bg-blue-900/30">
+                <p class="text-xs font-bold text-blue-900 mb-1 dark:text-blue-400">Carga uniforme</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400">V lineal · M parabólica</p>
+              </div>
+              <div class="bg-blue-50 rounded-xl p-3 text-center dark:bg-blue-900/30">
+                <p class="text-xs font-bold text-blue-900 mb-1 dark:text-blue-400">Carga triangular</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400">V parabólica · M cúbica</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 bg-white rounded-2xl shadow-md overflow-hidden dark:bg-gray-800">
+        <div class="bg-blue-900 text-white px-6 py-4 dark:bg-blue-800">
+          <h3 class="font-bold text-lg">Propiedades Geométricas del Diagrama M/EI</h3>
+          <p class="text-blue-300 text-sm dark:text-blue-200">Áreas y centroides para geometrías comunes — el "atajo profesional" del método</p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+                <th class="text-left px-5 py-3 text-gray-700 font-semibold dark:text-gray-300">Forma</th>
+                <th class="text-left px-5 py-3 text-gray-700 font-semibold dark:text-gray-300">Tipo de Carga</th>
+                <th class="text-center px-5 py-3 text-gray-700 font-semibold dark:text-gray-300">Área (A)</th>
+                <th class="text-center px-5 py-3 text-gray-700 font-semibold dark:text-gray-300">Centroide (x̄) desde vértice</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700"><td class="px-5 py-3 font-semibold text-blue-900 dark:text-blue-400">Rectángulo</td><td class="px-5 py-3 text-gray-600 dark:text-gray-400">Momento concentrado</td><td class="px-5 py-3 text-center font-mono">bh</td><td class="px-5 py-3 text-center font-mono">b/2</td></tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700"><td class="px-5 py-3 font-semibold text-blue-900 dark:text-blue-400">Triángulo</td><td class="px-5 py-3 text-gray-600 dark:text-gray-400">Carga puntual</td><td class="px-5 py-3 text-center font-mono">bh/2</td><td class="px-5 py-3 text-center font-mono">2b/3 (vértice agudo)</td></tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700"><td class="px-5 py-3 font-semibold text-blue-900 dark:text-blue-400">Parábola 2° grado</td><td class="px-5 py-3 text-gray-600 dark:text-gray-400">Carga uniforme</td><td class="px-5 py-3 text-center font-mono">bh/3</td><td class="px-5 py-3 text-center font-mono">3b/4 (vértice)</td></tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700"><td class="px-5 py-3 font-semibold text-blue-900 dark:text-blue-400">Parábola 3° grado</td><td class="px-5 py-3 text-gray-600 dark:text-gray-400">Carga triangular</td><td class="px-5 py-3 text-center font-mono">bh/4</td><td class="px-5 py-3 text-center font-mono">4b/5 (vértice)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="teoremas" class="fade-in">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg dark:bg-blue-700">4</div>
+        <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Teoremas de Mohr</h2>
+      </div>
+      <p class="text-gray-600 mb-6 dark:text-gray-400">Los teoremas de Mohr simplifican el cálculo de la respuesta elástica sin recurrir a integraciones complejas de M(x). Haz clic en cada tarjeta para ver más detalles.</p>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="method-card bg-white rounded-2xl p-6 shadow-md cursor-pointer border border-transparent hover:border-blue-200 dark:bg-gray-800 dark:hover:border-blue-700" onclick="openModal('modal-t1')">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 bg-blue-900 text-white rounded-xl flex items-center justify-center text-2xl font-bold shrink-0 dark:bg-blue-700">I</div>
+            <div>
+              <h3 class="font-bold text-blue-900 text-lg mb-1 dark:text-blue-400">Desviación Angular</h3>
+              <p class="text-gray-500 text-sm mb-3 dark:text-gray-400">El cambio en la pendiente entre dos puntos A y B es igual al área del diagrama M/EI entre ellos.</p>
+              <div class="formula-box rounded-lg p-3 text-center">
+                <div class="text-white text-xs">\[ \theta_{B/A} = \int_A^B \frac{M}{EI}\,dx \]</div>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs text-blue-600 mt-4 font-semibold dark:text-blue-400">→ Ver detalles</p>
+        </div>
+        <div class="method-card bg-white rounded-2xl p-6 shadow-md cursor-pointer border border-transparent hover:border-blue-200 dark:bg-gray-800 dark:hover:border-blue-700" onclick="openModal('modal-t2')">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 bg-blue-700 text-white rounded-xl flex items-center justify-center text-2xl font-bold shrink-0 dark:bg-blue-600">II</div>
+            <div>
+              <h3 class="font-bold text-blue-900 text-lg mb-1 dark:text-blue-400">Desviación Tangencial</h3>
+              <p class="text-gray-500 text-sm mb-3 dark:text-gray-400">La distancia vertical de B respecto a la tangente en A equivale al primer momento de área del diagrama M/EI.</p>
+              <div class="formula-box rounded-lg p-3 text-center">
+                <div class="text-white text-xs">\[ t_{B/A} = \int_A^B \frac{M}{EI}\cdot\bar{x}\,dx \]</div>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs text-blue-600 mt-4 font-semibold dark:text-blue-400">→ Ver detalles</p>
+        </div>
+      </div>
+
+      <div class="mt-6 bg-white rounded-2xl shadow-md p-6 dark:bg-gray-800">
+        <h3 class="font-bold text-blue-900 text-lg mb-4 dark:text-blue-400">Relaciones Diferenciales Fundamentales</h3>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="bg-gray-50 rounded-xl p-4 text-center border border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+            <p class="text-xs text-gray-500 mb-2 uppercase tracking-wide dark:text-gray-400">Variación del Cortante</p>
+            <div class="formula-box rounded-lg p-3"><div class="text-white text-sm">\[ \frac{dV}{dx} = -w(x) \]</div></div>
+            <p class="text-xs text-gray-500 mt-2 dark:text-gray-400">Pendiente de V es la intensidad de carga distribuida.</p>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-4 text-center border border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+            <p class="text-xs text-gray-500 mb-2 uppercase tracking-wide dark:text-gray-400">Variación del Momento</p>
+            <div class="formula-box rounded-lg p-3"><div class="text-white text-sm">\[ \frac{dM}{dx} = V(x) \]</div></div>
+            <p class="text-xs text-gray-500 mt-2 dark:text-gray-400">El cortante en un punto determina la pendiente del diagrama M.</p>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-4 text-center border border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+            <p class="text-xs text-gray-500 mb-2 uppercase tracking-wide dark:text-gray-400">Cambio en el Momento</p>
+            <div class="formula-box rounded-lg p-3"><div class="text-white text-sm">\[ \Delta M = \int V(x)\,dx \]</div></div>
+            <p class="text-xs text-gray-500 mt-2 dark:text-gray-400">ΔM entre dos secciones = área bajo diagrama de cortante.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="conclusiones" class="fade-in">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg dark:bg-blue-700">5</div>
+        <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Conclusiones</h2>
+      </div>
+      <div class="bg-white rounded-2xl shadow-md p-6 md:p-8 space-y-4 dark:bg-gray-800">
+        <div class="flex gap-4 items-start p-4 rounded-xl bg-gray-50 border border-gray-100 dark:bg-gray-700 dark:border-gray-600">
+          <div class="w-8 h-8 bg-blue-900 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0 dark:bg-blue-700">1</div>
+          <p class="text-gray-700 text-sm leading-relaxed dark:text-gray-300">El método del área del diagrama de momento es fundamental para determinar pendiente y deflexión en vigas, basado en los <strong>teoremas de Mohr</strong> sin integraciones complejas.</p>
+        </div>
+        <div class="flex gap-4 items-start p-4 rounded-xl bg-gray-50 border border-gray-100 dark:bg-gray-700 dark:border-gray-600">
+          <div class="w-8 h-8 bg-blue-900 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0 dark:bg-blue-700">2</div>
+          <p class="text-gray-700 text-sm leading-relaxed dark:text-gray-300">Existe una relación directa entre carga, cortante y momento expresada por dV/dx = −w(x) y dM/dx = V(x), base para la <strong>construcción correcta de diagramas estructurales</strong>.</p>
+        </div>
+        <div class="flex gap-4 items-start p-4 rounded-xl bg-gray-50 border border-gray-100 dark:bg-gray-700 dark:border-gray-600">
+          <div class="w-8 h-8 bg-blue-900 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0 dark:bg-blue-700">3</div>
+          <p class="text-gray-700 text-sm leading-relaxed dark:text-gray-300">El cálculo de deflexiones depende de las cargas, el material y la geometría de la sección, representadas en la <strong>rigidez a la flexión EI</strong>.</p>
+        </div>
+        <div class="flex gap-4 items-start p-4 rounded-xl bg-gray-50 border border-gray-100 dark:bg-gray-700 dark:border-gray-600">
+          <div class="w-8 h-8 bg-blue-900 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0 dark:bg-blue-700">4</div>
+          <p class="text-gray-700 text-sm leading-relaxed dark:text-gray-300">Los ejercicios prácticos y la construcción de diagramas permiten identificar <strong>puntos críticos</strong> de máximos momentos y deformaciones para el dimensionamiento de vigas.</p>
+        </div>
+        <div class="flex gap-4 items-start p-4 rounded-xl bg-gray-50 border border-gray-100 dark:bg-gray-700 dark:border-gray-600">
+          <div class="w-8 h-8 bg-blue-900 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0 dark:bg-blue-700">5</div>
+          <p class="text-gray-700 text-sm leading-relaxed dark:text-gray-300">La correcta interpretación de los diagramas V y M es indispensable para garantizar un análisis confiable y seguro en la <strong>práctica profesional</strong>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="ejercicio" class="fade-in">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg dark:bg-blue-700">6</div>
+        <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Ejercicio Práctico</h2>
+      </div>
+      <div class="bg-white rounded-2xl shadow-md overflow-hidden dark:bg-gray-800">
+        <div class="bg-blue-900 text-white p-6 dark:bg-blue-800">
+          <h3 class="font-bold text-lg mb-2">Problema</h3>
+          <p class="text-blue-100 text-sm leading-relaxed">Calcular el <strong class="text-white">momento del área del diagrama de momento</strong> con respecto al punto C, para la viga simplemente apoyada con carga distribuida y momento concentrado.</p>
+          <div class="mt-4 flex flex-wrap gap-3">
+            <div class="bg-blue-800 rounded-lg px-4 py-2 text-sm dark:bg-blue-700"><span class="text-blue-300 text-xs block">Longitud total</span><span class="font-bold">6 m (3 + 3)</span></div>
+            <div class="bg-blue-800 rounded-lg px-4 py-2 text-sm dark:bg-blue-700"><span class="text-blue-300 text-xs block">Carga distribuida</span><span class="font-bold">5 to/m (tramo b–c)</span></div>
+            <div class="bg-blue-800 rounded-lg px-4 py-2 text-sm dark:bg-blue-700"><span class="text-blue-300 text-xs block">Momento en C</span><span class="font-bold">15 to·m</span></div>
+          </div>
+        </div>
+        <div class="p-6 md:p-8 space-y-8">
+          <div>
+            <h4 class="font-bold text-blue-900 mb-3 flex items-center gap-2 dark:text-blue-400">
+              <span class="bg-blue-900 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center font-bold dark:bg-blue-700">1</span>
+              Diagrama de la viga
+            </h4>
+            <div class="bg-gray-50 rounded-xl p-4 flex justify-center dark:bg-gray-700">
+              <svg viewBox="0 0 460 110" class="w-full max-w-lg" xmlns="http://www.w3.org/2000/svg">
+                <rect x="30" y="52" width="400" height="10" rx="2" fill="#374151" class="dark:fill-gray-600"/>
+                <polygon points="30,62 46,78 14,78" fill="#1e3a8a" class="dark:fill-blue-700"/>
+                <line x1="14" y1="78" x2="46" y2="78" stroke="#1e3a8a" stroke-width="2.5" class="dark:stroke-blue-700"/>
+                <polygon points="430,62 446,78 414,78" fill="#1e3a8a" class="dark:fill-blue-700"/>
+                <line x1="414" y1="78" x2="446" y2="78" stroke="#1e3a8a" stroke-width="2.5" class="dark:stroke-blue-700"/>
+                <text x="30" y="46" fill="#374151" font-size="11" font-family="sans-serif" text-anchor="middle" class="dark:fill-gray-400">a</text>
+                <text x="230" y="46" fill="#374151" font-size="11" font-family="sans-serif" text-anchor="middle" class="dark:fill-gray-400">b</text>
+                <text x="430" y="46" fill="#374151" font-size="11" font-family="sans-serif" text-anchor="middle" class="dark:fill-gray-400">c</text>
+                <rect x="230" y="20" width="200" height="32" fill="#3b82f6" opacity="0.18" rx="2" class="dark:fill-blue-500"/>
+                <line x1="242" y1="20" x2="242" y2="50" stroke="#3b82f6" stroke-width="1.5" class="dark:stroke-blue-400"/>
+                <line x1="264" y1="20" x2="264" y2="50" stroke="#3b82f6" stroke-width="1.5" class="dark:stroke-blue-400"/>
+                <line x1="286" y1="20" x2="286" y2="50" stroke="#3b82f6" stroke-width="1.5" class="dark:stroke-blue-400"/>
+                <line x1="308" y1="20" x2="308" y2="50" stroke="#3b82f6" stroke-width="1.5" class="dark:stroke-blue-400"/>
+                <line x1="330" y1="20" x2="330" y2="50" stroke="#3b82f6" stroke-width="1.5" class="dark:stroke-blue-400"/>
+                <line x1="352" y1="20" x2="352" y2="50" stroke="#3b82f6" stroke-width="1.5" class="dark:stroke-blue-400"/>
+                <line x1="374" y1="20" x2="374" y2="50" stroke="#3b82f6" stroke-width="1.5" class="dark:stroke-blue-400"/>
+                <line x1="396" y1="20" x2="396" y2="50" stroke="#3b82f6" stroke-width="1.5" class="dark:stroke-blue-400"/>
+                <text x="330" y="14" fill="#1d4ed8" font-size="11" font-family="sans-serif" text-anchor="middle" font-weight="700" class="dark:fill-blue-400">5 to/m</text>
+                <path d="M440,36 A14,14 0 0,1 440,62" stroke="#ea580c" stroke-width="2.5" fill="none" class="dark:stroke-orange-500"/>
+                <polygon points="440,62 434,54 446,54" fill="#ea580c" class="dark:fill-orange-500"/>
+                <text x="448" y="52" fill="#ea580c" font-size="9" font-family="sans-serif" font-weight="700" class="dark:fill-orange-400">15 to·m</text>
+                <line x1="30" y1="82" x2="30" y2="94" stroke="#16a34a" stroke-width="2" class="dark:stroke-green-500"/>
+                <polygon points="30,80 25,94 35,94" fill="#16a34a" class="dark:fill-green-500"/>
+                <text x="4" y="106" fill="#16a34a" font-size="9" font-family="sans-serif" class="dark:fill-green-400">Ra=1.25to</text>
+                <line x1="430" y1="82" x2="430" y2="94" stroke="#16a34a" stroke-width="2" class="dark:stroke-green-500"/>
+                <polygon points="430,80 425,94 435,94" fill="#16a34a" class="dark:fill-green-500"/>
+                <text x="406" y="106" fill="#16a34a" font-size="9" font-family="sans-serif" class="dark:fill-green-400">Rc=13.75to</text>
+                <line x1="30" y1="98" x2="230" y2="98" stroke="#9ca3af" stroke-width="1" class="dark:stroke-gray-500"/>
+                <line x1="230" y1="98" x2="430" y2="98" stroke="#9ca3af" stroke-width="1" class="dark:stroke-gray-500"/>
+                <text x="130" y="107" fill="#9ca3af" font-size="9" font-family="sans-serif" text-anchor="middle" class="dark:fill-gray-400">3 m</text>
+                <text x="330" y="107" fill="#9ca3af" font-size="9" font-family="sans-serif" text-anchor="middle" class="dark:fill-gray-400">3 m</text>
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h4 class="font-bold text-blue-900 mb-3 flex items-center gap-2 dark:text-blue-400">
+              <span class="bg-blue-900 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center font-bold dark:bg-blue-700">2</span>
+              Ménsulas equivalentes en voladizos
+            </h4>
+            <p class="text-gray-600 text-sm mb-4 dark:text-gray-400">Se transforma la viga en voladizos equivalentes para obtener los momentos parciales M₁, M₂ y M₃:</p>
+            <div class="grid md:grid-cols-3 gap-4">
+              <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center dark:bg-blue-900/30 dark:border-blue-800">
+                <p class="text-xs text-blue-700 uppercase font-semibold mb-2 dark:text-blue-400">M₁ — Reacción Ra</p>
+                <div class="formula-box rounded-lg p-2 mb-2"><div class="text-white text-xs">\[ M_1 = R_a \times 6 \]</div></div>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Voladizo con Ra en extremo A</p>
+              </div>
+              <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center dark:bg-blue-900/30 dark:border-blue-800">
+                <p class="text-xs text-blue-700 uppercase font-semibold mb-2 dark:text-blue-400">M₂ — Carga distribuida</p>
+                <div class="formula-box rounded-lg p-2 mb-2"><div class="text-white text-xs">\[ M_2 = (15\,to)(1.5\,m) = -22.5\,to{\cdot}m \]</div></div>
+                <p class="text-xs text-gray-500 dark:text-gray-400">5 to/m × 3 m = 15 to resultante en centro de b–c</p>
+              </div>
+              <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center dark:bg-blue-900/30 dark:border-blue-800">
+                <p class="text-xs text-blue-700 uppercase font-semibold mb-2 dark:text-blue-400">M₃ — Momento concentrado</p>
+                <div class="formula-box rounded-lg p-2 mb-2"><div class="text-white text-xs">\[ M_3 = 15\,to{\cdot}m \]</div></div>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Momento concentrado en C</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h4 class="font-bold text-blue-900 mb-3 flex items-center gap-2 dark:text-blue-400">
+              <span class="bg-blue-900 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center font-bold dark:bg-blue-700">3</span>
+              Cálculo de reacciones
+            </h4>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+                <p class="text-xs font-bold text-gray-700 mb-2 uppercase dark:text-gray-300">ΣM en A = 0</p>
+                <div class="formula-box rounded-lg p-3 text-center mb-2"><div class="text-white text-xs">\[ R_a \cdot 6 - 22.5 + 15 = 0 \Rightarrow R_a = \frac{7.5}{6} \]</div></div>
+                <div class="bg-green-900 rounded-lg p-3 text-center"><div class="text-green-300 text-sm font-bold">\[ R_a = 1.25\,to \]</div></div>
+              </div>
+              <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+                <p class="text-xs font-bold text-gray-700 mb-2 uppercase dark:text-gray-300">ΣFy = 0</p>
+                <div class="formula-box rounded-lg p-3 text-center mb-2"><div class="text-white text-xs">\[ 1.25 - 15 + R_c = 0 \Rightarrow R_c = 15 - 1.25 \]</div></div>
+                <div class="bg-green-900 rounded-lg p-3 text-center"><div class="text-green-300 text-sm font-bold">\[ R_c = 13.75\,to \]</div></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h4 class="font-bold text-blue-900 mb-3 flex items-center gap-2 dark:text-blue-400">
+              <span class="bg-blue-900 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center font-bold dark:bg-blue-700">4</span>
+              Cálculo de la desviación tangencial τ<sub>C/A</sub>
+            </h4>
+            <p class="text-gray-600 text-sm mb-4 dark:text-gray-400">Aplicando el <strong>Segundo Teorema de Mohr</strong>: τ<sub>C/A</sub> = (Área)<sub>AC</sub> · x̄<sub>c</sub></p>
+            <div class="formula-box rounded-xl p-5 text-center mb-4">
+              <div class="text-white text-sm leading-loose">
+                \[ \tau_{C/A} = \left(\frac{7.5 \cdot 6}{2}\right)\!\left(\frac{6}{3}\right) - \left(\frac{22.5 \cdot 3}{3}\right)\!\left(\frac{3}{4}\right) + (15 \cdot 6)\!\left(\frac{6}{2}\right) \]
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-3 mb-4">
+              <div class="bg-gray-50 rounded-xl p-3 text-center border border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+                <p class="text-xs text-gray-500 mb-1 dark:text-gray-400">Triángulo (Ra)</p>
+                <p class="font-bold text-blue-900 dark:text-blue-400">+45 to·m²</p>
+              </div>
+              <div class="bg-gray-50 rounded-xl p-3 text-center border border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+                <p class="text-xs text-gray-500 mb-1 dark:text-gray-400">Parábola (carga)</p>
+                <p class="font-bold text-red-700 dark:text-red-400">−16.875 to·m²</p>
+              </div>
+              <div class="bg-gray-50 rounded-xl p-3 text-center border border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+                <p class="text-xs text-gray-500 mb-1 dark:text-gray-400">Rectángulo (M conc.)</p>
+                <p class="font-bold text-blue-900 dark:text-blue-400">+90 to·m²</p>
+              </div>
+            </div>
+            <div class="formula-box rounded-xl p-4 text-center mb-4">
+              <div class="text-white text-sm">\[ \tau_{C/A} = 45 - 16.875 + 90 \]</div>
+            </div>
+          </div>
+          <div class="bg-green-50 border-2 border-green-500 rounded-2xl p-6 text-center dark:bg-green-900/30 dark:border-green-600">
+            <p class="text-green-700 text-sm font-semibold uppercase tracking-wider mb-2 dark:text-green-400">Resultado</p>
+            <div class="text-4xl font-bold text-green-800 mb-2 dark:text-green-400">τ<sub>C/A</sub> = 118.125 to·m²</div>
+            <p class="text-green-700 text-sm dark:text-green-400">La desviación tangencial de C respecto a la tangente trazada desde A es <strong>118.125 to·m²</strong>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz" class="fade-in">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg dark:bg-blue-700">🧠</div>
+        <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Quiz Interactivo</h2>
+      </div>
+      <div class="bg-white rounded-2xl shadow-md p-6 md:p-8 dark:bg-gray-800">
+        <p class="text-gray-500 text-sm mb-6 dark:text-gray-400">Selecciona la respuesta correcta para cada pregunta.</p>
+        <div id="quiz-container" class="space-y-8">
+          <div class="quiz-q" data-answer="b">
+            <p class="font-semibold text-gray-800 mb-3 dark:text-gray-200">1. ¿Qué establece el Primer Teorema de Mohr?</p>
+            <div class="space-y-2">
+              <div class="quiz-option border border-gray-200 rounded-lg p-3 text-sm text-gray-800 bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" data-val="a">A) La deflexión en un punto es igual al área del diagrama M/EI</div>
+              <div class="quiz-option border border-gray-200 rounded-lg p-3 text-sm text-gray-800 bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" data-val="b">B) El cambio en la pendiente entre dos puntos es igual al área del diagrama M/EI entre ellos</div>
+              <div class="quiz-option border border-gray-200 rounded-lg p-3 text-sm text-gray-800 bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" data-val="c">C) El momento flector es igual al área bajo el diagrama de carga</div>
+              <div class="quiz-option border border-gray-200 rounded-lg p-3 text-sm text-gray-800 bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" data-val="d">D) La curvatura es proporcional al cortante</div>
+            </div>
+            <p class="quiz-feedback text-sm mt-2 hidden"></p>
+          </div>
+          <div class="quiz-q" data-answer="c">
+            <p class="font-semibold text-gray-800 mb-3 dark:text-gray-200">2. ¿Cuál es el valor de Ra en el ejercicio?</p>
+            <div class="space-y-2">
+              <div class="quiz-option border border-gray-200 rounded-lg p-3 text-sm text-gray-800 bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" data-val="a">A) 5.00 to</div>
+              <div class="quiz-option border border-gray-200 rounded-lg p-3 text-sm text-gray-800 bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" data-val="b">B) 7.50 to</div>
+              <div class="quiz-option border border-gray-200 rounded-lg p-3 text-sm text-gray-800 bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" data-val="c">C) 1.25 to</div>
+              <div class="quiz-option border border-gray-200 rounded-lg p-3 text-sm text-gray-800 bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" data-val="d">D) 13.75 to</div>
+            </div>
+            <p class="quiz-feedback text-sm mt-2 hidden"></p>
+          </div>
+          <div class="quiz-q" data-answer="d">
+            <p class="font-semibold text-gray-800 mb-3 dark:text-gray-200">3. ¿Cuál es el resultado de τ<sub>C/A</sub>?</p>
+            <div class="space-y-2">
+              <div class="quiz-option border border-gray-200 rounded-lg p-3 text-sm text-gray-800 bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" data-val="a">A) 45.000 to·m²</div>
+              <div class="quiz-option border border-gray-200 rounded-lg p-3 text-sm text-gray-800 bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" data-val="b">B) 90.000 to·m²</div>
+              <div class="quiz-option border border-gray-200 rounded-lg p-3 text-sm text-gray-800 bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" data-val="c">C) 100.500 to·m²</div>
+              <div class="quiz-option border border-gray-200 rounded-lg p-3 text-sm text-gray-800 bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" data-val="d">D) 118.125 to·m²</div>
+            </div>
+            <p class="quiz-feedback text-sm mt-2 hidden"></p>
+          </div>
+        </div>
+        <div id="quiz-score" class="hidden mt-6 text-center bg-blue-900 text-white rounded-xl p-4 dark:bg-blue-800">
+          <p class="text-lg font-bold" id="score-text"></p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="flex flex-col items-center space-y-4">
+            <div class="flex space-x-2">
+                <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-100"></div>
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse delay-200"></div>
+            </div>
+            
+            <div class="text-center space-y-1">
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Gerber Marroquín Noriega</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">202330614</span>
+                </div>
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Jennifer Mateo Rojas</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">202130397</span>
+                </div>
+            </div>
+            
+            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+            
+            <div class="flex space-x-3 pt-2">
+                <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                    </svg>
+                </a>
+                <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+  <div id="modal-t1" class="modal-overlay" onclick="closeModal('modal-t1')">
+    <div class="bg-white rounded-2xl p-8 max-w-lg w-full mx-4 shadow-2xl dark:bg-gray-800" onclick="event.stopPropagation()">
+      <h3 class="font-bold text-blue-900 text-xl mb-3 dark:text-blue-400">Teorema I — Desviación Angular</h3>
+      <p class="text-gray-600 text-sm mb-4 leading-relaxed dark:text-gray-400">El cambio en la pendiente (θ<sub>B/A</sub>) entre las tangentes a la elástica en A y B es igual al <strong>área del diagrama M/EI</strong> entre esos puntos.</p>
+      <div class="formula-box rounded-xl p-4 text-center text-white text-sm mb-4">
+        \[ \theta_{B/A} = \int_A^B \frac{M}{EI}\,dx = \text{Área}_{A \to B} \left(\frac{M}{EI}\right) \]
+      </div>
+      <p class="text-sm text-gray-600 mb-4 dark:text-gray-400"><strong>Impacto de EI:</strong> Mayor inercia o módulo de elasticidad reduce proporcionalmente la desviación angular.</p>
+      <button onclick="closeModal('modal-t1')" class="bg-blue-900 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition dark:bg-blue-700 dark:hover:bg-blue-600">Cerrar</button>
+    </div>
+  </div>
+  <div id="modal-t2" class="modal-overlay" onclick="closeModal('modal-t2')">
+    <div class="bg-white rounded-2xl p-8 max-w-lg w-full mx-4 shadow-2xl dark:bg-gray-800" onclick="event.stopPropagation()">
+      <h3 class="font-bold text-blue-900 text-xl mb-3 dark:text-blue-400">Teorema II — Desviación Tangencial</h3>
+      <p class="text-gray-600 text-sm mb-4 leading-relaxed dark:text-gray-400">La distancia vertical (t<sub>B/A</sub>) de B sobre la curva elástica respecto a la tangente proyectada desde A equivale al <strong>primer momento de área del diagrama M/EI</strong>.</p>
+      <div class="formula-box rounded-xl p-4 text-center text-white text-sm mb-4">
+        \[ t_{B/A} = \int_A^B \frac{M}{EI} \cdot \bar{x}\,dx \]
+      </div>
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4 dark:bg-amber-900/30 dark:border-amber-800">
+        <p class="text-amber-800 text-sm dark:text-amber-300"><strong>⚠️ Nota crítica:</strong> El centroide (x̄) debe medirse desde el punto donde se desea calcular la desviación (B). Es el error más común en cálculo manual.</p>
+      </div>
+      <button onclick="closeModal('modal-t2')" class="bg-blue-900 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition dark:bg-blue-700 dark:hover:bg-blue-600">Cerrar</button>
+    </div>
+  </div>
+
+  <script src="../js/darkmode.js"></script>
+  <script src="../js/progreso.js"></script>
+  
+  <script>
+    window.addEventListener('scroll', () => {
+      const p = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      document.getElementById('progressBar').style.height = p + '%';
+    });
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    function toggleFaq(btn) {
+      const body = btn.nextElementSibling;
+      const icon = btn.querySelector('.faq-icon');
+      const isOpen = !body.classList.contains('hidden');
+      body.classList.toggle('hidden', isOpen);
+      icon.textContent = isOpen ? '+' : '−';
+    }
+    let answered = 0, correct = 0;
+    const total = document.querySelectorAll('.quiz-q').length;
+    document.querySelectorAll('.quiz-q').forEach(q => {
+      const ans = q.dataset.answer;
+      const opts = q.querySelectorAll('.quiz-option');
+      const fb = q.querySelector('.quiz-feedback');
+      let done = false;
+      opts.forEach(opt => {
+        opt.addEventListener('click', () => {
+          if (done) return;
+          done = true; answered++;
+          opts.forEach(o => { if (o.dataset.val === ans) o.classList.add('correct'); });
+          if (opt.dataset.val === ans) { correct++; fb.textContent = '✓ ¡Correcto!'; fb.className = 'quiz-feedback text-sm mt-2 text-green-600 font-semibold dark:text-green-400'; }
+          else { opt.classList.add('wrong'); fb.textContent = '✗ Incorrecto. La respuesta correcta está en verde.'; fb.className = 'quiz-feedback text-sm mt-2 text-red-400'; }
+          fb.classList.remove('hidden');
+          if (answered === total) {
+            document.getElementById('quiz-score').classList.remove('hidden');
+            document.getElementById('score-text').textContent = `Puntaje: ${correct} / ${total} — ${Math.round(correct/total*100)}%`;
+          }
+        });
+      });
+    });
+    
+    // Actualizar botón de completado
+    if (typeof actualizarBotonEnPagina === 'function') {
+        actualizarBotonEnPagina('4.3_area_momento');
+    }
+  </script>
+</body>
+</html>

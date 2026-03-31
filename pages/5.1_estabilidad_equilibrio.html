@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estabilidad y Equilibrio en Columnas</title>
+
+    <script>
+    (function() {
+        const modoGuardado = localStorage.getItem("modo");
+        if (modoGuardado === "oscuro") {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+            if (!modoGuardado) {
+                localStorage.setItem("modo", "claro");
+            }
+        }
+    })();
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        darkMode: 'class'
+    }
+    </script>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
+        .engineering-gradient { background: linear-gradient(135deg, #1e3a8a 0%, #334155 100%); }
+        .quiz-feedback { transition: all 0.3s ease-in-out; }
+        
+        .dark .bg-gray-50 { background-color: #111827 !important; }
+        .dark .bg-white { background-color: #1f2937 !important; }
+        .dark .text-slate-800 { color: #f3f4f6 !important; }
+        .dark .text-slate-900 { color: #f3f4f6 !important; }
+        .dark .text-slate-700 { color: #d1d5db !important; }
+        .dark .text-slate-600 { color: #9ca3af !important; }
+        .dark .text-slate-500 { color: #6b7280 !important; }
+        .dark .border-slate-200 { border-color: #374151 !important; }
+        .dark .border-slate-300 { border-color: #4b5563 !important; }
+        .dark .bg-slate-100 { background-color: #1f2937 !important; }
+        .dark .bg-slate-50 { background-color: #1f2937 !important; }
+        .dark .bg-blue-50 { background-color: #1e293b !important; }
+        .dark .bg-slate-900 { background-color: #030712 !important; }
+        .dark .bg-slate-800 { background-color: #1f2937 !important; }
+        .dark .border-slate-800 { border-color: #374151 !important; }
+        .dark .text-blue-900 { color: #60a5fa !important; }
+        .dark .text-blue-800 { color: #93c5fd !important; }
+        .dark .text-blue-700 { color: #93c5fd !important; }
+        .dark .text-blue-600 { color: #60a5fa !important; }
+        .dark .border-blue-100 { border-color: #1e3a8a !important; }
+        .dark .border-blue-500 { border-color: #3b82f6 !important; }
+        .dark .bg-blue-100 { background-color: #1e3a8a !important; }
+        .dark .bg-blue-200 { background-color: #1e3a8a !important; }
+        .dark .bg-green-50 { background-color: #14532d !important; }
+        .dark .bg-green-100 { background-color: #14532d !important; }
+        .dark .text-green-800 { color: #86efac !important; }
+        .dark .bg-red-50 { background-color: #7f1d1d !important; }
+        .dark .text-red-800 { color: #fecaca !important; }
+        .dark .bg-red-100 { background-color: #7f1d1d !important; }
+        .dark .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
+        .dark .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3); }
+        .dark .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
+        .dark .bg-slate-800.border { background-color: #1f2937 !important; }
+        .dark .bg-black\/30 { background-color: rgba(0, 0, 0, 0.5); }
+        .dark .bg-white\/5 { background-color: rgba(255, 255, 255, 0.05); }
+        .dark .border-white\/10 { border-color: rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-800 dark:bg-gray-900 dark:text-gray-100">
+
+    <header class="engineering-gradient text-white py-20 px-6 text-center shadow-lg dark:bg-gradient-to-r dark:from-blue-900 dark:to-gray-800">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 tracking-tight">Estabilidad y Equilibrio en Columnas Esbeltas</h1>
+            <p class="text-xl md:text-2xl text-blue-100 opacity-90">Análisis técnico del comportamiento estructural y pandeo elástico.</p>
+            <!-- Botón de completado -->
+            <div class="mt-8">
+                <button 
+                    id="btnCompletado"
+                    onclick="toggleCompletado('5.1_estabilidad_equilibrio')"
+                    class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition flex items-center gap-2 shadow-md mx-auto"
+                >
+                    📚 Marcar como completado
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-12">
+        
+        <section class="mb-16">
+            <div class="flex items-center mb-6">
+                <div class="h-1 w-12 bg-blue-700 mr-4 dark:bg-blue-500"></div>
+                <h2 class="text-3xl font-bold text-slate-900 uppercase tracking-tighter dark:text-gray-200">01. Introducción</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 items-center bg-white p-8 rounded-xl shadow-sm border border-slate-200 dark:bg-gray-800 dark:border-gray-700">
+                <div>
+                    <p class="mb-4 leading-relaxed dark:text-gray-300">
+                        La <strong>estabilidad</strong> se define como la capacidad de una estructura para soportar una carga dada sin experimentar un cambio súbito en su configuración. En columnas esbeltas, esto se refiere específicamente a la resistencia contra la <strong>flexión lateral</strong> ante esfuerzos de compresión.
+                    </p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start"><i class="fas fa-check-circle text-blue-700 mt-1 mr-2 dark:text-blue-400"></i> <span class="dark:text-gray-300"><strong>Equilibrio Estable:</strong> La carga axial es menor a la crítica ($P < P_{cr}$); la estructura recupera su forma.</span></li>
+                        <li class="flex items-start"><i class="fas fa-exclamation-triangle text-amber-500 mt-1 mr-2"></i> <span class="dark:text-gray-300"><strong>Equilibrio Neutro:</strong> El límite exacto donde $P = P_{cr}$.</span></li>
+                        <li class="flex items-start"><i class="fas fa-times-circle text-red-600 mt-1 mr-2"></i> <span class="dark:text-gray-300"><strong>Equilibrio Inestable:</strong> Carga superior a la crítica ($P > P_{cr}$); colapso por pandeo.</span></li>
+                    </ul>
+                </div>
+                <div class="bg-slate-100 p-6 rounded-lg text-center border-dashed border-2 border-slate-300 dark:bg-gray-700 dark:border-gray-600">
+                    <p class="text-sm text-slate-500 italic mb-4 dark:text-gray-400">Analogía del Equilibrio</p>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="p-2 bg-white rounded shadow-sm font-semibold text-sm dark:bg-gray-800 dark:text-gray-300">Superficie Cóncava<br><span class="text-green-600 font-normal dark:text-green-400">(Estable)</span></div>
+                        <div class="p-2 bg-white rounded shadow-sm font-semibold text-sm dark:bg-gray-800 dark:text-gray-300">Superficie Plana<br><span class="text-amber-500 font-normal dark:text-amber-400">(Neutra)</span></div>
+                        <div class="p-2 bg-white rounded shadow-sm font-semibold text-sm dark:bg-gray-800 dark:text-gray-300">Superficie Convexa<br><span class="text-red-600 font-normal dark:text-red-400">(Inestable)</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <div class="flex items-center mb-6">
+                <div class="h-1 w-12 bg-blue-700 mr-4 dark:bg-blue-500"></div>
+                <h2 class="text-3xl font-bold text-slate-900 uppercase tracking-tighter dark:text-gray-200">02. Metodología Comparada</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white border-t-4 border-blue-800 p-6 rounded-lg shadow-md dark:bg-gray-800 dark:border-blue-500">
+                    <h3 class="text-xl font-bold mb-4 text-blue-900 dark:text-blue-400">Fórmula de Euler (Columnas Largas)</h3>
+                    <p class="text-sm mb-4 dark:text-gray-300">Se utiliza para elementos con alta relación de esbeltez donde la falla es puramente elástica.</p>
+                    <div class="bg-slate-50 p-4 rounded text-center font-mono text-lg mb-4 dark:bg-gray-700 dark:text-gray-200">
+                        $P_{cr} = \frac{\pi^2 EI}{L_e^2}$
+                    </div>
+                    <ul class="text-sm space-y-2 text-slate-600 dark:text-gray-400">
+                        <li>• Depende de la rigidez a la flexión (EI).</li>
+                        <li>• Inversamente proporcional al cuadrado de la longitud.</li>
+                        <li>• No influye la resistencia última del material en régimen elástico.</li>
+                    </ul>
+                </div>
+                <div class="bg-white border-t-4 border-slate-600 p-6 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-500">
+                    <h3 class="text-xl font-bold mb-4 text-slate-800 dark:text-gray-200">Método de J.B. Johnson (Intermedias)</h3>
+                    <p class="text-sm mb-4 dark:text-gray-300">Aproximación parabólica para columnas donde el pandeo es inelástico.</p>
+                    <div class="bg-slate-50 p-4 rounded text-center font-mono text-lg mb-4 dark:bg-gray-700 dark:text-gray-200">
+                        $\sigma_{Lim} = \sigma_F \left[1 - \frac{\sigma_F \lambda^2}{4\pi^2 E}\right]$
+                    </div>
+                    <ul class="text-sm space-y-2 text-slate-600 dark:text-gray-400">
+                        <li>• Se aplica si la esbeltez real es menor a la constante $C_c$.</li>
+                        <li>• Considera la pérdida de linealidad del material.</li>
+                        <li>• Ideal para elementos de máquinas y puntales.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <div class="flex items-center mb-6">
+                <div class="h-1 w-12 bg-blue-700 mr-4 dark:bg-blue-500"></div>
+                <h2 class="text-3xl font-bold text-slate-900 uppercase tracking-tighter dark:text-gray-200">03. Conclusiones Técnicas</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="p-6 bg-blue-50 rounded-lg border border-blue-100 shadow-sm dark:bg-blue-900/30 dark:border-blue-800">
+                    <h4 class="font-bold text-blue-900 mb-2 italic dark:text-blue-400">Precisión Nodal</h4>
+                    <p class="text-sm dark:text-gray-300">El método de <strong>Splines Generalizados</strong> supera al MEF tradicional al usar soluciones de la ecuación diferencial, garantizando exactitud nodal absoluta.</p>
+                </div>
+                <div class="p-6 bg-slate-100 rounded-lg border border-slate-200 shadow-sm dark:bg-gray-700 dark:border-gray-600">
+                    <h4 class="font-bold text-slate-900 mb-2 italic dark:text-gray-200">Segundo Orden</h4>
+                    <p class="text-sm dark:text-gray-300">El diseño moderno exige análisis de segundo orden ($P-\Delta$), evaluando el equilibrio en la posición deformada para evitar fallas catastróficas.</p>
+                </div>
+                <div class="p-6 bg-blue-50 rounded-lg border border-blue-100 shadow-sm dark:bg-blue-900/30 dark:border-blue-800">
+                    <h4 class="font-bold text-blue-900 mb-2 italic dark:text-blue-400">No Linealidad</h4>
+                    <p class="text-sm dark:text-gray-300">En hormigón, la pérdida de rigidez se debe principalmente a la <strong>fisuración</strong> (cracking), efecto que si se ignora, subestima las deformaciones.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16 bg-slate-900 text-white p-8 md:p-12 rounded-2xl shadow-2xl dark:bg-gray-950">
+            <div class="flex items-center mb-8">
+                <div class="h-1 w-12 bg-blue-400 mr-4"></div>
+                <h2 class="text-3xl md:text-4xl font-bold uppercase tracking-tighter">04. Análisis y Ejercicio Práctico</h2>
+            </div>
+            
+            <div class="bg-white/5 border border-white/10 rounded-xl p-6 mb-10 flex flex-col md:flex-row items-center gap-8 dark:bg-gray-800/50">
+                <div class="w-full md:w-1/3 flex justify-center py-6 bg-black/30 rounded-lg relative overflow-hidden dark:bg-black/50">
+                    <div class="absolute inset-0 grid grid-cols-6 grid-rows-6 opacity-10 pointer-events-none">
+                        <div class="border-r border-b border-white"></div><div class="border-r border-b border-white"></div><div class="border-r border-b border-white"></div><div class="border-r border-b border-white"></div><div class="border-r border-b border-white"></div><div class="border-b border-white"></div>
+                        <div class="border-r border-b border-white"></div><div class="border-r border-b border-white"></div><div class="border-r border-b border-white"></div><div class="border-r border-b border-white"></div><div class="border-r border-b border-white"></div><div class="border-b border-white"></div>
+                        <div class="border-r border-b border-white"></div><div class="border-r border-b border-white"></div><div class="border-r border-b border-white"></div><div class="border-r border-b border-white"></div><div class="border-r border-b border-white"></div><div class="border-b border-white"></div>
+                    </div>
+                    <div class="relative w-12 h-64 bg-slate-400 border-2 border-slate-300 shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center justify-center dark:bg-gray-600 dark:border-gray-500">
+                        <div class="absolute -top-12 flex flex-col items-center text-red-500 font-bold animate-bounce">
+                            <span>$P$</span>
+                            <i class="fas fa-arrow-down text-2xl"></i>
+                        </div>
+                        <div class="absolute -bottom-12 flex flex-col items-center text-red-500 font-bold">
+                            <i class="fas fa-arrow-up text-2xl"></i>
+                            <span>$P$</span>
+                        </div>
+                        <div class="absolute -top-2 w-20 h-2 bg-slate-600 border-t-4 border-slate-800 dark:bg-gray-500 dark:border-gray-700"></div>
+                        <div class="absolute -bottom-2 w-20 h-2 bg-slate-600 border-b-4 border-slate-800 dark:bg-gray-500 dark:border-gray-700"></div>
+                        <svg class="absolute w-32 h-64 left-1/2 -ml-16 overflow-visible" fill="none" viewBox="0 0 100 200">
+                            <path d="M 50 0 Q 120 100 50 200" stroke="#3b82f6" stroke-width="3" stroke-dasharray="6,4" class="opacity-80"/>
+                            <text x="95" y="105" fill="#93c5fd" font-size="12" font-family="monospace">δ</text>
+                            <line x1="50" y1="100" x2="85" y2="100" stroke="#93c5fd" stroke-width="1" marker-end="url(#arrow)"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-2/3">
+                    <h3 class="text-2xl font-semibold text-blue-300 mb-4 border-b border-blue-500/30 pb-2 dark:text-blue-400">Planteamiento del Problema</h3>
+                    <p class="text-slate-300 leading-relaxed mb-4 dark:text-gray-300">
+                        Se requiere determinar la <strong>carga permisible de diseño ($P_{adm}$)</strong> para una columna de acero estructural de sección rectangular sólida, sometida a compresión axial pura. Se exige un Factor de Seguridad (F.S.) de 1.5.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4 text-sm font-mono bg-black/40 p-4 rounded-lg dark:bg-black/30">
+                        <div><span class="text-blue-400">Material:</span> Acero Estructural</div>
+                        <div><span class="text-blue-400">Condición:</span> Bi-empotrada ($K=0.5$)</div>
+                        <div><span class="text-blue-400">Sección:</span> $b = 50\text{mm}, h = 20\text{mm}$</div>
+                        <div><span class="text-blue-400">Longitud ($L$):</span> $1.0\text{ m}$</div>
+                        <div><span class="text-blue-400">$E$:</span> $200\text{ GPa}$</div>
+                        <div><span class="text-blue-400">$S_y$:</span> $250\text{ MPa}$</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <h3 class="text-xl font-semibold text-white mb-2 dark:text-gray-200">Desarrollo Matemático Paso a Paso</h3>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-800 border border-slate-700 p-5 rounded-xl shadow-inner dark:bg-gray-800 dark:border-gray-700">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">1</div>
+                            <h4 class="text-blue-200 font-bold text-lg dark:text-blue-300">Propiedades de la Sección</h4>
+                        </div>
+                        <div class="text-slate-300 text-sm space-y-3 pl-11 dark:text-gray-300">
+                            <p>Calculamos el área transversal ($A$):<br>
+                            $A = b \times h = 50\text{mm} \times 20\text{mm} = \mathbf{1000 \text{ mm}^2}$</p>
+                            
+                            <p>Calculamos el Momento de Inercia Menor ($I_{min}$):<br>
+                            $I_{min} = \frac{1}{12} \cdot b \cdot h^3 = \frac{1}{12}(50)(20)^3$<br>
+                            $I_{min} = \mathbf{33,333.33 \text{ mm}^4}$</p>
+
+                            <p>Radio de giro ($r$):<br>
+                            $r = \sqrt{\frac{I_{min}}{A}} = \sqrt{\frac{33333.33}{1000}} = \mathbf{5.77 \text{ mm}}$</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 border border-slate-700 p-5 rounded-xl shadow-inner dark:bg-gray-800 dark:border-gray-700">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">2</div>
+                            <h4 class="text-blue-200 font-bold text-lg dark:text-blue-300">Análisis de Esbeltez</h4>
+                        </div>
+                        <div class="text-slate-300 text-sm space-y-3 pl-11 dark:text-gray-300">
+                            <p>Determinamos la longitud efectiva ($L_e$) usando el factor $K=0.5$ (empotrado-empotrado):<br>
+                            $L_e = K \cdot L = 0.5 \times 1000\text{mm} = \mathbf{500 \text{ mm}}$</p>
+                            
+                            <p>Calculamos la Relación de Esbeltez Real ($\lambda$):<br>
+                            $\lambda = \frac{L_e}{r} = \frac{500}{5.77}$<br>
+                            $\lambda = \mathbf{86.65}$</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 border border-slate-700 p-5 rounded-xl shadow-inner dark:bg-gray-800 dark:border-gray-700">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">3</div>
+                            <h4 class="text-blue-200 font-bold text-lg dark:text-blue-300">Criterio de Falla ($C_c$)</h4>
+                        </div>
+                        <div class="text-slate-300 text-sm space-y-3 pl-11 dark:text-gray-300">
+                            <p>Calculamos la esbeltez de transición para el material ($C_c$):<br>
+                            $C_c = \sqrt{\frac{2\pi^2 E}{S_y}} = \sqrt{\frac{2\pi^2 (200\times10^3)}{250}}$<br>
+                            $C_c = \mathbf{125.66}$</p>
+                            
+                            <div class="bg-blue-900/40 p-3 rounded border-l-4 border-blue-400 mt-2 dark:bg-blue-800/40">
+                                <strong>Conclusión Crítica:</strong> Como $\lambda (86.65) < C_c (125.66)$, clasificamos esto como una <strong>columna intermedia</strong>. Fallará por pandeo inelástico (fluencia previa). Es obligatorio usar la fórmula de J.B. Johnson.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 border border-slate-700 p-5 rounded-xl shadow-inner dark:bg-gray-800 dark:border-gray-700">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">4</div>
+                            <h4 class="text-blue-200 font-bold text-lg dark:text-blue-300">Cálculo de Carga Permisible</h4>
+                        </div>
+                        <div class="text-slate-300 text-sm space-y-3 pl-11 dark:text-gray-300">
+                            <p>Esfuerzo Crítico de Johnson ($\sigma_{cr}$):<br>
+                            $\sigma_{cr} = S_y \left[1 - \frac{S_y \lambda^2}{4\pi^2 E}\right]$<br>
+                            $\sigma_{cr} = 250 \left[1 - \frac{250(86.65)^2}{4\pi^2(200,000)}\right] = \mathbf{190.58 \text{ MPa}}$</p>
+                            
+                            <p>Carga Crítica ($P_{cr}$) y Carga Admisible ($P_{adm}$):<br>
+                            $P_{cr} = \sigma_{cr} \cdot A = 190.58 \times 1000 = 190,580\text{ N}$<br>
+                            $P_{adm} = \frac{P_{cr}}{F.S.} = \frac{190.58\text{ kN}}{1.5}$</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 flex flex-col justify-center items-center bg-gradient-to-r from-blue-900/50 to-slate-800/50 py-8 px-6 rounded-xl border border-blue-500/50 shadow-lg dark:from-blue-900/30 dark:to-gray-800/50">
+                <span class="text-sm md:text-base uppercase tracking-widest text-blue-300 mb-2 font-bold dark:text-blue-400">Respuesta Definitiva: Carga Permisible ($P_{adm}$)</span>
+                <span class="text-5xl md:text-7xl font-mono font-bold text-white mb-3 tracking-tight drop-shadow-md">127.05 <span class="text-3xl md:text-4xl text-blue-200">kN</span></span>
+            </div>
+        </section>
+
+        <section class="mb-16" id="comprobacion">
+            <div class="flex items-center mb-6">
+                <div class="h-1 w-12 bg-blue-700 mr-4 dark:bg-blue-500"></div>
+                <h2 class="text-3xl font-bold text-slate-900 uppercase tracking-tighter dark:text-gray-200">05. Comprobación de Aprendizaje</h2>
+            </div>
+            
+            <p class="text-slate-600 mb-8 max-w-3xl dark:text-gray-400">Pon a prueba tu comprensión de los conceptos teóricos revisados en este portal interactuando con las siguientes preguntas.</p>
+
+            <div class="space-y-6 max-w-4xl mx-auto">
+                
+                <!-- Pregunta 1 -->
+                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm relative overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-4 dark:text-gray-200">1. Si una columna se encuentra en estado de "Equilibrio Inestable", significa que...</h3>
+                    <div class="space-y-3">
+                        <button onclick="checkAnswer(this, false, 'exp1')" class="w-full text-left p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors font-medium text-slate-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">A) La carga axial $P$ es exactamente igual a la crítica $P_{cr}$.</button>
+                        <button onclick="checkAnswer(this, true, 'exp1')" class="w-full text-left p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors font-medium text-slate-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">B) La carga axial $P$ ha superado la carga crítica $P_{cr}$ y ocurrirá pandeo.</button>
+                        <button onclick="checkAnswer(this, false, 'exp1')" class="w-full text-left p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors font-medium text-slate-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">C) El material ha superado su límite de fluencia $S_y$ independientemente de su esbeltez.</button>
+                    </div>
+                    <div id="exp1" class="hidden mt-4 p-4 rounded-lg bg-slate-100 border-l-4 border-slate-400 text-sm text-slate-700 quiz-feedback dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
+                        <strong>Explicación:</strong> Correcto. En el equilibrio inestable ($P > P_{cr}$), cualquier perturbación lateral crecerá indefinidamente provocando el colapso (analogía de la bola en superficie convexa).
+                    </div>
+                </div>
+
+                <!-- Pregunta 2 -->
+                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm relative overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-4 dark:text-gray-200">2. Verdadero o Falso: La ecuación de Euler calcula correctamente la carga de falla para *cualquier* tipo de columna, sin importar su longitud.</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="checkAnswer(this, false, 'exp2')" class="text-center p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors font-bold text-slate-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">VERDADERO</button>
+                        <button onclick="checkAnswer(this, true, 'exp2')" class="text-center p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors font-bold text-slate-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">FALSO</button>
+                    </div>
+                    <div id="exp2" class="hidden mt-4 p-4 rounded-lg bg-slate-100 border-l-4 border-slate-400 text-sm text-slate-700 quiz-feedback dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
+                        <strong>Explicación:</strong> ¡Falso! La ecuación de Euler asume un comportamiento puramente elástico. Para columnas cortas o intermedias (donde los esfuerzos superan el límite proporcional del material antes del pandeo), Euler sobreestima la resistencia y falla. Por ello usamos métodos parabólicos como el de J.B. Johnson.
+                    </div>
+                </div>
+
+                <!-- Pregunta 3 -->
+                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm relative overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-4 dark:text-gray-200">3. En la fórmula teórica del pandeo elástico, la resistencia al pandeo depende directamente de...</h3>
+                    <div class="space-y-3">
+                        <button onclick="checkAnswer(this, false, 'exp3')" class="w-full text-left p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors font-medium text-slate-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">A) La resistencia máxima a la compresión del material.</button>
+                        <button onclick="checkAnswer(this, true, 'exp3')" class="w-full text-left p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors font-medium text-slate-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">B) El Módulo de Elasticidad (E) y el Momento de Inercia de la sección transversal (I).</button>
+                        <button onclick="checkAnswer(this, false, 'exp3')" class="w-full text-left p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors font-medium text-slate-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">C) Únicamente del factor de restricción de los apoyos (K).</button>
+                    </div>
+                    <div id="exp3" class="hidden mt-4 p-4 rounded-lg bg-slate-100 border-l-4 border-slate-400 text-sm text-slate-700 quiz-feedback dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
+                        <strong>Explicación:</strong> Correcto. La fórmula teórica $P_{cr} = \frac{\pi^2 EI}{(KL)^2}$ demuestra que la estabilidad depende de la rigidez del material ($E$) y la geometría de la sección transversal ($I$), NO de su resistencia última.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="flex flex-col items-center space-y-4">
+            <div class="flex space-x-2">
+                <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-100"></div>
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse delay-200"></div>
+            </div>
+            
+            <div class="text-center space-y-1">
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Cristopher Elí Alvarez Lemus</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">202330163</span>
+                </div>
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Gabriel Alberto Tax Citalán</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">201830522</span>
+                </div>
+            </div>
+            
+            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+            
+            <div class="flex space-x-3 pt-2">
+                <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                    </svg>
+                </a>
+                <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="../js/darkmode.js"></script>
+    <script src="../js/progreso.js"></script>
+    
+    <script>
+        function checkAnswer(buttonElement, isCorrect, explanationId) {
+    const parent = buttonElement.parentElement;
+    const buttons = parent.querySelectorAll('button');
+    
+    buttons.forEach(btn => {
+        btn.disabled = true;
+        btn.classList.remove('hover:bg-slate-50', 'hover:bg-gray-700');
+        btn.classList.add('opacity-60', 'cursor-not-allowed');
+    });
+
+    buttonElement.classList.remove('opacity-60', 'border-slate-200', 'dark:border-gray-600');
+    buttonElement.classList.add('opacity-100', 'text-white', 'border-transparent');
+
+    if (isCorrect) {
+        buttonElement.classList.add('bg-green-600', 'hover:bg-green-700');
+        buttonElement.innerHTML += ' <i class="fas fa-check-circle ml-2"></i>';
+        
+        buttons.forEach(btn => {
+            if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes('true')) {
+                btn.classList.add('bg-green-100', 'text-green-800', 'border-green-500', 'dark:bg-green-900/50', 'dark:text-green-400', 'dark:border-green-600');
+            }
+        });
+    } else {
+        buttonElement.classList.add('bg-red-600', 'hover:bg-red-700');
+        buttonElement.innerHTML += ' <i class="fas fa-times-circle ml-2"></i>';
+        
+        buttons.forEach(btn => {
+            if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes('true')) {
+                btn.classList.remove('opacity-60', 'cursor-not-allowed');
+                btn.classList.add('bg-green-100', 'text-green-800', 'border-green-500', 'dark:bg-green-900/50', 'dark:text-green-400', 'dark:border-green-600');
+            }
+        });
+    }
+
+    const explanationDiv = document.getElementById(explanationId);
+    explanationDiv.classList.remove('hidden');
+    
+    if(isCorrect) {
+        explanationDiv.classList.remove('border-slate-400', 'bg-slate-100', 'dark:border-gray-600', 'dark:bg-gray-700');
+        explanationDiv.classList.add('border-green-500', 'bg-green-50', 'dark:bg-green-900/30', 'dark:border-green-600');
+    } else {
+        explanationDiv.classList.remove('border-slate-400', 'bg-slate-100', 'dark:border-gray-600', 'dark:bg-gray-700');
+        explanationDiv.classList.add('border-red-500', 'bg-red-50', 'dark:bg-red-900/30', 'dark:border-red-600');
+    }
+}
+        // Actualizar botón de completado
+        if (typeof actualizarBotonEnPagina === 'function') {
+            actualizarBotonEnPagina('5.1_estabilidad_equilibrio');
+        }
+    </script>
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>
