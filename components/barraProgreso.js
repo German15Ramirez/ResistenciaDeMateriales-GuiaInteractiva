@@ -10,9 +10,8 @@ function renderBarraProgreso() {
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                            📊 Progreso de Estudio
+                            Progreso de Estudio
                         </h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Mantén tu ritmo de aprendizaje</p>
                     </div>
                 </div>
                 <div class="text-right">
@@ -45,20 +44,17 @@ function renderBarraProgreso() {
     `;
 }
 
-// Función para insertar la barra de progreso en un contenedor
 function insertarBarraProgreso(contenedorId) {
     const contenedor = document.getElementById(contenedorId);
     if (contenedor) {
         contenedor.innerHTML = renderBarraProgreso();
         
-        // Actualizar la barra después de insertarla
         if (typeof actualizarBarraProgreso === 'function') {
             setTimeout(() => actualizarBarraProgreso(), 100);
         }
     }
 }
 
-// Exportar para uso global
 window.barraProgreso = {
     render: renderBarraProgreso,
     insertar: insertarBarraProgreso

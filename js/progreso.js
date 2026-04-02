@@ -33,15 +33,39 @@ function isTemaCompletado(temaId) {
 
 function mostrarNotificacion(mensaje, tipo = 'exito') {
     const notificacion = document.createElement('div');
-    notificacion.className = `fixed top-20 right-4 z-50 px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full ${
-        tipo === 'exito' ? 'bg-green-500' : 'bg-blue-500'
-    } text-white font-medium`;
+    
+    const bgColor = tipo === 'exito' ? 'bg-gradient-to-r from-green-500 to-green-600' : 'bg-gradient-to-r from-blue-500 to-blue-600';
+    const icono = tipo === 'exito' ? '🎉' : '📚';
+    const titulo = tipo === 'exito' ? '¡Excelente!' : 'Información';
+    
+    notificacion.className = `fixed top-24 right-4 z-50 rounded-xl shadow-2xl transform transition-all duration-500 translate-x-full overflow-hidden`;
     notificacion.innerHTML = `
-        <div class="flex items-center gap-2">
-            <span>${tipo === 'exito' ? '✅' : '📚'}</span>
-            <span>${mensaje}</span>
+        <div class="${bgColor} text-white px-5 py-4 min-w-[280px] max-w-sm">
+            <div class="flex items-start gap-3">
+                <div class="text-2xl animate-bounce">${icono}</div>
+                <div class="flex-1">
+                    <p class="font-bold text-sm uppercase tracking-wider">${titulo}</p>
+                    <p class="text-sm font-medium">${mensaje}</p>
+                </div>
+                <button onclick="this.parentElement.parentElement.parentElement.remove()" class="text-white/70 hover:text-white transition text-lg leading-none">&times;</button>
+            </div>
+            <div class="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
+                <div class="h-full bg-white rounded-full animate-progress-shrink" style="width: 100%; animation: shrink 3s linear forwards;"></div>
+            </div>
         </div>
     `;
+    
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes shrink {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+        .animate-progress-shrink {
+            animation: shrink 3s linear forwards;
+        }
+    `;
+    document.head.appendChild(style);
     
     document.body.appendChild(notificacion);
     
@@ -49,12 +73,111 @@ function mostrarNotificacion(mensaje, tipo = 'exito') {
         notificacion.style.transform = 'translateX(0)';
     }, 10);
     
+    // Animar salida
     setTimeout(() => {
-        notificacion.style.transform = 'translateX(100%)';
+        notificacion.style.transform = 'translateX(120%)';
         setTimeout(() => {
             notificacion.remove();
-        }, 300);
-    }, 3000);
+            style.remove();
+        }, 500);
+    }, 3300);
+}
+
+function mostrarMensajeCompletado() {
+    const temas = obtenerListaTemas();
+    const completados = getTemasCompletados();
+    const completadosEnLista = completados.filter(c => temas.includes(c));
+    const porcentaje = (completadosEnLista.length / temas.length) * 100;
+    
+    if (porcentaje === 100 && temas.length > 0) {
+        const yaMostrado = localStorage.getItem('felicitacionMostrada');
+        
+        if (!yaMostrado) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm transition-all duration-300';
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full mx-4 overflow-hidden shadow-2xl transform scale-95 animate-scale-in">
+                    <div class="bg-gradient-to-r from-yellow-500 to-orange-500 p-6 text-center">
+                        <div class="text-6xl mb-2 animate-bounce">🏆</div>
+                        <h2 class="text-2xl font-bold text-white">¡Felicidades!</h2>
+                        <p class="text-white/90 text-sm">Has completado todos los temas</p>
+                    </div>
+                    <div class="p-6 text-center">
+                        <div class="mb-4">
+                            <div class="w-20 h-20 mx-auto bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                                <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            ¡Excelente trabajo! Has dominado todos los temas.
+                        </p>
+                        <button onclick="this.closest('.fixed').remove()" class="bg-blue-900 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition font-semibold shadow-md">
+                            Continuar
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes scale-in {
+                    from { transform: scale(0.9); opacity: 0; }
+                    to { transform: scale(1); opacity: 1; }
+                }
+                .animate-scale-in {
+                    animation: scale-in 0.3s ease-out forwards;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(modal);
+            
+            crearConfeti();
+            
+            localStorage.setItem('felicitacionMostrada', 'true');
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+    } else {
+        localStorage.removeItem('felicitacionMostrada');
+    }
+}
+
+function crearConfeti() {
+    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff9900', '#ff66cc'];
+    
+    for (let i = 0; i < 100; i++) {
+        const confeti = document.createElement('div');
+        confeti.className = 'fixed pointer-events-none z-[101]';
+        confeti.style.width = `${Math.random() * 10 + 5}px`;
+        confeti.style.height = `${Math.random() * 10 + 5}px`;
+        confeti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confeti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        confeti.style.position = 'fixed';
+        confeti.style.top = '-20px';
+        confeti.style.left = `${Math.random() * window.innerWidth}px`;
+        confeti.style.opacity = '0.8';
+        confeti.style.zIndex = '1001';
+        
+        document.body.appendChild(confeti);
+        
+        const animation = confeti.animate([
+            { transform: `translate(0, 0) rotate(0deg)`, opacity: 0.8 },
+            { transform: `translate(${Math.random() * 200 - 100}px, ${window.innerHeight + 100}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+        ], {
+            duration: Math.random() * 2000 + 1000,
+            easing: 'cubic-bezier(0.2, 0.8, 0.4, 1)',
+            fill: 'forwards'
+        });
+        
+        animation.onfinish = () => confeti.remove();
+    }
 }
 
 function toggleCompletado(temaId) {
@@ -72,7 +195,7 @@ function toggleCompletado(temaId) {
     } else {
         completados.push(temaId);
         isCompletando = true;
-        mostrarNotificacion(`🎉 ¡Felicidades! Has completado el tema ${temaId} 🎉`, 'exito');
+        mostrarNotificacion(`¡Felicidades! Has completado el tema "${temaId}"`, 'exito');
     }
     
     setTemasCompletados(completados);
@@ -93,7 +216,12 @@ function toggleCompletado(temaId) {
     window.dispatchEvent(new CustomEvent('progresoActualizado', {
         detail: { temaId, completado: isCompletando }
     }));
+    
+    setTimeout(() => {
+        mostrarMensajeCompletado();
+    }, 500);
 }
+
 function actualizarBotonEnPagina(temaId) {
     const btn = document.getElementById('btnCompletado');
     if (!btn) return;
@@ -184,6 +312,7 @@ function actualizarBarraProgreso() {
     const completadosEnLista = completados.filter(c => temas.includes(c));
     const porcentaje = (completadosEnLista.length / temas.length) * 100;
     
+    barraProgreso.style.transition = 'width 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
     barraProgreso.style.width = `${porcentaje}%`;
     
     if (porcentajeTexto) {
@@ -196,13 +325,19 @@ function actualizarBarraProgreso() {
     
     if (porcentaje === 100) {
         barraProgreso.classList.remove('bg-green-500', 'bg-blue-500');
-        barraProgreso.classList.add('bg-green-600');
+        barraProgreso.classList.add('bg-gradient-to-r', 'from-green-500', 'to-green-600');
+    } else if (porcentaje >= 75) {
+        barraProgreso.classList.remove('bg-green-500', 'bg-blue-500', 'bg-gradient-to-r');
+        barraProgreso.classList.add('bg-gradient-to-r', 'from-green-400', 'to-green-500');
     } else if (porcentaje >= 50) {
-        barraProgreso.classList.remove('bg-green-500', 'bg-green-600');
-        barraProgreso.classList.add('bg-blue-500');
+        barraProgreso.classList.remove('bg-green-500', 'bg-blue-500', 'bg-gradient-to-r');
+        barraProgreso.classList.add('bg-gradient-to-r', 'from-blue-400', 'to-blue-500');
+    } else if (porcentaje >= 25) {
+        barraProgreso.classList.remove('bg-green-500', 'bg-blue-500', 'bg-gradient-to-r');
+        barraProgreso.classList.add('bg-gradient-to-r', 'from-yellow-400', 'to-yellow-500');
     } else {
-        barraProgreso.classList.remove('bg-blue-500', 'bg-green-600');
-        barraProgreso.classList.add('bg-green-500');
+        barraProgreso.classList.remove('bg-gradient-to-r', 'from-green-400', 'from-blue-400', 'from-yellow-400');
+        barraProgreso.classList.add('bg-gray-500');
     }
     
     if (porcentaje === 100 && temas.length > 0) {
@@ -210,8 +345,12 @@ function actualizarBarraProgreso() {
         if (!mensajeCompleto) {
             const mensaje = document.createElement('div');
             mensaje.id = 'mensajeCompleto';
-            mensaje.className = 'mt-3 text-center text-green-500 font-bold animate-pulse';
-            mensaje.innerHTML = '🎉 ¡Felicidades! Has completado todos los temas 🎉';
+            mensaje.className = 'mt-3 text-center font-bold animate-pulse';
+            mensaje.innerHTML = `
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 rounded-full">
+                    <span class="text-green-700 dark:text-green-400">¡Felicidades! Has completado todos los temas</span>
+                </div>
+            `;
             barraProgreso.parentElement.parentElement.appendChild(mensaje);
         }
     } else {
@@ -224,6 +363,7 @@ function initProgreso() {
     setTimeout(() => {
         actualizarEstadosTarjetas();
         actualizarBarraProgreso();
+        mostrarMensajeCompletado();
     }, 200);
 }
 
@@ -235,6 +375,12 @@ window.progreso = {
     actualizarBarraProgreso,
     actualizarEstadosTarjetas
 };
+
+window.toggleCompletado = toggleCompletado;
+window.actualizarEstadosTarjetas = actualizarEstadosTarjetas;
+window.initProgreso = initProgreso;
+window.actualizarBarraProgreso = actualizarBarraProgreso;
+
 function debugProgreso() {
     console.log('=== DEBUG PROGRESO ===');
     const temasElements = document.querySelectorAll('.tema');
@@ -265,3 +411,4 @@ function debugProgreso() {
     console.log('=====================');
 }
 
+window.debugProgreso = debugProgreso;
