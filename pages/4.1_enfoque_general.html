@@ -1,66 +1,78 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vigas Estáticamente Indeterminadas</title>
-    
-    <script>
-    (function() {
-        const modoGuardado = localStorage.getItem("modo");
-        if (modoGuardado === "oscuro") {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-            if (!modoGuardado) {
-                localStorage.setItem("modo", "claro");
-            }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vigas Estáticamente Indeterminadas</title>
+  
+  <script>
+  (function() {
+      const modoGuardado = localStorage.getItem("modo");
+      if (modoGuardado === "oscuro") {
+          document.documentElement.classList.add("dark");
+      } else {
+          document.documentElement.classList.remove("dark");
+          if (!modoGuardado) {
+              localStorage.setItem("modo", "claro");
+          }
+      }
+  })();
+  </script>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
         }
-    })();
-    </script>
+      }
+  }
+  </script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-    tailwind.config = {
-        darkMode: 'class'
+    body {
+        transition: background-color 0.3s, color 0.3s;
     }
-    </script>
+    .formula-box {
+      background: #f0f4ff;
+      border-left: 4px solid #1e3a8a;
+      border-radius: 0.5rem;
+      padding: 1rem 1.25rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.05rem;
+      color: #1e3a8a;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    .dark .formula-box {
+      background: #1e293b;
+      border-left-color: #3b82f6;
+      color: #93c5fd;
+    }
+    .formula-var { color: #b91c1c; font-weight: bold; }
+    .dark .formula-var { color: #fca5a5; }
     
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
-        
-        .dark .bg-gray-100 { background-color: #111827 !important; }
-        .dark .bg-white { background-color: #1f2937 !important; }
-        .dark .text-gray-800 { color: #f3f4f6 !important; }
-        .dark .text-gray-700 { color: #d1d5db !important; }
-        .dark .text-gray-600 { color: #9ca3af !important; }
-        .dark .border-gray-200 { border-color: #374151 !important; }
-        .dark .bg-blue-50 { background-color: #1e293b !important; }
-        .dark .text-blue-900 { color: #60a5fa !important; }
-        .dark .text-blue-700 { color: #93c5fd !important; }
-        .dark .text-blue-800 { color: #60a5fa !important; }
-        .dark .text-blue-100 { color: #bfdbfe !important; }
-        .dark .bg-blue-800 { background-color: #1e3a8a !important; }
-        .dark .bg-yellow-600 { background-color: #b45309 !important; }
-        .dark .bg-green-600 { background-color: #065f46 !important; }
-        .dark .bg-red-600 { background-color: #991b1b !important; }
-        .dark .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
-        .dark .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); }
-        .dark .border-blue-500 { border-color: #3b82f6 !important; }
-        .dark .border-green-500 { border-color: #22c55e !important; }
-        .dark .bg-black.bg-opacity-60 { background-color: rgba(0, 0, 0, 0.85); }
-    </style>
+    .quiz-btn-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+  </style>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800 dark:bg-gray-900 dark:text-gray-100">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans">
 
-    <header class="bg-blue-900 text-white py-12 shadow-lg">
+    <header class="bg-blue-900 dark:bg-slate-800 text-white py-12 shadow-lg transition-colors duration-300">
         <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="text-center md:text-left flex-1">
-                <div class="flex justify-end mb-4 md:hidden">
-                </div>
+            <div class="text-center md:text-left">
                 <h1 class="text-4xl md:text-5xl font-bold mb-4">Vigas Estáticamente Indeterminadas</h1>
-                <!-- Botón de completado -->
+                <p class="text-xl text-blue-200 dark:text-blue-300 font-light max-w-2xl">
+                    Esta sección explora los métodos para resolver vigas estáticamente indeterminadas, donde las ecuaciones de equilibrio son insuficientes. Se analizan técnicas como la superposición, la integración, el área de momentos y la ecuación de los tres momentos.
+                </p>
                 <div class="mt-6">
                     <button 
                         id="btnCompletado"
@@ -71,113 +83,144 @@
                     </button>
                 </div>
             </div>
+            <div class="flex items-center gap-4">
+            </div>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-10">
-
-        <section class="mb-12">
-            <h2 class="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-6 border-b-4 border-blue-900 dark:border-blue-500 inline-block">Introducción y Conceptos Clave</h2>
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-t-4 border-blue-500 md:col-span-2">
-                    <h3 class="font-semibold text-xl mb-3 text-blue-900 dark:text-blue-400">¿Qué son estas vigas?</h3>
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                        Son estructuras donde las ecuaciones de equilibrio de la estática no bastan para determinar todas las reacciones o esfuerzos internos. Esto sucede porque el número de incógnitas supera al de las ecuaciones independientes disponibles.
-                    </p>
-                    <h3 class="font-semibold text-xl mb-3 text-blue-900 dark:text-blue-400">Grado de Indeterminación</h3>
-                    <p class="text-gray-700 dark:text-gray-300">
-                        Es el número de reacciones o fuerzas internas sobrantes, llamadas <strong>redundantes</strong>. Se pueden clasificar en primer grado (una redundante), segundo grado (dos redundantes) o tercer grado (tres redundantes).
-                    </p>
-                </div>
-                
-                <div class="bg-blue-50 dark:bg-blue-900/30 p-6 rounded-lg shadow-md border-t-4 border-green-500">
-                    <h3 class="font-semibold text-xl mb-3 text-green-800 dark:text-green-400">Ventajas Estructurales</h3>
-                    <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-300">
-                        <li><strong>Mayor Rigidez:</strong> Presentan deflexiones mucho menores que las vigas isostáticas.</li>
-                        <li><strong>Ahorro de Material:</strong> Distribuyen mejor los esfuerzos, reduciendo los momentos flectores máximos.</li>
-                        <li><strong>Mayor Seguridad:</strong> Poseen capacidad de redistribución; si una sección falla, la viga no colapsa inmediatamente.</li>
-                    </ul>
-                </div>
-            </div>
+    <main class="container mx-auto px-4 py-10 max-w-5xl space-y-10">
+        
+        <section class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 transition-colors duration-300">
+            <h2 class="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-6 border-b-2 border-blue-100 dark:border-gray-700 pb-2">Introducción y Conceptos Clave</h2>
+            <p class="mb-4 leading-relaxed dark:text-gray-300">
+                En la ingeniería estructural moderna, muchas de las estructuras diseñadas son estáticamente indeterminadas (o hiperestáticas). Esto significa que el número de reacciones de soporte o fuerzas internas excede el número de ecuaciones de equilibrio de la estática disponibles (ΣFx = 0, ΣFy = 0, ΣM = 0).
+            </p>
+            <p class="mb-4 leading-relaxed dark:text-gray-300">
+                Para resolver este tipo de vigas, es necesario formular ecuaciones adicionales que se basan en las condiciones de deformación o desplazamiento de la estructura. Estas ecuaciones se conocen como <strong>ecuaciones de compatibilidad</strong>.
+            </p>
+            
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-blue-800 dark:text-blue-300">Preguntas para reflexionar:</h3>
+            <ul class="list-disc list-inside space-y-3 mb-4 text-gray-700 dark:text-gray-300">
+                <li><strong>¿Por qué usar vigas indeterminadas?</strong> Permiten una mejor distribución de esfuerzos, reducen deflexiones máximas y ofrecen redundancia estructural, previniendo colapsos inmediatos si falla un apoyo.</li>
+                <li><strong>¿Cuál es el costo de esta ventaja?</strong> Su análisis es significativamente más complejo, ya que requiere considerar las propiedades del material (módulo de elasticidad) y la geometría de la sección transversal (momento de inercia), no solo el equilibrio de fuerzas.</li>
+                <li><strong>¿Qué es una fuerza redundante?</strong> Es aquella reacción de apoyo (o fuerza interna) que no es estrictamente necesaria para mantener el equilibrio estático de la estructura. Si se elimina, la estructura restante (estructura primaria) sigue siendo estable y estáticamente determinada.</li>
+            </ul>
         </section>
 
-        <section class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-xl mb-12">
-            <h2 class="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-8 text-center">Desarrollo y Análisis</h2>
+        <section class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 transition-colors duration-300">
+            <h2 class="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-6 border-b-2 border-blue-100 dark:border-gray-700 pb-2">Desarrollo y Análisis</h2>
+            <p class="mb-6 leading-relaxed dark:text-gray-300">
+                El análisis de vigas estáticamente indeterminadas requiere ecuaciones adicionales de compatibilidad de deformaciones, combinadas con las ecuaciones de equilibrio estático.
+            </p>
             
-            <div class="grid md:grid-cols-2 gap-10 mb-8">
-                <div class="space-y-8">
-                    <div>
-                        <h3 class="font-bold text-xl mb-4 text-blue-700 dark:text-blue-400 border-b-2 border-gray-200 dark:border-gray-700 pb-2">Configuraciones Comunes</h3>
-                        <ul class="space-y-3 text-gray-700 dark:text-gray-300">
-                            <li class="flex items-start"><span class="text-blue-600 dark:text-blue-400 mr-2 text-xl">✔</span> <strong>Viga en voladizo apuntalada:</strong> Fija en un extremo y apoyada en el otro. Generalmente de primer grado.</li>
-                            <li class="flex items-start"><span class="text-blue-600 dark:text-blue-400 mr-2 text-xl">✔</span> <strong>Viga de extremos fijos:</strong> Restringida contra traslación y rotación en ambos extremos (doblemente empotrada).</li>
-                            <li class="flex items-start"><span class="text-blue-600 dark:text-blue-400 mr-2 text-xl">✔</span> <strong>Viga continua:</strong> Aquella que se extiende sobre tres o más apoyos, cubriendo múltiples claros.</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-xl mb-4 text-blue-700 dark:text-blue-400 border-b-2 border-gray-200 dark:border-gray-700 pb-2">Requisitos para el Análisis</h3>
-                        <p class="mb-3 italic text-gray-600 dark:text-gray-400">La resolución exige satisfacer 3 condiciones críticas:</p>
-                        <ol class="list-decimal list-inside space-y-2 text-gray-700 dark:text-gray-300 ml-2 font-medium">
-                            <li><strong>Equilibrio:</strong> Relacionan las cargas con fuerzas desconocidas.</li>
-                            <li><strong>Compatibilidad:</strong> Restricciones de desplazamiento o pendiente basadas en geometría.</li>
-                            <li><strong>Relaciones constitutivas:</strong> Propiedades del material (E) y de la sección (I).</li>
-                        </ol>
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-blue-800 dark:text-blue-300">Método de Integración:</h3>
+                    <p class="text-gray-700 dark:text-gray-300 mb-2">Se utiliza la ecuación diferencial de la curva elástica. Para vigas con múltiples apoyos, las constantes de integración se determinan mediante condiciones de frontera (ej. deflexión cero en los apoyos) y condiciones de continuidad (ej. la pendiente y la deflexión deben ser iguales a ambos lados de un apoyo intermedio).</p>
+                    <div class="formula-box">
+                        Ecuación diferencial básica: EI(d⁴y/dx⁴) = w(x)
                     </div>
                 </div>
 
                 <div>
-                    <h3 class="font-bold text-xl mb-4 text-blue-700 dark:text-blue-400 border-b-2 border-gray-200 dark:border-gray-700 pb-2">Metodologías de Solución</h3>
-                    <div class="space-y-4">
-                        <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg border-l-4 border-blue-600">
-                            <h4 class="font-bold text-blue-900 dark:text-blue-400 mb-1">Método de Superposición</h4>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">Consiste en elegir una redundante, "liberar" el apoyo para crear una viga primaria determinada y sumar los efectos de las cargas reales y la redundante para cumplir con la compatibilidad original.</p>
-                        </div>
-                        <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg border-l-4 border-blue-600">
-                            <h4 class="font-bold text-blue-900 dark:text-blue-400 mb-1">Método de Integración</h4>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">Resuelve la ecuación diferencial de la curva elástica aplicando condiciones de frontera para hallar las constantes y reacciones desconocidas.</p>
-                        </div>
-                        <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg border-l-4 border-blue-600">
-                            <h4 class="font-bold text-blue-900 dark:text-blue-400 mb-1">Teorema de Área de Momentos</h4>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">Utiliza relaciones geométricas entre el área del diagrama M/EI y las desviaciones tangenciales para satisfacer la geometría de los apoyos.</p>
-                        </div>
-                        <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg border-l-4 border-blue-600">
-                            <h4 class="font-bold text-blue-900 dark:text-blue-400 mb-1">Teorema de Castigliano (Energía)</h4>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">La derivada parcial de la energía de deformación respecto a una redundante se iguala al desplazamiento conocido en ese punto.</p>
-                        </div>
+                    <h3 class="text-xl font-semibold mb-2 text-blue-800 dark:text-blue-300">Método del Área de Momentos:</h3>
+                    <p class="text-gray-700 dark:text-gray-300">Basado en los teoremas de Mohr, este método es útil para vigas con secciones transversales variables. Relaciona la curvatura de la viga (M/EI) con las pendientes y deflexiones, permitiendo establecer ecuaciones de compatibilidad basadas en la geometría de la deformación.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-blue-800 dark:text-blue-300">Método de Superposición:</h3>
+                    <p class="text-gray-700 dark:text-gray-300 mb-2">Es quizás el método más intuitivo. Se selecciona una o más reacciones como "redundantes". Se elimina la restricción correspondiente (haciendo la estructura primariamente estáticamente determinada) y se calcula la deflexión debida a las cargas reales. Luego, se calcula la deflexión debida a la fuerza redundante (aplicada como carga). La suma de ambas deflexiones debe cumplir la condición de frontera original (generalmente cero).</p>
+                    <div class="formula-box">
+                        Condición de compatibilidad: Δ<span class="formula-var">real</span> + Δ<span class="formula-var">redundante</span> = 0
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-blue-800 dark:text-blue-300">Ecuación de los Tres Momentos:</h3>
+                    <p class="text-gray-700 dark:text-gray-300 mb-2">Desarrollada por Clapeyron, relaciona los momentos flectores en tres apoyos consecutivos de una viga continua. Es especialmente eficiente para vigas con múltiples tramos.</p>
+                    <div class="formula-box">
+                        Fórmula: M<span class="formula-var">A</span>L<span class="formula-var">1</span> + 2M<span class="formula-var">B</span>(L<span class="formula-var">1</span> + L<span class="formula-var">2</span>) + M<span class="formula-var">C</span>L<span class="formula-var">2</span> = -6 [ (A<span class="formula-var">1</span>·a<span class="formula-var">1</span>) / L<span class="formula-var">1</span> + (A<span class="formula-var">2</span>·b<span class="formula-var">2</span>) / L<span class="formula-var">2</span> ]
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="mb-12">
-            <div class="bg-blue-900 dark:bg-blue-800 text-white p-8 rounded-lg shadow-2xl">
-                <h2 class="text-2xl font-bold mb-4">Calculadora de Grado de Indeterminación</h2>
-                <p class="mb-6 text-blue-100">Calcula rápidamente si tu viga es isostática o hiperestática en un sistema plano (considerando 3 ecuaciones de la estática disponibles).</p>
-                <div class="flex flex-col md:flex-row gap-4 items-end">
-                    <div>
-                        <label class="block mb-2 text-sm font-semibold">Número de reacciones incógnitas (R):</label>
-                        <input type="number" id="reactions" min="0" class="w-full p-3 rounded text-gray-900 font-bold dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Ej: 4">
-                    </div>
-                    <button onclick="calculateDegree()" class="bg-white text-blue-900 dark:bg-gray-200 dark:text-blue-900 font-bold px-8 py-3 rounded hover:bg-gray-200 transition">Calcular Grado</button>
-                </div>
-                <div id="resultArea" class="mt-6 p-4 bg-blue-800 dark:bg-blue-900 rounded hidden">
-                    <p id="resultText" class="text-lg font-semibold"></p>
-                </div>
+        <section class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 transition-colors duration-300">
+            <h2 class="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-6 border-b-2 border-blue-100 dark:border-gray-700 pb-2">Ejemplo Resuelto: Análisis de Grado</h2>
+            <p class="mb-4 leading-relaxed dark:text-gray-300">
+                Comprender el grado de indeterminación es el primer paso antes de aplicar cualquier método de resolución. El Grado de Indeterminación (G) se define como la diferencia entre el número de reacciones desconocidas y las ecuaciones de equilibrio estático disponibles.
+            </p>
+            <div class="formula-box text-center">
+                Fórmula: G = Número de Reacciones (R) - Ecuaciones de la Estática (E)
+            </div>
+            
+            <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg border border-gray-200 dark:border-gray-600 mt-6">
+                <h4 class="text-xl font-bold mb-2 text-blue-900 dark:text-blue-300">Problema:</h4>
+                <p class="mb-4 text-gray-700 dark:text-gray-300">Determinar el grado de indeterminación de una viga empotrada en un extremo y con un apoyo de rodillo en el otro (Viga Propped Cantilever), sometida a cargas verticales.</p>
+                
+                <h4 class="text-xl font-bold mb-2 text-blue-900 dark:text-blue-300">Solución:</h4>
+                <ol class="list-decimal list-inside space-y-2 mb-4 text-gray-700 dark:text-gray-300">
+                    <li>Identificar las reacciones en el empotramiento: Existen 3 reacciones (Fuerza vertical Fy, Fuerza horizontal Fx, Momento M).</li>
+                    <li>Identificar las reacciones en el rodillo: Existe 1 reacción (Fuerza vertical Fy).</li>
+                    <li>Calcular el total de reacciones (R): R = 3 (empotramiento) + 1 (rodillo) = 4.</li>
+                    <li>Identificar las ecuaciones de equilibrio estático (E) disponibles en 2D: E = 3 (ΣFx=0, ΣFy=0, ΣM=0).</li>
+                    <li>Calcular el grado (G): G = 4 - 3 = 1.</li>
+                </ol>
+                
+                <h4 class="text-lg font-bold mb-2 text-blue-900 dark:text-blue-300">Conclusión del Ejemplo:</h4>
+                <p class="text-gray-700 dark:text-gray-300">La viga es estáticamente indeterminada de primer grado. Esto significa que necesitamos formular una ecuación de compatibilidad adicional para resolver las 4 reacciones desconocidas.</p>
             </div>
         </section>
 
-        <section class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md border-l-8 border-blue-900 dark:border-blue-500 mb-10">
-            <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-4 text-center">Conclusión</h2>
-            <p class="text-gray-700 dark:text-gray-300 text-center italic text-lg">
-                "El análisis de vigas hiperestáticas es fundamental para el diseño eficiente de estructuras complejas (edificios, puentes, aeronaves), permitiendo una distribución de carga más óptima a costa de una mayor sensibilidad a variaciones térmicas y geométricas." 
+        <section class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 transition-colors duration-300">
+            <h2 class="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-6 border-b-2 border-blue-100 dark:border-gray-700 pb-2">Calculadora de Grado de Indeterminación</h2>
+            <p class="mb-6 text-gray-700 dark:text-gray-300">Esta herramienta te permite verificar rápidamente el grado de indeterminación de una estructura en 2D.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2 dark:text-gray-300">Número de Reacciones (R):</label>
+                    <input type="number" id="calc-r" class="w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 dark:text-white" value="4" min="1">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2 dark:text-gray-300">Ecuaciones de Estática (E):</label>
+                    <input type="number" id="calc-e" class="w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 dark:text-white" value="3" min="1">
+                </div>
+            </div>
+            <button onclick="calcularGrado()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                Calcular Grado de Indeterminación
+            </button>
+            
+            <div id="calc-resultado" class="mt-6 p-4 rounded-lg hidden text-center font-bold text-lg"></div>
+        </section>
+
+        <section id="quiz" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 transition-colors duration-300">
+            <h2 class="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-6 border-b-2 border-blue-100 dark:border-gray-700 pb-2">Evaluación de Conocimientos</h2>
+            
+            <div class="mb-6 flex items-center justify-between">
+                <span id="quiz-status" class="text-sm font-semibold text-gray-500 dark:text-gray-400">0 de 4 respondidas</span>
+                <div class="w-1/2 bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                    <div id="quiz-progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div id="quiz-container" class="space-y-8"></div>
+
+            <div id="quiz-result" class="hidden mt-8 p-6 bg-blue-50 dark:bg-slate-700 rounded-lg text-center shadow-inner transition-colors duration-300">
+                <h3 class="text-2xl font-bold text-blue-900 dark:text-white mb-2">Resultados</h3>
+                <p class="text-lg mb-2">Puntuación: <span id="quiz-score-text" class="font-bold text-2xl text-blue-600 dark:text-blue-300"></span></p>
+                <p id="quiz-feedback" class="text-md font-medium text-gray-700 dark:text-gray-300"></p>
+                <button onclick="resetQuiz()" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow transition-colors">
+                    Reintentar Evaluación
+                </button>
+            </div>
+        </section>
+
+        <section class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 transition-colors duration-300">
+            <h2 class="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-6 border-b-2 border-blue-100 dark:border-gray-700 pb-2">Conclusión</h2>
+            <p class="leading-relaxed dark:text-gray-300">
+                El análisis de vigas estáticamente indeterminadas es fundamental para el diseño de estructuras seguras y eficientes. Aunque requiere métodos más avanzados que la estática básica, las ventajas en términos de distribución de cargas y redundancia estructural justifican plenamente su estudio y aplicación en la ingeniería moderna.
             </p>
         </section>
-
-        <div class="text-center mb-10">
-            <button onclick="toggleModal()" class="bg-blue-900 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105">
-                Ver Desventajas y Factores Críticos
-            </button>
-        </div>
 
         <!-- BIBLIOGRAFIA -->
         <section class="bg-white p-10 rounded-lg shadow-md border-t-8 border-gray-400 dark:bg-gray-800 dark:border-gray-600">
@@ -198,22 +241,6 @@
  </section>
 
     </main>
-
-    <div id="infoModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white dark:bg-gray-800 rounded-lg max-w-lg w-full p-6 shadow-2xl">
-            <div class="flex justify-between items-center mb-4 border-b pb-2 dark:border-gray-700">
-                <h3 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Factores Críticos (Desventajas)</h3>
-                <button onclick="toggleModal()" class="text-gray-500 hover:text-red-500 text-3xl font-bold leading-none">&times;</button>
-            </div>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">A diferencia de las vigas determinadas, los sistemas hiperestáticos son altamente sensibles a factores no mecánicos:</p>
-            <ul class="space-y-4 text-gray-700 dark:text-gray-300">
-                <li><strong class="text-blue-900 dark:text-blue-400">Efectos Térmicos:</strong> Los cambios de temperatura inducen esfuerzos y reacciones adicionales porque la viga no tiene libertad para dilatarse.</li>
-                <li><strong class="text-blue-900 dark:text-blue-400">Asentamiento de Apoyos:</strong> El movimiento accidental de un soporte redistribuye drásticamente los momentos internos y fuerzas cortantes.</li>
-                <li><strong class="text-blue-900 dark:text-blue-400">Errores de Fabricación:</strong> Pequeños desajustes en la longitud de los elementos generan esfuerzos residuales solo en estas estructuras.</li>
-            </ul>
-            <button onclick="toggleModal()" class="mt-8 w-full bg-blue-900 text-white font-bold py-3 rounded hover:bg-blue-800 transition">Cerrar</button>
-        </div>
-    </div>
 
     <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
     <div class="absolute inset-0 opacity-10">
@@ -259,44 +286,180 @@
     <script src="../js/progreso.js"></script>
     
     <script>
-        // Lógica de la calculadora
-        function calculateDegree() {
-            const rInput = document.getElementById('reactions').value;
-            const resultArea = document.getElementById('resultArea');
-            const resultText = document.getElementById('resultText');
+        function calcularGrado() {
+            const r = parseInt(document.getElementById('calc-r').value);
+            const e = parseInt(document.getElementById('calc-e').value);
+            const resultadoDiv = document.getElementById('calc-resultado');
             
-            if (rInput === "") return;
+            if (isNaN(r) || isNaN(e)) {
+                resultadoDiv.className = "mt-6 p-4 rounded-lg bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100 font-bold text-lg block";
+                resultadoDiv.textContent = "Por favor, ingresa valores válidos.";
+                return;
+            }
 
-            const r = parseInt(rInput);
-            const g = r - 3;
-            
-            resultArea.classList.remove('hidden');
+            const g = r - e;
+            resultadoDiv.classList.remove('hidden');
 
-            if (g > 0) {
-                resultText.innerHTML = `Es una viga hiperestática (indeterminada) de <strong>grado ${g}</strong>. Requiere ${g} ecuación(es) de compatibilidad extra para resolverse.`;
-                resultArea.className = "mt-6 p-4 bg-yellow-600 dark:bg-yellow-700 rounded text-white";
+            if (g < 0) {
+                resultadoDiv.className = "mt-6 p-4 rounded-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100 font-bold text-lg block";
+                resultadoDiv.innerHTML = `G = ${g}. La estructura es <strong>Inestable</strong> (Mecanismo).`;
             } else if (g === 0) {
-                resultText.innerHTML = "Es una viga estáticamente determinada (isostática). Se puede resolver solo con estática.";
-                resultArea.className = "mt-6 p-4 bg-green-600 dark:bg-green-700 rounded text-white";
+                resultadoDiv.className = "mt-6 p-4 rounded-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 font-bold text-lg block";
+                resultadoDiv.innerHTML = `G = ${g}. La estructura es <strong>Estáticamente Determinada</strong>.`;
             } else {
-                resultText.innerHTML = "Atención: La viga es inestable (hipoestática) bajo condiciones generales de carga.";
-                resultArea.className = "mt-6 p-4 bg-red-600 dark:bg-red-700 rounded text-white";
+                resultadoDiv.className = "mt-6 p-4 rounded-lg bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100 font-bold text-lg block";
+                resultadoDiv.innerHTML = `G = ${g}. La estructura es <strong>Indeterminada de Grado ${g}</strong>.`;
             }
         }
 
-        // Lógica del modal
-        function toggleModal() {
-            const modal = document.getElementById('infoModal');
-            modal.classList.toggle('hidden');
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            
-            // Actualizar botón de completado
-            if (typeof actualizarBotonEnPagina === 'function') {
-                actualizarBotonEnPagina('4.1_enfoque_general');
+        const quizData = [
+            {
+                question: "¿Por qué las ecuaciones de la estática no son suficientes para resolver vigas estáticamente indeterminadas?",
+                options: [
+                    "Porque las cargas son demasiado grandes.",
+                    "Porque hay más reacciones desconocidas que ecuaciones de equilibrio disponibles.",
+                    "Porque los materiales son no lineales."
+                ],
+                correct: 1,
+                explanation: "Las vigas indeterminadas tienen redundantes; por lo tanto, las incógnitas superan las ecuaciones de la estática (Fuerzas y Momentos)."
+            },
+            {
+                question: "¿Qué es una fuerza redundante?",
+                options: [
+                    "Una carga externa que produce fallas en la estructura.",
+                    "El peso propio de la viga.",
+                    "Una reacción de apoyo que no es estrictamente necesaria para mantener el equilibrio estático de la estructura."
+                ],
+                correct: 2,
+                explanation: "Las redundantes proporcionan soporte adicional (y hacen la estructura hiperestática), pero la estructura primaria seguiría estable sin ellas."
+            },
+            {
+                question: "¿Qué método de resolución utiliza la suma de deflexiones calculadas por separado?",
+                options: [
+                    "Método de superposición",
+                    "Método de la estática pura",
+                    "Método de nodos"
+                ],
+                correct: 0,
+                explanation: "El método de superposición calcula las deflexiones de las cargas reales y las redundantes por separado para aplicar la condición de compatibilidad."
+            },
+            {
+                question: "Si una viga tiene 5 reacciones desconocidas y dispones de 3 ecuaciones de estática, ¿Cuál es su grado de indeterminación?",
+                options: [
+                    "Grado 1",
+                    "Grado 2",
+                    "Grado 3"
+                ],
+                correct: 1,
+                explanation: "El Grado de indeterminación es la diferencia entre Reacciones y Ecuaciones: G = R - E. En este caso 5 - 3 = 2."
             }
-        });
+        ];
+
+        let answered = new Array(quizData.length).fill(false);
+        let correctCount = 0;
+
+        function buildQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            answered.fill(false);
+            correctCount = 0;
+            updateProgress();
+
+            quizData.forEach((q, index) => {
+                const quizItem = document.createElement('div');
+                quizItem.className = 'quiz-item bg-gray-50 dark:bg-gray-700 p-6 rounded-lg border border-gray-100 dark:border-gray-600 shadow-sm';
+                
+                let optionsHtml = '';
+                q.options.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <button onclick="checkAnswer(${index}, ${optIndex}, this)" 
+                                class="quiz-btn-hover w-full text-left p-4 mb-3 rounded border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-slate-600 transition-all duration-200">
+                            ${opt}
+                        </button>
+                    `;
+                });
+
+                quizItem.innerHTML = `
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">${index + 1}. ${q.question}</h3>
+                    <div class="options-container">${optionsHtml}</div>
+                `;
+                container.appendChild(quizItem);
+            });
+        }
+
+        function updateProgress() {
+            const done = answered.filter(Boolean).length;
+            document.getElementById('quiz-progress-bar').style.width = Math.round(done / quizData.length * 100) + '%';
+            document.getElementById('quiz-status').textContent = `${done} de ${quizData.length} respondidas`;
+        }
+
+        function checkAnswer(qNumber, optIndex, button) {
+            if (answered[qNumber]) return;
+            answered[qNumber] = true;
+
+            const isCorrect = (optIndex === quizData[qNumber].correct);
+            const container = button.closest('.options-container');
+            const buttons = container.querySelectorAll('button');
+
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.remove('hover:bg-blue-50', 'dark:hover:bg-slate-600', 'quiz-btn-hover');
+                if (idx === quizData[qNumber].correct) {
+                    btn.classList.add('bg-green-100', 'dark:bg-green-900', 'border-green-500', 'text-green-800', 'dark:text-green-100');
+                } else if (idx === optIndex && !isCorrect) {
+                    btn.classList.add('bg-red-100', 'dark:bg-red-900', 'border-red-500', 'text-red-800', 'dark:text-red-100');
+                } else {
+                    btn.classList.add('opacity-50');
+                }
+            });
+
+            if (isCorrect) correctCount++;
+            updateProgress();
+
+            const feedback = document.createElement('div');
+            feedback.className = 'mt-4 p-4 rounded-lg text-sm font-medium transition-all duration-500 transform translate-y-2';
+
+            if (isCorrect) {
+                feedback.classList.add('bg-green-100', 'text-green-800', 'dark:bg-green-800', 'dark:text-green-100', 'border-l-4', 'border-green-500');
+                feedback.innerHTML = `<strong>¡Excelente!</strong> ${quizData[qNumber].explanation}`;
+            } else {
+                feedback.classList.add('bg-red-100', 'text-red-800', 'dark:bg-red-800', 'dark:text-red-100', 'border-l-4', 'border-red-500');
+                feedback.innerHTML = `<strong>Respuesta incorrecta.</strong> <br><span class="block mt-2">${quizData[qNumber].explanation}</span>`;
+            }
+
+            button.closest('.quiz-item').appendChild(feedback);
+
+            const done = answered.filter(Boolean).length;
+            if (done === quizData.length) {
+                setTimeout(showResult, 500);
+            }
+        }
+
+        function showResult() {
+            const r = document.getElementById('quiz-result');
+            r.classList.remove('hidden');
+            document.getElementById('quiz-score-text').textContent = `${correctCount} / ${quizData.length}`;
+            
+            const pct = Math.round(correctCount / quizData.length * 100);
+            document.getElementById('quiz-feedback').textContent =
+                pct === 100 ? '¡Perfecto! Dominas completamente el tema.' :
+                pct >= 50   ? 'Buen resultado. Repasa los conceptos donde fallaste.' :
+                            'Sigue estudiando. Lee con calma la introducción y el desarrollo del tema.';
+            r.scrollIntoView({behavior:'smooth', block:'center'});
+        }
+
+        function resetQuiz() {
+            document.getElementById('quiz-result').classList.add('hidden');
+            buildQuiz();
+            document.getElementById('quiz').scrollIntoView({behavior:'smooth'});
+        }
+
+        buildQuiz();
+        
+        if (typeof actualizarBotonEnPagina === 'function') {
+            actualizarBotonEnPagina('4.1_enfoque_general');
+        }
     </script>
 </body>
 </html>
+

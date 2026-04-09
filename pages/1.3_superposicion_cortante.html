@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Superposición de Cortante</title>
+    <title>Superposición Cortante</title>
     
     <script>
     (function() {
@@ -26,117 +26,58 @@
     }
     </script>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
+        body { font-family: 'Open Sans', sans-serif; scroll-behavior: smooth; transition: background-color 0.3s ease, color 0.3s ease; }
+        .formula { background: #f3f4f6; border-radius: 4px; padding: 2px 6px; font-family: monospace; font-weight: bold; }
         
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 0.6;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.05);
-            }
-        }
-        
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-15px);
-            }
-        }
-        
-        @keyframes spin-slow {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-        
-        @keyframes shimmer {
-            0% {
-                background-position: -200% 0;
-            }
-            100% {
-                background-position: 200% 0;
-            }
-        }
-        
-        .animate-pulse-slow {
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        .animate-spin-slow {
-            animation: spin-slow 8s linear infinite;
-        }
-        
-        .shimmer-text {
-            background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a);
-            background-size: 200% auto;
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            animation: shimmer 3s linear infinite;
-        }
-        
-        .dark .shimmer-text {
-            background: linear-gradient(90deg, #60a5fa, #93c5fd, #60a5fa);
-            background-size: 200% auto;
-            background-clip: text;
-            -webkit-background-clip: text;
-        }
-        
-        .construction-icon {
-            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
-        }
-        
-        .dark .construction-icon {
-            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
-        }
-        
-        @keyframes border-pulse {
-            0%, 100% {
-                border-color: rgba(59, 130, 246, 0.3);
-                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.2);
-            }
-            50% {
-                border-color: rgba(59, 130, 246, 0.8);
-                box-shadow: 0 0 20px 5px rgba(59, 130, 246, 0.4);
-            }
-        }
-        
-        .pulse-border {
-            animation: border-pulse 2s ease-in-out infinite;
-        }
+        .dark .bg-gray-100 { background-color: #111827 !important; }
+        .dark .bg-white { background-color: #1f2937 !important; }
+        .dark .text-gray-800 { color: #f3f4f6 !important; }
+        .dark .text-gray-700 { color: #d1d5db !important; }
+        .dark .text-gray-600 { color: #9ca3af !important; }
+        .dark .border-gray-200 { border-color: #374151 !important; }
+        .dark .bg-blue-50 { background-color: #1e293b !important; }
+        .dark .bg-gray-50 { background-color: #1f2937 !important; }
+        .dark .bg-blue-900 { background-color: #0f172a !important; }
+        .dark .bg-gray-900 { background-color: #030712 !important; }
+        .dark .text-blue-900 { color: #60a5fa !important; }
+        .dark .text-blue-800 { color: #93c5fd !important; }
+        .dark .text-blue-700 { color: #93c5fd !important; }
+        .dark .border-blue-200 { border-color: #1e3a8a !important; }
+        .dark .border-blue-900 { border-color: #3b82f6 !important; }
+        .dark .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3); }
+        .dark .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); }
+        .dark .bg-blue-50.p-6 { background-color: #1e293b !important; }
+        .dark .bg-gray-100.p-4 { background-color: #374151 !important; }
+        .dark .bg-green-100 { background-color: #14532d !important; }
+        .dark .text-green-700 { color: #86efac !important; }
+        .dark .bg-red-100 { background-color: #7f1d1d !important; }
+        .dark .text-red-700 { color: #fecaca !important; }
+        .dark button.bg-green-600 { background-color: #16a34a !important; }
+        .dark button.bg-red-600 { background-color: #dc2626 !important; }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100">
 
-    <header class="bg-blue-900 text-white py-16 shadow-lg dark:bg-blue-800">
-        <div class="max-w-5xl mx-auto text-center px-6">
-            <div class="flex justify-end mb-4">
+    <nav class="bg-blue-900 text-white sticky top-0 z-50 shadow-lg dark:bg-blue-800">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="space-x-6 text-sm font-semibold hidden md:block">
+                    <a href="#introduccion" class="hover:text-blue-300">Teoría</a>
+                    <a href="#ejercicio" class="hover:text-blue-300">Ejercicio Detallado</a>
+                    <a href="#cuestionario" class="hover:text-blue-300">Cuestionario</a>
+                </div>
             </div>
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">
-               Superposición de Cortante
-            </h1>
-            <p class="text-lg md:text-xl text-blue-100 opacity-90">
-                Análisis de esfuerzos cortantes combinados
+        </div>
+    </nav>
+
+    <header id="introduccion" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+        <div class="container mx-auto px-6 py-16 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-blue-900 mb-4 text-balance dark:text-blue-400">Principio de Superposición y Análisis de Estructuras Lineales</h1>
+            <p class="max-w-2xl mx-auto text-lg text-gray-600 dark:text-gray-400">
+                Aprende a descomponer problemas complejos de ingeniería en sistemas simples sumables, la base del análisis de estructuras estáticamente indeterminadas.
             </p>
-            
             <!-- Botón de completado -->
             <div class="mt-6">
                 <button 
@@ -150,72 +91,197 @@
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-6 py-20 min-h-[60vh] flex items-center justify-center">
+    <main class="container mx-auto px-4 py-12">
         
-        <div class="text-center">
-            <div class="relative inline-block mb-8">
-                <div class="absolute inset-0 bg-blue-500 rounded-full blur-xl opacity-30 animate-pulse"></div>
-            </div>
-            
-            <h2 class="text-5xl md:text-7xl font-bold mb-6 shimmer-text">
-                Próximamente
-            </h2>
-            
-            <div class="flex justify-center mb-8">
-                <div class="w-24 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent rounded-full animate-pulse"></div>
-            </div>
-            
-            <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-                Este tema se encuentra en desarrollo. <br>
-                Pronto estará disponible.
-            </p>
-            
-            <div class="mt-8 inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-full">
-                <div class="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
-                <span class="text-sm text-yellow-800 dark:text-yellow-400 font-medium">En construcción</span>
-            </div>
-            
-            <div class="max-w-md mx-auto mt-12">
-                <div class="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div class="absolute top-0 left-0 h-full w-3/4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full pulse-border"></div>
+        <section class="grid lg:grid-cols-3 gap-8 mb-16">
+            <div class="lg:col-span-2 bg-white p-8 rounded-2xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                <h2 class="text-2xl font-bold text-blue-900 mb-6 dark:text-blue-400">Desarrollo y Explicación</h2>
+                <p class="mb-4 leading-relaxed dark:text-gray-300">
+                    El análisis estructural moderno se basa en la premisa de que si un sistema se mantiene dentro del <strong>rango elástico</strong>, sus respuestas (esfuerzos y deformaciones) son proporcionales a las cargas aplicadas. Esto nos permite usar el método de superposición.
+                </p>
+                <div class="grid md:grid-cols-2 gap-6 mt-8">
+                    <div class="bg-blue-50 p-5 rounded-xl dark:bg-blue-900/30">
+                        <h4 class="font-bold text-blue-800 mb-2 dark:text-blue-400">¿Cuándo aplicarlo?</h4>
+                        <ul class="list-disc ml-5 text-sm space-y-2 dark:text-gray-300">
+                            <li>Materiales con relación lineal σ-ε.</li>
+                            <li>Sistemas con apoyos estables.</li>
+                            <li>Cargas que no causan grandes desplazamientos.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-50 p-5 rounded-xl dark:bg-gray-700">
+                        <h4 class="font-bold text-gray-800 mb-2 dark:text-gray-200">Conclusiones Clave</h4>
+                        <p class="text-sm dark:text-gray-300">
+                            Este método es la "llave" para resolver estructuras hiperestáticas, donde las ecuaciones de la estática (ΣF=0, ΣM=0) no son suficientes para hallar las incógnitas.
+                        </p>
+                    </div>
                 </div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Avance: 75%</p>
             </div>
+            <div class="bg-blue-900 text-white p-8 rounded-2xl shadow-xl flex flex-col justify-center dark:bg-blue-800">
+                <h3 class="text-xl font-bold mb-4">La Regla de Oro</h3>
+                <blockquote class="italic border-l-4 border-blue-400 pl-4 py-2">
+                    "El efecto de un conjunto de cargas es igual a la suma algebraica de los efectos de cada carga actuando por separado."
+                </blockquote>
+            </div>
+        </section>
+
+        <section id="ejercicio" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-16 dark:bg-gray-800 dark:border-gray-700">
+            <div class="bg-blue-900 px-8 py-4 dark:bg-blue-800">
+                <h2 class="text-xl font-bold text-white uppercase tracking-widest">Caso de Estudio: Viga Hiperestática Empotrada-Apoyada</h2>
+            </div>
+            <div class="p-8">
+                <div class="max-w-4xl mx-auto">
+                    <p class="text-lg font-semibold text-gray-700 mb-6 italic dark:text-gray-300">
+                        Enunciado: Determine la reacción en el apoyo móvil de una viga de longitud L, empotrada en el extremo A y con un apoyo simple en B, sometida a una carga puntual P en el centro.
+                    </p>
+
+                    <div class="space-y-12">
+                        <div class="relative pl-8 border-l-2 border-blue-200 dark:border-blue-800">
+                            <span class="absolute -left-3 top-0 bg-blue-900 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center font-bold dark:bg-blue-700">1</span>
+                            <h4 class="font-bold text-lg text-blue-900 mb-2 dark:text-blue-400">Definición de la Estructura Primaria</h4>
+                            <p class="dark:text-gray-300">Para resolver este sistema hiperestático de 1er grado, eliminamos el apoyo en B. La estructura se convierte en una <strong>viga en voladizo</strong> (isostática) de longitud L con la carga P en L/2.</p>
+                        </div>
+
+                        <div class="relative pl-8 border-l-2 border-blue-200 dark:border-blue-800">
+                            <span class="absolute -left-3 top-0 bg-blue-900 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center font-bold dark:bg-blue-700">2</span>
+                            <h4 class="font-bold text-lg text-blue-900 mb-2 dark:text-blue-400">Cálculo de la Deflexión por Carga P (δ<sub>P</sub>)</h4>
+                            <p class="mb-2 dark:text-gray-300">Usando las tablas de deflexión para vigas en voladizo, el desplazamiento en el punto B debido a la carga P en el centro es:</p>
+                            <div class="bg-gray-100 p-4 rounded text-center font-mono text-xl dark:bg-gray-700 dark:text-gray-200">
+                                δ<sub>P</sub> = (5 · P · L³) / (48 · E · I)
+                            </div>
+                        </div>
+
+                        <div class="relative pl-8 border-l-2 border-blue-200 dark:border-blue-800">
+                            <span class="absolute -left-3 top-0 bg-blue-900 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center font-bold dark:bg-blue-700">3</span>
+                            <h4 class="font-bold text-lg text-blue-900 mb-2 dark:text-blue-400">Cálculo de la Deflexión por Reacción Redundante (δ<sub>RB</sub>)</h4>
+                            <p class="mb-2 dark:text-gray-300">Ahora aplicamos una fuerza ficticia R<sub>B</sub> hacia arriba en el extremo B. La deflexión en una viga en voladizo con carga en el extremo es:</p>
+                            <div class="bg-gray-100 p-4 rounded text-center font-mono text-xl dark:bg-gray-700 dark:text-gray-200">
+                                δ<sub>RB</sub> = (R<sub>B</sub> · L³) / (3 · E · I)
+                            </div>
+                        </div>
+
+                        <div class="relative pl-8 border-l-2 border-blue-200 dark:border-blue-800">
+                            <span class="absolute -left-3 top-0 bg-blue-900 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center font-bold dark:bg-blue-700">4</span>
+                            <h4 class="font-bold text-lg text-blue-900 mb-2 dark:text-blue-400">Aplicación de la Superposición (Compatibilidad)</h4>
+                            <p class="mb-4 dark:text-gray-300">En la estructura original, el apoyo en B es rígido, por lo tanto la deflexión neta debe ser <strong>CERO</strong>:</p>
+                            <div class="bg-blue-50 border-2 border-blue-900 p-6 rounded-xl text-center dark:bg-blue-900/30 dark:border-blue-600">
+                                <p class="text-xl font-bold mb-4 dark:text-gray-200">δ<sub>P</sub> - δ<sub>RB</sub> = 0</p>
+                                <p class="text-sm mb-4 dark:text-gray-300">Sustituyendo:</p>
+                                <p class="font-mono dark:text-gray-200">[(5PL³)/(48EI)] = [(R<sub>B</sub>L³)/(3EI)]</p>
+                                <p class="mt-4 text-gray-600 text-sm dark:text-gray-400">Cancelamos L³, E e I de ambos lados...</p>
+                                <p class="text-2xl font-bold text-blue-900 mt-4 dark:text-blue-400">R<sub>B</sub> = (5/16) · P</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cuestionario" class="max-w-3xl mx-auto">
+            <h2 class="text-3xl font-bold text-blue-900 mb-8 text-center uppercase tracking-widest dark:text-blue-400">Evaluación de Competencias</h2>
             
-        </div>
-        
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                    <p class="font-bold text-lg mb-4 dark:text-gray-200">1. ¿Qué sucede si el material supera el límite de fluencia?</p>
+                    <div class="space-y-2">
+                        <button onclick="quiz(1, false, this)" class="w-full text-left p-4 rounded border hover:bg-gray-50 transition dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">El principio se aplica sumando esfuerzos plásticos.</button>
+                        <button onclick="quiz(1, true, this)" class="w-full text-left p-4 rounded border hover:bg-gray-50 transition dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">El principio deja de ser válido debido a la no linealidad.</button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                    <p class="font-bold text-lg mb-4 dark:text-gray-200">2. ¿En qué consiste una estructura hiperestática de 2do grado?</p>
+                    <div class="space-y-2">
+                        <button onclick="quiz(2, true, this)" class="w-full text-left p-4 rounded border hover:bg-gray-50 transition dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Tiene 2 reacciones más de las que las ecuaciones de equilibrio pueden resolver.</button>
+                        <button onclick="quiz(2, false, this)" class="w-full text-left p-4 rounded border hover:bg-gray-50 transition dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Es una estructura que tiene 2 apoyos fijos solamente.</button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                    <p class="font-bold text-lg mb-4 dark:text-gray-200">3. ¿Cuál es el primer paso del método de superposición para vigas hiperestáticas?</p>
+                    <div class="space-y-2">
+                        <button onclick="quiz(3, false, this)" class="w-full text-left p-4 rounded border hover:bg-gray-50 transition dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Calcular el momento flector máximo en el centro.</button>
+                        <button onclick="quiz(3, true, this)" class="w-full text-left p-4 rounded border hover:bg-gray-50 transition dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Identificar y remover las reacciones redundantes para volverla isostática.</button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                    <p class="font-bold text-lg mb-4 dark:text-gray-200">4. ¿La superposición se puede aplicar a la energía de deformación?</p>
+                    <div class="space-y-2">
+                        <button onclick="quiz(4, false, this)" class="w-full text-left p-4 rounded border hover:bg-gray-50 transition dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Sí, porque la energía es una cantidad escalar sumable.</button>
+                        <button onclick="quiz(4, true, this)" class="w-full text-left p-4 rounded border hover:bg-gray-50 transition dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">No, porque la energía depende del cuadrado de las cargas (no es lineal).</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="feedback-area" class="mt-8 text-center font-bold text-xl py-4 rounded-lg transition-all hidden"></div>
+        </section>
+
     </main>
 
-    <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden dark:bg-gray-950">
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
-        </div>
-        
-        <div class="max-w-6xl mx-auto px-6 relative z-10">
-            <div class="flex flex-col items-center space-y-4">
-                <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
-                
-                <div class="flex space-x-3 pt-2">
-                    <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
-                        </svg>
-                    </a>
-                    <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
-                        </svg>
-                    </a>
+    <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="flex flex-col items-center space-y-4">
+            <div class="text-center space-y-1">
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Pedro Pablo Villacorta Rios</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">201731650</span>
                 </div>
             </div>
+            
+            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+            
+            <div class="flex space-x-3 pt-2">
+                <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                    </svg>
+                </a>
+                <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
+                    </svg>
+                </a>
+            </div>
         </div>
-    </footer>
+    </div>
+</footer>
 
     <script src="../js/darkmode.js"></script>
     <script src="../js/progreso.js"></script>
     
     <script>
+        function quiz(qId, correct, btn) {
+            const parent = btn.parentElement;
+            const buttons = parent.querySelectorAll('button');
+            buttons.forEach(b => {
+                b.disabled = true;
+                b.classList.add('opacity-50');
+            });
+
+            const fb = document.getElementById('feedback-area');
+            fb.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700');
+
+            if(correct) {
+                btn.classList.add('bg-green-600', 'text-white', 'font-bold', 'opacity-100');
+                btn.classList.remove('opacity-50');
+                fb.innerText = "¡Excelente! Respuesta correcta.";
+                fb.classList.add('bg-green-100', 'text-green-700', 'block');
+            } else {
+                btn.classList.add('bg-red-600', 'text-white', 'font-bold', 'opacity-100');
+                btn.classList.remove('opacity-50');
+                fb.innerText = "Respuesta incorrecta. Recuerda repasar las limitantes geométricas y de material.";
+                fb.classList.add('bg-red-100', 'text-red-700', 'block');
+            }
+            
+            fb.classList.add('dark:bg-green-900/30', 'dark:text-green-400', 'dark:border-green-800');
+        }
+        
         // Actualizar botón de completado
         if (typeof actualizarBotonEnPagina === 'function') {
             actualizarBotonEnPagina('1.3_superposicion_cortante');
