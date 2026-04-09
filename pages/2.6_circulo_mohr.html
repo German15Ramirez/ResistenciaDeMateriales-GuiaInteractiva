@@ -30,7 +30,6 @@
         body { transition: background-color 0.3s ease, color 0.3s ease; }
         .dark .bg-gray-100 { background-color: #111827 !important; }
         .dark .bg-white { background-color: #1f2937 !important; }
-        .dark .bg-gray-100 { background-color: #1f2937 !important; }
         .dark .text-gray-800 { color: #f3f4f6 !important; }
         .dark .text-gray-700 { color: #d1d5db !important; }
         .dark .text-gray-600 { color: #9ca3af !important; }
@@ -43,6 +42,95 @@
         .dark .border-t-4.border-blue-900 { border-top-color: #3b82f6 !important; }
         .dark input, .dark input.border { background-color: #374151; color: #f3f4f6; border-color: #4b5563; }
         .dark input::placeholder { color: #9ca3af; }
+        
+        .quiz-mohr-container {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .dark .quiz-mohr-container {
+            background-color: #1f2937;
+            border-color: #374151;
+        }
+        .quiz-mohr-title {
+            text-align: center;
+            color: #1a202c;
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+        .dark .quiz-mohr-title {
+            color: #f3f4f6;
+        }
+        .quiz-mohr-question {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .dark .quiz-mohr-question {
+            border-bottom-color: #374151;
+        }
+        .quiz-mohr-question p {
+            margin-bottom: 12px;
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+        .dark .quiz-mohr-question p {
+            color: #e5e7eb;
+        }
+        .quiz-mohr-label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            color: #4a5568;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .dark .quiz-mohr-label {
+            color: #9ca3af;
+        }
+        .quiz-mohr-label:hover {
+            background-color: #f7fafc;
+        }
+        .dark .quiz-mohr-label:hover {
+            background-color: #374151;
+        }
+        .quiz-mohr-btn {
+            display: block;
+            width: 100%;
+            max-width: 250px;
+            margin: 30px auto 0;
+            background-color: #3182ce;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .quiz-mohr-btn:hover {
+            background-color: #2b6cb0;
+        }
+        .dark .quiz-mohr-btn {
+            background-color: #3b82f6;
+        }
+        .dark .quiz-mohr-btn:hover {
+            background-color: #2563eb;
+        }
+        #quiz-resultado-mohr {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: none;
+        }
     </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800 dark:bg-gray-900 dark:text-gray-100">
@@ -116,7 +204,6 @@
             </div>
         </section>
 
-        <!-- EJERCICIO INTERACTIVO CON CÍRCULO DE MOHR -->
         <section>
             <h3 class="text-2xl font-bold text-gray-800 mb-6 dark:text-gray-200">Ejercicio Interactivo - Círculo de Mohr</h3>
             
@@ -144,6 +231,75 @@
                     <h4 class="text-xl font-semibold text-blue-900 dark:text-blue-400 mb-4">Gráfico del Círculo de Mohr</h4>
                     <canvas id="grafico" width="400" height="400" class="mx-auto border rounded-lg shadow dark:border-gray-600"></canvas>
                 </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="quiz-mohr-container">
+                <h3 class="quiz-mohr-title">📝 Autoevaluación: Círculo de Mohr</h3>
+                <hr style="border: 0; border-top: 2px solid #edf2f7; margin-bottom: 30px;" class="dark:border-gray-600">
+                
+                <form id="form-quiz-mohr">
+                    <div class="quiz-mohr-question">
+                        <p>1. ¿Qué representan los ejes coordenados en el diagrama del Círculo de Mohr?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p1" value="a"> Eje x: Esfuerzo cortante, Eje y: Esfuerzo normal</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p1" value="b"> Eje x: Esfuerzo normal, Eje y: Esfuerzo cortante</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p1" value="c"> Ambos ejes representan esfuerzos normales en diferentes direcciones</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>2. ¿Cómo se determina la ubicación del centro del círculo sobre el eje horizontal?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p2" value="a"> Es igual al esfuerzo cortante máximo</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p2" value="b"> Es la suma de los esfuerzos principales</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p2" value="c"> Representa el esfuerzo normal promedio ((σx + σy) / 2)</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>3. ¿Qué magnitud física equivale al radio (R) del Círculo de Mohr?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p3" value="a"> El esfuerzo cortante máximo</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p3" value="b"> El esfuerzo normal máximo</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p3" value="c"> El esfuerzo principal mínimo</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>4. En los puntos donde ocurren los esfuerzos principales (intersecciones con el eje x), ¿cuál es el valor del esfuerzo cortante?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p4" value="a"> Es máximo</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p4" value="b"> Es igual al esfuerzo normal</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p4" value="c"> Es cero</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>5. ¿Cuál es la relación entre el ángulo físico de giro en el elemento (θ) y el ángulo trazado en el Círculo de Mohr?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p5" value="a"> El ángulo en el círculo es la mitad del ángulo físico (θ/2)</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p5" value="b"> El ángulo en el círculo es el doble del ángulo físico (2θ)</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p5" value="c"> Ambos ángulos son exactamente iguales</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>6. ¿Qué representan los puntos ubicados en los extremos diametralmente opuestos del círculo dibujado inicialmente?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p6" value="a"> El estado de esfuerzos en planos ortogonales (perpendiculares a 90°) en el material</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p6" value="b"> Los esfuerzos cortantes máximos y mínimos exclusivamente</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p6" value="c"> El esfuerzo de fluencia y el esfuerzo último del material</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>7. Según la teoría, el método del Círculo de Mohr es la representación gráfica de:</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p7" value="a"> La Ley de Hooke generalizada</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p7" value="b"> Las ecuaciones de transformación de esfuerzo plano</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p7" value="c"> El criterio de falla de Von Mises</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>8. El concepto de "Polo" (origen de planos) en el Círculo de Mohr se utiliza principalmente para:</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p8" value="a"> Encontrar el esfuerzo cortante promedio</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p8" value="b"> Determinar gráficamente el factor de seguridad</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p8" value="c"> Trazar una línea paralela a un plano real y hallar los esfuerzos que actúan en él</label>
+                    </div>
+
+                    <button type="button" class="quiz-mohr-btn" onclick="evaluarQuizMohr()">Verificar Respuestas</button>
+                </form>
+                
+                <div id="quiz-resultado-mohr"></div>
             </div>
         </section>
 
@@ -180,72 +336,72 @@
         <!-- BIBLIOGRAFIA -->
         <section class="bg-white p-10 rounded-lg shadow-md border-t-8 border-gray-400 dark:bg-gray-800 dark:border-gray-600">
             <h2 class="text-2xl font-bold text-gray-800 mb-8 border-b-2 pb-2 inline-block dark:text-gray-200">Referencias</h2>
-<div class="mb-8">
-    <div class="space-y-4 text-gray-700 text-sm md:text-base leading-relaxed dark:text-gray-300 ml-4">
-        <p class="pl-8 -indent-8">
-            <strong>Gere, J. M., & Goodno, B. J.</strong> <i>Mecánica de Materiales.</i> 8va Edición.
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>Hibbeler, R. C.</strong> <i>Mechanics of Materials.</i> 9th Edition.
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>Doctor Felipe Nerhi.</strong> <i>Circulo de Mohr ejercicios resueltos.</i> [Canal de YouTube].
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>Salvador FI.</strong> <i>Círculo de Mohr Desde Cero.</i> [Canal de YouTube].
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>PROFE JN.</strong> <i>El circuito de MOHR y la transformación de esfuerzo plano.</i> [Canal de YouTube].
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>Universitat Politècnica de València.</strong> <i>Guía metodológica para el trazado del Círculo de Mohr.</i>
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>Universidad Nacional de Colombia.</strong> <i>Manual de Geomecánica - Capítulo 11: Círculo de Mohr.</i>
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>StudySmarter.</strong> <i>Mohr's Stress Circle: Meaning & Examples.</i>
-        </p>
-    </div>
-</div>
- </section>
+            <div class="mb-8">
+                <div class="space-y-4 text-gray-700 text-sm md:text-base leading-relaxed dark:text-gray-300 ml-4">
+                    <p class="pl-8 -indent-8">
+                        <strong>Gere, J. M., & Goodno, B. J.</strong> <i>Mecánica de Materiales.</i> 8va Edición.
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>Hibbeler, R. C.</strong> <i>Mechanics of Materials.</i> 9th Edition.
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>Doctor Felipe Nerhi.</strong> <i>Circulo de Mohr ejercicios resueltos.</i> [Canal de YouTube].
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>Salvador FI.</strong> <i>Círculo de Mohr Desde Cero.</i> [Canal de YouTube].
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>PROFE JN.</strong> <i>El circuito de MOHR y la transformación de esfuerzo plano.</i> [Canal de YouTube].
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>Universitat Politècnica de València.</strong> <i>Guía metodológica para el trazado del Círculo de Mohr.</i>
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>Universidad Nacional de Colombia.</strong> <i>Manual de Geomecánica - Capítulo 11: Círculo de Mohr.</i>
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>StudySmarter.</strong> <i>Mohr's Stress Circle: Meaning & Examples.</i>
+                    </p>
+                </div>
+            </div>
+        </section>
 
     </main>
 
     <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
-    </div>
-    
-    <div class="max-w-6xl mx-auto px-6 relative z-10">
-        <div class="flex flex-col items-center space-y-4">            
-            <div class="text-center space-y-1">
-                <div class="flex items-center justify-center space-x-2 text-sm">
-                    <span class="text-white font-medium">Kenneth Williams Sánchez Bobadilla</span>
-                    <span class="text-gray-600">◆</span>
-                    <span class="text-gray-400">202130322</span>
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="flex flex-col items-center space-y-4">            
+                <div class="text-center space-y-1">
+                    <div class="flex items-center justify-center space-x-2 text-sm">
+                        <span class="text-white font-medium">Kenneth Williams Sánchez Bobadilla</span>
+                        <span class="text-gray-600">◆</span>
+                        <span class="text-gray-400">202130322</span>
+                    </div>
+                </div>
+                
+                <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+                
+                <div class="flex space-x-3 pt-2">
+                    <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                        </svg>
+                    </a>
+                    <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
+                        </svg>
+                    </a>
                 </div>
             </div>
-            
-            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
-            
-            <div class="flex space-x-3 pt-2">
-                <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
-                    </svg>
-                </a>
-                <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
-                    </svg>
-                </a>
-            </div>
         </div>
-    </div>
-</footer>
- 
+    </footer>
+
     <script src="../js/darkmode.js"></script>
     <script src="../js/progreso.js"></script>
     
@@ -344,13 +500,88 @@
             ctx.fillText("σ₂", cx + s2 * escala - 15, cy - 3);
         }
 
+        function evaluarQuizMohr() {
+            const respuestasCorrectas = {
+                p1: 'b',
+                p2: 'c',
+                p3: 'a',
+                p4: 'c',
+                p5: 'b',
+                p6: 'a',
+                p7: 'b',
+                p8: 'c'
+            };
+
+            let puntaje = 0;
+            const totalPreguntas = 8;
+            const form = document.getElementById('form-quiz-mohr');
+            const resultadoDiv = document.getElementById('quiz-resultado-mohr');
+            
+            let todasRespondidas = true;
+
+            for (let i = 1; i <= totalPreguntas; i++) {
+                const opciones = form.elements['p' + i];
+                let respondida = false;
+                
+                if (opciones) {
+                    for (let j = 0; j < opciones.length; j++) {
+                        if (opciones[j].checked) {
+                            respondida = true;
+                            if (opciones[j].value === respuestasCorrectas['p' + i]) {
+                                puntaje++;
+                            }
+                            break;
+                        }
+                    }
+                }
+                
+                if (!respondida) {
+                    todasRespondidas = false;
+                }
+            }
+
+            resultadoDiv.style.display = "block";
+
+            if (!todasRespondidas) {
+                resultadoDiv.style.backgroundColor = "#fff5f5";
+                resultadoDiv.style.color = "#c53030";
+                resultadoDiv.style.border = "1px solid #feb2b2";
+                resultadoDiv.innerHTML = "⚠️ Por favor, responde las 8 preguntas antes de verificar.";
+                return;
+            }
+
+            if (puntaje === totalPreguntas) {
+                resultadoDiv.style.backgroundColor = "#f0fff4";
+                resultadoDiv.style.color = "#276749";
+                resultadoDiv.style.border = "1px solid #9ae6b4";
+                resultadoDiv.innerHTML = `¡Excelente trabajo! 🥳 Tuviste ${puntaje} de ${totalPreguntas} aciertos. Dominas el Círculo de Mohr.`;
+            } else if (puntaje >= 5) {
+                resultadoDiv.style.backgroundColor = "#fffff0";
+                resultadoDiv.style.color = "#975a16";
+                resultadoDiv.style.border = "1px solid #f6e05e";
+                resultadoDiv.innerHTML = `¡Buen intento! Obtuviste ${puntaje} de ${totalPreguntas} aciertos. Repasa un poco más la teoría. 👍`;
+            } else {
+                resultadoDiv.style.backgroundColor = "#fff5f5";
+                resultadoDiv.style.color = "#c53030";
+                resultadoDiv.style.border = "1px solid #feb2b2";
+                resultadoDiv.innerHTML = `Obtuviste ${puntaje} de ${totalPreguntas} aciertos. Te recomendamos releer la sección antes de volver a intentarlo. 📚`;
+            }
+            
+            if (puntaje === totalPreguntas) {
+                resultadoDiv.classList.add('dark:bg-green-900/30', 'dark:text-green-400', 'dark:border-green-800');
+            } else if (puntaje >= 5) {
+                resultadoDiv.classList.add('dark:bg-amber-900/30', 'dark:text-amber-400', 'dark:border-amber-800');
+            } else {
+                resultadoDiv.classList.add('dark:bg-red-900/30', 'dark:text-red-400', 'dark:border-red-800');
+            }
+        }
+
         window.onload = () => {
             document.getElementById("sx").value = -60;
             document.getElementById("sy").value = -40;
             document.getElementById("txy").value = 35;
             calcular();
             
-            // Actualizar botón de completado
             if (typeof actualizarBotonEnPagina === 'function') {
                 actualizarBotonEnPagina('2.6_circulo_mohr');
             }
