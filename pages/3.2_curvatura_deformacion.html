@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth scroll-pt-20">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relación entre Curvatura y Deformación</title>
+    <title>Relación entre Curvatura y Deformación en Vigas</title>
     
     <script>
     (function() {
@@ -21,267 +21,578 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-    tailwind.config = {
-        darkMode: 'class'
-    }
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'eng-dark': '#0f172a',
+                        'eng-blue': '#1e3a8a',
+                        'eng-gray': '#475569',
+                        'eng-light': '#f8fafc',
+                        'brand-header': '#1b3372', 
+                        'brand-footer': '#0a1128'  
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
     </script>
-    
     <style>
-        body { 
-            font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; 
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        .formula-font { font-family: 'Times New Roman', Times, serif; font-style: italic; }
+        input[type=range] { accent-color: #1b3372; }
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        #mobile-menu.hidden { display: none; }
         
-        @keyframes bending-smooth {
-            0%, 100% { transform: rotate(0deg); border-radius: 4px; }
-            50% { transform: rotate(1.5deg); border-radius: 0 0 120px 120px / 0 0 25px 25px; }
-        }
-
-        .contenedor-grafico {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            margin: 20px auto;
-            text-align: center;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            border-bottom: 6px solid #1e3a8a;
-            max-width: 800px;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
-        }
-        .dark .contenedor-grafico {
-            background: #1f2937;
-            border-bottom-color: #3b82f6;
-        }
-
-        .viga-demo {
-            width: 320px;
-            height: 65px;
-            background: #cbd5e1;
-            border: 2.5px solid #1e3a8a;
-            margin: 45px auto;
-            position: relative;
-            animation: bending-smooth 4s infinite ease-in-out;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        .dark .viga-demo {
-            background: #4b5563;
-            border-color: #3b82f6;
-        }
-
-        .capa-c { width: 100%; height: 33.3%; background: rgba(239, 68, 68, 0.15); border-bottom: 1px solid rgba(239, 68, 68, 0.1); }
-        .capa-n { width: 100%; height: 33.3%; border-bottom: 2px dashed #475569; }
-        .capa-t { width: 100%; height: 33.3%; background: rgba(59, 130, 246, 0.15); }
-        .dark .capa-n { border-bottom-color: #9ca3af; }
-
-        .tag { position: absolute; width: 200px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
-        .tag-c { top: -25px; left: 50%; transform: translateX(-50%); color: #dc2626; }
-        .tag-n { top: 35%; right: -175px; color: #475569; }
-        .dark .tag-n { color: #9ca3af; }
-        .tag-t { bottom: -25px; left: 50%; transform: translateX(-50%); color: #2563eb; }
-        
-        .dark .bg-gray-100 { background-color: #111827 !important; }
+        .dark body { background-color: #111827; }
         .dark .bg-white { background-color: #1f2937 !important; }
-        .dark .text-gray-800 { color: #f3f4f6 !important; }
-        .dark .text-gray-700 { color: #d1d5db !important; }
-        .dark .text-gray-600 { color: #9ca3af !important; }
-        .dark .text-gray-500 { color: #6b7280 !important; }
-        .dark .border-gray-200 { border-color: #374151 !important; }
-        .dark .bg-gray-50 { background-color: #1f2937 !important; }
+        .dark .bg-slate-50 { background-color: #1f2937 !important; }
+        .dark .bg-slate-100 { background-color: #374151 !important; }
         .dark .bg-blue-50 { background-color: #1e293b !important; }
-        .dark .border-blue-100 { border-color: #1e3a8a !important; }
-        .dark .border-blue-200 { border-color: #1e3a8a !important; }
-        .dark .text-blue-900 { color: #60a5fa !important; }
-        .dark .text-blue-800 { color: #93c5fd !important; }
-        .dark .text-blue-700 { color: #93c5fd !important; }
+        .dark .bg-emerald-100 { background-color: #14532d !important; }
+        .dark .bg-amber-100 { background-color: #78350f !important; }
         .dark .bg-red-100 { background-color: #7f1d1d !important; }
+        .dark .border-slate-200 { border-color: #374151 !important; }
+        .dark .border-slate-100 { border-color: #374151 !important; }
+        .dark .text-slate-700 { color: #d1d5db !important; }
+        .dark .text-slate-600 { color: #9ca3af !important; }
+        .dark .text-slate-500 { color: #6b7280 !important; }
+        .dark .text-eng-dark { color: #f3f4f6 !important; }
+        .dark .text-emerald-800 { color: #86efac !important; }
+        .dark .text-amber-800 { color: #fcd34d !important; }
         .dark .text-red-800 { color: #fecaca !important; }
-        .dark .border-red-600 { border-color: #ef4444 !important; }
-        .dark .bg-gray-900 { background-color: #030712 !important; }
+        .dark .bg-brand-header { background-color: #1e3a8a !important; }
+        .dark .bg-brand-footer { background-color: #030712 !important; }
+        .dark .border-emerald-300 { border-color: #22c55e !important; }
+        .dark .border-amber-300 { border-color: #f59e0b !important; }
+        .dark .border-red-300 { border-color: #ef4444 !important; }
+        .dark .border-blue-100 { border-color: #1e3a8a !important; }
+        .dark .bg-slate-100 { background-color: #374151 !important; }
+        .dark .text-brand-header { color: #60a5fa !important; }
+        .dark .border-brand-header { border-color: #60a5fa !important; }
+        .dark .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3); }
         .dark .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
         .dark .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); }
-        .dark .bg-gray-100.p-4 { background-color: #374151 !important; }
-        .dark .bg-gray-100.rounded-lg { background-color: #374151 !important; }
-        .dark .bg-gray-900.text-white { background-color: #030712 !important; }
+        .dark .bg-eng-dark { background-color: #030712 !important; }
+        .dark .bg-eng-light { background-color: #111827 !important; }
+        .dark input[type=range] { accent-color: #60a5fa; }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100">
+<body class="bg-eng-light text-eng-gray font-sans antialiased dark:bg-gray-900 dark:text-gray-200">
 
-    <header class="bg-blue-900 text-white p-8 shadow-lg dark:bg-blue-800">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-3xl font-bold italic">3.2 Relación entre Curvatura y Deformación</h1>
-        </div>
-        <!-- Botón de completado -->
-        <div class="container mx-auto mt-4">
-            <button 
-                id="btnCompletado"
-                onclick="toggleCompletado('3.2_curvatura_deformacion')"
-                class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg transition flex items-center gap-2 shadow-md text-sm"
-            >
-                📚 Marcar como completado
+    <nav class="sticky top-0 z-50 bg-brand-header text-white shadow-md border-b border-blue-300/30 dark:bg-blue-800">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+            </div>
+            
+            <div class="hidden md:flex gap-6 text-sm font-semibold">
+                <a href="#introduccion" class="hover:text-blue-200 transition">Introducción</a>
+                <a href="#metodologia" class="hover:text-blue-200 transition">Metodología</a>
+                <a href="#ejercicio" class="hover:text-blue-200 transition">Simulador</a>
+                <a href="#faq" class="hover:text-blue-200 transition">FAQ</a>
+                <a href="#quiz" class="hover:text-blue-200 transition">Quiz</a>
+            </div>
+
+            <button id="mobile-btn" class="md:hidden text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden bg-brand-header px-6 py-4 space-y-3 text-sm font-semibold border-t border-blue-300/30 dark:bg-blue-800">
+            <a href="#introduccion" class="block hover:text-blue-200 transition">Introducción</a>
+            <a href="#metodologia" class="block hover:text-blue-200 transition">Metodología</a>
+            <a href="#ejercicio" class="block hover:text-blue-200 transition">Simulador</a>
+            <a href="#faq" class="block hover:text-blue-200 transition">FAQ</a>
+            <a href="#quiz" class="block hover:text-blue-200 transition">Quiz</a>
+        </div>
+    </nav>
+
+    <header class="bg-brand-header text-white py-16 px-6 shadow-lg text-center border-b-4 border-blue-400 dark:bg-blue-800">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 tracking-tight">Relación entre Curvatura y Deformación</h1>
+            <h2 class="text-xl md:text-2xl font-light text-blue-100">Resistencia de los materiales - Deflexión en vigas</h2>
+            <!-- Botón de completado -->
+            <div class="mt-6">
+                <button 
+                    id="btnCompletado"
+                    onclick="toggleCompletado('3.2_curvatura_deformacion')"
+                    class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition flex items-center gap-2 shadow-md mx-auto"
+                >
+                    📚 Marcar como completado
+                </button>
+            </div>
         </div>
     </header>
 
-    <div class="container mx-auto px-4">
-        <section class="contenedor-grafico dark:bg-gray-800">
-            <h2 class="text-xl font-bold text-gray-700 mb-2 uppercase tracking-widest dark:text-gray-300">Demostración Gráfica</h2>
-            <p class="text-gray-500 text-sm mb-6 italic dark:text-gray-400">Visualización del comportamiento de fibras en flexión pura</p>
-            
-            <div class="viga-demo shadow-xl dark:bg-gray-600 dark:border-blue-500">
-                <div class="capa-c"></div>
-                <div class="capa-n"></div>
-                <div class="capa-t"></div>
-                
-                <div class="tag tag-c">Acortamiento (Compresión)</div>
-                <div class="tag tag-n">Longitud Constante (Eje Neutro)</div>
-                <div class="tag tag-t">Alargamiento (Tensión)</div>
+    <main class="max-w-5xl mx-auto px-6 py-12 space-y-20">
+
+        <section id="introduccion" class="space-y-10">
+            <div class="bg-white p-8 md:p-10 rounded-2xl shadow-sm border border-slate-200 border-l-8 border-l-brand-header dark:bg-gray-800 dark:border-gray-700 dark:border-l-blue-500">
+                <p class="text-lg md:text-xl text-slate-700 text-justify leading-relaxed dark:text-gray-300">
+                    Imagina que sostienes una regla de plástico por los extremos y la empujas hacia abajo en el medio. La regla se curvea. Esa curvatura no es solo un efecto visual: detrás hay fenómenos físicos que los ingenieros debemos entender para diseñar estructuras seguras. En esta sección veremos tres conceptos clave que se conectan entre sí: deformación, curvatura y deflexión. No los confundas, cada uno opera a un nivel distinto.
+                </p>
             </div>
-            
-            <p class="mt-10 text-gray-600 text-sm max-w-lg mx-auto leading-relaxed dark:text-gray-400">
-                Observe cómo la curvatura induce una variación lineal en las distancias, resultando en deformaciones opuestas respecto al eje neutro.
-            </p>
-        </section>
-    </div>
 
-    <main class="container mx-auto px-4 py-10 space-y-12">
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 flex flex-col dark:bg-gray-800 dark:border-gray-700">
+                    <h3 class="text-xl font-bold text-brand-header mb-1 dark:text-blue-400">1. Deformación unitaria (ε)</h3>
+                    <p class="text-sm font-semibold text-slate-500 mb-4 pb-2 border-b border-slate-100 dark:text-gray-400 dark:border-gray-600">Lo que pasa dentro del material</p>
+                    <div class="space-y-3 text-sm flex-1 text-slate-700 text-justify dark:text-gray-300">
+                        <p>Mide cuánto se estira o se encoge un pequeño trozo de material dentro de la viga.</p>
+                        <p>Cuando doblamos una viga hacia abajo, las fibras superiores se <strong>comprimen</strong> y las inferiores se <strong>estiran</strong>. En el medio existe una <em>capa neutra</em> donde las fibras no cambian de largo.</p>
+                        <div class="bg-blue-50 border-l-4 border-brand-header p-3 my-2 rounded-r dark:bg-blue-900/30 dark:border-blue-500">
+                            <p class="font-semibold text-eng-dark dark:text-gray-200">Clave fundamental:</p>
+                            <p class="dark:text-gray-300">La deformación NO es igual en toda la sección: varía de forma lineal con la distancia perpendicular al eje neutro.</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-slate-50 p-3 rounded border border-slate-200 dark:bg-gray-700 dark:border-gray-600">
+                        <p class="text-xs text-slate-500 mb-1 text-center dark:text-gray-400">Ecuación puente:</p>
+                        <p class="text-center font-mono font-bold text-lg text-eng-dark dark:text-gray-200">ε = κ · y</p>
+                    </div>
+                </div>
 
-        <section class="bg-white p-8 rounded-xl shadow-md border-l-8 border-blue-900 dark:bg-gray-800 dark:border-blue-500">
-            <h2 class="text-3xl font-bold text-blue-900 mb-6 dark:text-blue-400">Introducción</h2>
-            <p class="text-lg leading-relaxed mb-6 dark:text-gray-300">
-                Para navegar este tema con éxito, es fundamental dominar los siguientes <strong>pilares técnicos</strong>:
-            </p>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm">
-                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 shadow-sm dark:bg-gray-700 dark:border-gray-600">
-                    <h3 class="font-bold text-blue-900 mb-2 dark:text-blue-400">Curvatura (ϕ o 1/ρ)</h3>
-                    <p class="dark:text-gray-300">Inverso del radio de curvatura (ρ). Representa el ángulo que forma con la vertical la línea del perfil de deformaciones.</p>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 flex flex-col dark:bg-gray-800 dark:border-gray-700">
+                    <h3 class="text-xl font-bold text-brand-header mb-1 dark:text-blue-400">2. Curvatura (κ)</h3>
+                    <p class="text-sm font-semibold text-slate-500 mb-4 pb-2 border-b border-slate-100 dark:text-gray-400 dark:border-gray-600">Qué tan doblada está la viga</p>
+                    <div class="space-y-3 text-sm flex-1 text-slate-700 text-justify dark:text-gray-300">
+                        <p>Es una medida geométrica de qué tan pronunciado es el doblez en un punto específico. Viga casi recta = curvatura pequeña; muy doblada = curvatura grande.</p>
+                        <p>Imagina que la viga deformada es parte de un círculo enorme: el radio de ese círculo es <strong>ρ</strong>. A menor radio, mayor curvatura.</p>
+                        <p>La curvatura es la <strong>"causa"</strong> de la distribución lineal de deformaciones: al curvarse la viga, las fibras externas recorren caminos más largos y las internas más cortos.</p>
+                    </div>
+                    <div class="mt-4 bg-slate-50 p-3 rounded border border-slate-200 dark:bg-gray-700 dark:border-gray-600">
+                        <p class="text-xs text-slate-500 mb-1 text-center dark:text-gray-400">Definición técnica:</p>
+                        <p class="text-center font-mono font-bold text-lg text-eng-dark dark:text-gray-200">κ = 1/ρ</p>
+                    </div>
                 </div>
-                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 shadow-sm dark:bg-gray-700 dark:border-gray-600">
-                    <h3 class="font-bold text-blue-900 mb-2 dark:text-blue-400">Hipótesis de Euler-Bernoulli</h3>
-                    <p class="dark:text-gray-300">Supuesto de que las secciones transversales permanecen planas y perpendiculares al eje longitudinal durante la flexión.</p>
+
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 flex flex-col dark:bg-gray-800 dark:border-gray-700">
+                    <h3 class="text-xl font-bold text-brand-header mb-1 dark:text-blue-400">3. Deflexión (v)</h3>
+                    <p class="text-sm font-semibold text-slate-500 mb-4 pb-2 border-b border-slate-100 dark:text-gray-400 dark:border-gray-600">El desplazamiento que ves</p>
+                    <div class="space-y-3 text-sm flex-1 text-slate-700 text-justify dark:text-gray-300">
+                        <p>Es cuánto se mueve verticalmente la viga desde su posición original. Es el resultado global y visible.</p>
+                        <p><em>Ejemplo:</em> Cuando caminas sobre una tabla de madera y se hunde un poco, esa hundición es la deflexión.</p>
+                        <div class="bg-slate-100 p-3 mt-2 rounded dark:bg-gray-700">
+                            <p class="font-semibold text-eng-dark border-b border-slate-200 pb-1 mb-2 dark:text-gray-200 dark:border-gray-600">Diferencia clave:</p>
+                            <ul class="list-disc list-inside space-y-1 dark:text-gray-300">
+                                <li><strong>Curvatura:</strong> Local (forma).</li>
+                                <li><strong>Deflexión:</strong> Global (movimiento acumulado).</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 shadow-sm dark:bg-gray-700 dark:border-gray-600">
-                    <h3 class="font-bold text-blue-900 mb-2 dark:text-blue-400">Deformación Unitaria (ϵ)</h3>
-                    <p class="dark:text-gray-300">Cambio relativo de longitud. Sigue la relación <strong>ϵ = −y/ρ</strong>, donde 'y' es la distancia desde el eje neutro.</p>
+            </div>
+
+            <div class="mt-12 bg-eng-dark text-white p-8 md:p-10 rounded-2xl shadow-lg relative overflow-hidden dark:bg-gray-950">
+                <div class="absolute -right-10 -top-10 opacity-10">
+                    <svg class="w-48 h-48" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
+                </div>
+                <p class="text-lg leading-relaxed relative z-10 md:pr-10 text-justify">
+                    Cuando aplicamos un momento flector <strong>M</strong> a una viga, se genera una curvatura <strong>κ</strong>. Esa curvatura, multiplicada por la distancia al eje neutro, nos da la deformación <strong>ε</strong>. Y la deformación, mediante la ley de Hooke (<strong>σ = E·ε</strong>), produce tensiones internas. La ecuación que resume esta cadena de relaciones es la ecuación de rigidez a la flexión:
+                </p>
+                <div class="mt-6 flex justify-center md:justify-start">
+                    <div class="inline-block bg-white text-brand-header px-8 py-3 rounded-lg shadow font-mono font-bold text-2xl relative z-10 dark:bg-gray-800 dark:text-blue-400">
+                        M = E·I·κ
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="bg-white p-8 rounded-xl shadow-md dark:bg-gray-800">
-            <h2 class="text-3xl font-bold text-blue-900 mb-6 font-sans dark:text-blue-400">Metodología.</h2>
+        <section id="metodologia">
+            <h2 class="text-3xl font-bold text-eng-dark mb-6 border-l-4 border-brand-header pl-4 dark:text-gray-200 dark:border-blue-500">Metodología</h2>
+            
+            <p class="text-lg text-slate-700 mb-8 leading-relaxed text-justify dark:text-gray-300">
+                En el análisis de vigas, la relación entre la curvatura y la deformación puede abordarse desde dos enfoques principales que, aunque matemáticamente equivalentes, cumplen propósitos distintos en la ingeniería estructural. Estos enfoques permiten vincular las cargas externas con la respuesta física y geométrica de la viga.
+            </p>
+            
             <div class="grid md:grid-cols-2 gap-8">
-                <div class="space-y-6">
-                    <div>
-                        <h3 class="text-xl font-bold text-blue-800 mb-2 italic dark:text-blue-400">1. Anatomía de la Deformación</h3>
-                        <p class="text-gray-700 leading-relaxed dark:text-gray-300">
-                            Bajo flexión pura, las fibras superiores se contraen (compresión) y las inferiores se alargan (tensión). La superficie neutra es la única zona que mantiene su longitud original. Esta variación lineal es la base de la cinemática de materiales.
-                        </p>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 flex flex-col transition-shadow hover:shadow-lg dark:bg-gray-800 dark:border-gray-700">
+                    <h3 class="text-xl font-bold text-eng-dark mb-4 pb-2 border-b border-slate-100 dark:text-gray-200 dark:border-gray-600">📌 Enfoque A: Momento Flector (M/EI)</h3>
+                    <div class="flex-1 space-y-3 text-slate-700 mb-6 text-justify dark:text-gray-300">
+                        <p><strong>¿Qué es?</strong> Analiza la relación directa y local entre el momento flector aplicado en una sección específica y su curvatura.</p>
+                        <p class="font-mono bg-slate-50 p-2 rounded text-center text-brand-header font-bold tracking-wider dark:bg-gray-700 dark:text-blue-400">κ = M/(EI)</p>
+                        <p><strong>Ventaja principal:</strong> Permite calcular rápidamente los esfuerzos máximos en los puntos críticos de la viga.</p>
+                        <p><strong>Cuándo se usa:</strong> En el diseño por <em>resistencia última</em>, para verificar si el material fallará o plastificará bajo las cargas impuestas.</p>
                     </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-blue-800 mb-2 italic dark:text-blue-400">2. El Diagrama Momento-Curvatura (M−ϕ)</h3>
-                        <p class="text-gray-700 leading-relaxed dark:text-gray-300">
-                            Es una herramienta vital para visualizar la ductilidad. Permite identificar cuándo el material pasa del rango elástico al plástico, marcando puntos como el agrietamiento inicial, la fluencia del acero y la capacidad última.
-                        </p>
+                    <button onclick="toggleMetodologia('detallesA', 'btnA')" id="btnA" class="mt-auto self-start text-brand-header font-semibold hover:text-blue-800 transition flex items-center gap-1 bg-blue-50 px-5 py-2 rounded-lg border border-blue-100 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/50">
+                        ➕ Leer más
+                    </button>
+                    <div id="detallesA" class="hidden mt-4 bg-slate-50 p-5 rounded-lg border border-slate-200 dark:bg-gray-700 dark:border-gray-600">
+                        <h4 class="font-bold text-eng-dark mb-3 text-sm uppercase tracking-wide dark:text-gray-200">Procedimiento paso a paso:</h4>
+                        <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700 dark:text-gray-300">
+                            <li>Calcular el momento flector M en la sección de interés.</li>
+                            <li>Conocer la rigidez a flexión EI del elemento.</li>
+                            <li>Aplicar <span class="font-mono font-semibold bg-white px-1 rounded border border-slate-200 dark:bg-gray-800 dark:border-gray-600">κ = M/(EI)</span>.</li>
+                            <li>Usar <span class="font-mono font-semibold bg-white px-1 rounded border border-slate-200 dark:bg-gray-800 dark:border-gray-600">ε = κ·y</span> para la deformación.</li>
+                            <li>Calcular la tensión <span class="font-mono font-semibold bg-white px-1 rounded border border-slate-200 dark:bg-gray-800 dark:border-gray-600">σ = E·ε</span>.</li>
+                        </ol>
                     </div>
                 </div>
-                <div class="space-y-6">
-                    <div>
-                        <h3 class="text-xl font-bold text-blue-800 mb-2 italic dark:text-blue-400">3. Eje Neutro y Centroide</h3>
-                        <p class="text-gray-700 leading-relaxed dark:text-gray-300">
-                            En el rango elástico lineal, el eje neutro coincide con el centroide de la sección transversal. Sin embargo, en el rango plástico o en materiales no homogéneos, este eje puede desplazarse para mantener el equilibrio de fuerzas internas.
-                        </p>
+
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 flex flex-col transition-shadow hover:shadow-lg dark:bg-gray-800 dark:border-gray-700">
+                    <h3 class="text-xl font-bold text-eng-dark mb-4 pb-2 border-b border-slate-100 dark:text-gray-200 dark:border-gray-600">📐 Enfoque B: Ecuación (d²y/dx²)</h3>
+                    <div class="flex-1 space-y-3 text-slate-700 mb-6 text-justify dark:text-gray-300">
+                        <p><strong>¿Qué es?</strong> Plantea la ecuación diferencial global que describe la curva elástica (la forma deformada) a lo largo de toda la viga.</p>
+                        <p class="font-mono bg-slate-50 p-2 rounded text-center text-brand-header font-bold tracking-wider dark:bg-gray-700 dark:text-blue-400">EI·y'' = M(x)</p>
+                        <p><strong>Ventaja principal:</strong> Proporciona funciones continuas para conocer la deflexión exacta y la pendiente en cualquier coordenada.</p>
+                        <p><strong>Cuándo se usa:</strong> En el diseño por <em>condiciones de servicio</em>, para asegurar que los hundimientos no excedan los límites.</p>
                     </div>
-                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 dark:bg-blue-900/30 dark:border-blue-800">
-                        <h3 class="font-bold text-blue-900 mb-2 dark:text-blue-400">💡 Nota de Profundización:</h3>
-                        <p class="text-sm text-blue-800 italic dark:text-blue-300">
-                            En la escala microscópica (nanovigas), la relación lineal de Euler-Bernoulli pierde precisión, requiriendo el uso de teorías de gradiente de elasticidad para compensar efectos de superficie.
-                        </p>
+                    <button onclick="toggleMetodologia('detallesB', 'btnB')" id="btnB" class="mt-auto self-start text-brand-header font-semibold hover:text-blue-800 transition flex items-center gap-1 bg-blue-50 px-5 py-2 rounded-lg border border-blue-100 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/50">
+                        ➕ Leer más
+                    </button>
+                    <div id="detallesB" class="hidden mt-4 bg-slate-50 p-5 rounded-lg border border-slate-200 dark:bg-gray-700 dark:border-gray-600">
+                        <h4 class="font-bold text-eng-dark mb-3 text-sm uppercase tracking-wide dark:text-gray-200">Procedimiento paso a paso:</h4>
+                        <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700 dark:text-gray-300">
+                            <li>Plantear la ecuación M(x) a lo largo de la viga.</li>
+                            <li>Escribir la ecuación <span class="font-mono font-semibold bg-white px-1 rounded border border-slate-200 dark:bg-gray-800 dark:border-gray-600">EI·y'' = M(x)</span>.</li>
+                            <li>Integrar una vez para la pendiente y' (θ).</li>
+                            <li>Integrar otra vez para la deflexión y(x).</li>
+                            <li>Aplicar condiciones de borde para determinar constantes.</li>
+                        </ol>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="bg-white p-8 rounded-xl shadow-md border-t-8 border-blue-900 dark:bg-gray-800 dark:border-blue-500">
-            <h2 class="text-3xl font-bold text-blue-900 mb-6 dark:text-blue-400">Problema de Aplicación Integral</h2>
+        <section id="ejercicio" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-200 dark:bg-gray-800 dark:border-gray-700">
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-eng-dark mb-6 border-b pb-2 dark:text-gray-200 dark:border-gray-600">Ejercicio Interactivo</h2>
+                <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-brand-header space-y-4 text-slate-700 leading-relaxed text-justify dark:bg-blue-900/30 dark:border-blue-500 dark:text-gray-300">
+                    <div>
+                        <p>
+                            Este ejercicio tiene como propósito ilustrar de manera dinámica cómo las variaciones en la carga, la geometría y la longitud afectan directamente la curvatura y las tensiones internas de una viga. Para facilitar el análisis y enfocar el aprendizaje en las relaciones fundamentales, asumiremos un caso de flexión simple sobre una viga de acero estructural (cuyo límite elástico es de 250 MPa) con una sección transversal rectangular que tiene un ancho fijo de 5 cm.
+                        </p>
+                    </div>
+                    <div class="pt-2 border-t border-blue-100 dark:border-blue-800">
+                        <h3 class="font-bold text-eng-dark mb-1 dark:text-gray-200">Instrucciones de uso</h3>
+                        <p>
+                            Mueve los controles deslizantes para cambiar los parámetros y observa los resultados en tiempo real. Usa el botón "❓" para ver las fórmulas y vigila el indicador inferior: cambiará a "Fluencia" si superas el límite elástico del acero, indicando daño estructural.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <div class="space-y-6 bg-slate-50 p-6 rounded-xl border border-slate-200 dark:bg-gray-700 dark:border-gray-600">
+                        <h3 class="text-xl font-bold text-eng-dark border-b pb-2 dark:text-gray-200 dark:border-gray-600">Parámetros</h3>
+                        
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <label class="font-semibold text-sm dark:text-gray-300">Carga P (N)</label>
+                                <span id="valP" class="text-brand-header font-bold font-mono dark:text-blue-400">500 N</span>
+                            </div>
+                            <input type="range" id="sliderP" min="100" max="5000" step="10" value="500" class="w-full dark:accent-blue-500">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <label class="font-semibold text-sm dark:text-gray-300">Longitud L (m)</label>
+                                <span id="valL" class="text-brand-header font-bold font-mono dark:text-blue-400">2.0 m</span>
+                            </div>
+                            <input type="range" id="sliderL" min="0.5" max="5.0" step="0.1" value="2.0" class="w-full dark:accent-blue-500">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <label class="font-semibold text-sm dark:text-gray-300">Peralte h (cm)</label>
+                                <span id="valH" class="text-brand-header font-bold font-mono dark:text-blue-400">10 cm</span>
+                            </div>
+                            <input type="range" id="sliderH" min="2" max="30" step="1" value="10" class="w-full dark:accent-blue-500">
+                        </div>
+                        
+                        <div class="mt-4 p-4 bg-white border border-slate-200 rounded-lg text-sm text-slate-600 text-justify dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+                            <p class="mb-2"><strong>💡 Nota educativa:</strong></p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Carga (P) y Longitud (L):</strong> Ambas aumentan el Momento Flector de forma lineal. Una viga más larga sufrirá mayores tensiones aunque la carga se mantenga igual.</li>
+                                <li><strong>Peralte (h):</strong> Aumentarlo mejora exponencialmente la resistencia, ya que la Inercia crece al cubo ($h^3$), reduciendo drásticamente la curvatura.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-bold text-eng-dark border-b pb-2 mb-6 dark:text-gray-200 dark:border-gray-600">Resultados Calculados</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-slate-100 p-4 rounded-lg relative dark:bg-gray-700">
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider dark:text-gray-400">Momento M</p>
+                                    <button onclick="toggleFormula('f-m')" class="text-brand-header hover:bg-blue-200 bg-blue-100 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold dark:bg-blue-900/50 dark:text-blue-400">❓</button>
+                                </div>
+                                <p id="resM" class="text-lg font-bold text-eng-dark font-mono dark:text-gray-200">1000.00 N·m</p>
+                                <div id="f-m" class="hidden mt-2 p-2 bg-white border border-slate-200 rounded text-xs text-slate-600 font-mono text-center dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">M = P × L</div>
+                            </div>
+
+                            <div class="bg-slate-100 p-4 rounded-lg relative dark:bg-gray-700">
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider dark:text-gray-400">Inercia I</p>
+                                    <button onclick="toggleFormula('f-i')" class="text-brand-header hover:bg-blue-200 bg-blue-100 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold dark:bg-blue-900/50 dark:text-blue-400">❓</button>
+                                </div>
+                                <p id="resI" class="text-lg font-bold text-eng-dark font-mono dark:text-gray-200">4.17e-6 m⁴</p>
+                                <div id="f-i" class="hidden mt-2 p-2 bg-white border border-slate-200 rounded text-xs text-slate-600 font-mono text-center dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">I = (b × h³)/12</div>
+                            </div>
+
+                            <div class="bg-slate-100 p-4 rounded-lg relative dark:bg-gray-700">
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider dark:text-gray-400">Rigidez EI</p>
+                                    <button onclick="toggleFormula('f-ei')" class="text-brand-header hover:bg-blue-200 bg-blue-100 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold dark:bg-blue-900/50 dark:text-blue-400">❓</button>
+                                </div>
+                                <p id="resEI" class="text-lg font-bold text-eng-dark font-mono dark:text-gray-200">8.33e5 N·m²</p>
+                                <div id="f-ei" class="hidden mt-2 p-2 bg-white border border-slate-200 rounded text-xs text-slate-600 font-mono text-center dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">EI = E × I</div>
+                            </div>
+
+                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 relative dark:bg-blue-900/30 dark:border-blue-800">
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="text-xs text-brand-header font-semibold uppercase tracking-wider dark:text-blue-400">Curvatura κ</p>
+                                    <button onclick="toggleFormula('f-k')" class="text-brand-header hover:bg-blue-200 bg-blue-100 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold dark:bg-blue-900/50 dark:text-blue-400">❓</button>
+                                </div>
+                                <p id="resK" class="text-lg font-bold text-brand-header font-mono dark:text-blue-400">0.00120 m⁻¹</p>
+                                <div id="f-k" class="hidden mt-2 p-2 bg-white border border-slate-200 rounded text-xs text-slate-600 font-mono text-center dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">κ = M / (EI)</div>
+                            </div>
+
+                            <div class="bg-slate-100 p-4 rounded-lg relative dark:bg-gray-700">
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider dark:text-gray-400">Deform. Máx ε</p>
+                                    <button onclick="toggleFormula('f-e')" class="text-brand-header hover:bg-blue-200 bg-blue-100 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold dark:bg-blue-900/50 dark:text-blue-400">❓</button>
+                                </div>
+                                <p id="resE" class="text-lg font-bold text-eng-dark font-mono dark:text-gray-200">0.000060</p>
+                                <div id="f-e" class="hidden mt-2 p-2 bg-white border border-slate-200 rounded text-xs text-slate-600 font-mono text-center dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">ε = κ × (h/2)</div>
+                            </div>
+
+                            <div class="bg-slate-100 p-4 rounded-lg relative dark:bg-gray-700">
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider dark:text-gray-400">Tensión Máx σ</p>
+                                    <button onclick="toggleFormula('f-s')" class="text-brand-header hover:bg-blue-200 bg-blue-100 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold dark:bg-blue-900/50 dark:text-blue-400">❓</button>
+                                </div>
+                                <p id="resS" class="text-lg font-bold text-eng-dark font-mono dark:text-gray-200">12.00 MPa</p>
+                                <div id="f-s" class="hidden mt-2 p-2 bg-white border border-slate-200 rounded text-xs text-slate-600 font-mono text-center dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">σ = E × ε</div>
+                            </div>
+                        </div>
+                        
+                        <div id="resStatus" class="mt-6 p-4 rounded-xl text-center font-bold text-lg text-emerald-800 bg-emerald-100 border border-emerald-300 transition-colors duration-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800">
+                            ✅ Estado: Elástico
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq">
+            <h2 class="text-3xl font-bold text-eng-dark mb-6 border-l-4 border-brand-header pl-4 dark:text-gray-200 dark:border-blue-500">Preguntas Frecuentes (FAQ)</h2>
+            <div class="space-y-3">
+                <details class="group bg-white rounded-lg shadow-sm border border-slate-200 [&_summary::-webkit-details-marker]:hidden dark:bg-gray-800 dark:border-gray-700">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4 text-eng-dark hover:bg-slate-50 transition dark:text-gray-200 dark:hover:bg-gray-700">
+                        <span>1. ¿Cuál es la relación fundamental entre la curvatura y la deformación unitaria?</span>
+                        <span class="transition group-open:rotate-180"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                    </summary>
+                    <div class="text-slate-600 p-4 border-t border-slate-100 bg-slate-50 leading-relaxed text-justify dark:text-gray-400 dark:border-gray-700 dark:bg-gray-700/50">
+                        <p>La deformación unitaria longitudinal (<i>&epsilon;</i>) en cualquier punto de una viga es directamente proporcional a su distancia (<i>y</i>) desde la superficie neutra e inversamente proporcional al radio de curvatura (<i>&rho;</i>) de dicha superficie.</p>
+                        <p class="mt-2">Matemáticamente se expresa como: <strong><i>&epsilon;</i> = -<i>y</i>/<i>&rho;</i> = -<i>y&kappa;</i></strong>. Donde <i>&kappa;</i> es la curvatura (1/<i>&rho;</i>). Esto indica que la deformación varía de forma estrictamente lineal a lo largo de la sección transversal.</p>
+                    </div>
+                </details>
+
+                <details class="group bg-white rounded-lg shadow-sm border border-slate-200 [&_summary::-webkit-details-marker]:hidden dark:bg-gray-800 dark:border-gray-700">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4 text-eng-dark hover:bg-slate-50 transition dark:text-gray-200 dark:hover:bg-gray-700">
+                        <span>2. ¿Qué es el eje neutro y cómo se localiza?</span>
+                        <span class="transition group-open:rotate-180"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                    </summary>
+                    <div class="text-slate-600 p-4 border-t border-slate-100 bg-slate-50 leading-relaxed text-justify dark:text-gray-400 dark:border-gray-700 dark:bg-gray-700/50">
+                        <p>El eje neutro es la línea en la sección transversal de la viga donde las fibras no experimentan ni alargamiento ni acortamiento (deformación cero).</p>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>En materiales homogéneos dentro del rango elástico, el eje neutro pasa necesariamente por el centroide de la sección transversal.</li>
+                            <li>En secciones compuestas (de varios materiales), el eje neutro se desplaza hacia el material con mayor módulo elástico (<i>E</i>).</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="group bg-white rounded-lg shadow-sm border border-slate-200 [&_summary::-webkit-details-marker]:hidden dark:bg-gray-800 dark:border-gray-700">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4 text-eng-dark hover:bg-slate-50 transition dark:text-gray-200 dark:hover:bg-gray-700">
+                        <span>3. ¿Qué establece la hipótesis de Bernoulli-Navier?</span>
+                        <span class="transition group-open:rotate-180"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                    </summary>
+                    <div class="text-slate-600 p-4 border-t border-slate-100 bg-slate-50 leading-relaxed text-justify dark:text-gray-400 dark:border-gray-700 dark:bg-gray-700/50">
+                        Es la suposición cinemática fundamental que dicta que las secciones transversales que eran planas antes de la flexión, permanecen planas y perpendiculares al eje longitudinal después de la deformación. Esta hipótesis permite asegurar que la distribución de deformaciones sea lineal a través del peralte de la viga.
+                    </div>
+                </details>
+
+                <details class="group bg-white rounded-lg shadow-sm border border-slate-200 [&_summary::-webkit-details-marker]:hidden dark:bg-gray-800 dark:border-gray-700">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4 text-eng-dark hover:bg-slate-50 transition dark:text-gray-200 dark:hover:bg-gray-700">
+                        <span>4. ¿Cómo se vincula el momento flector con la curvatura?</span>
+                        <span class="transition group-open:rotate-180"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                    </summary>
+                    <div class="text-slate-600 p-4 border-t border-slate-100 bg-slate-50 leading-relaxed text-justify dark:text-gray-400 dark:border-gray-700 dark:bg-gray-700/50">
+                        La curvatura es proporcional al momento flector (<i>M</i>) e inversamente proporcional a la rigidez a la flexión (<i>EI</i>) del elemento: <strong><i>&kappa;</i> = 1/<i>&rho;</i> = <i>M</i>/<i>EI</i></strong>. Esta relación es válida mientras el material se comporte de forma elástica lineal (ley de Hooke).
+                    </div>
+                </details>
+
+                <details class="group bg-white rounded-lg shadow-sm border border-slate-200 [&_summary::-webkit-details-marker]:hidden dark:bg-gray-800 dark:border-gray-700">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4 text-eng-dark hover:bg-slate-50 transition dark:text-gray-200 dark:hover:bg-gray-700">
+                        <span>5. ¿Para qué sirve un diagrama Momento-Curvatura (M-Ф)?</span>
+                        <span class="transition group-open:rotate-180"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                    </summary>
+                    <div class="text-slate-600 p-4 border-t border-slate-100 bg-slate-50 leading-relaxed text-justify dark:text-gray-400 dark:border-gray-700 dark:bg-gray-700/50">
+                        <p>Es una herramienta crítica para entender el comportamiento estructural, especialmente en materiales como el hormigón armado. Permite visualizar:</p>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>La ductilidad de la sección (capacidad de deformarse sin colapsar).</li>
+                            <li>La transición entre el rango elástico, el agrietamiento del concreto y la fluencia del acero.</li>
+                            <li>La energía absorbida por el miembro (área bajo la curva).</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="group bg-white rounded-lg shadow-sm border border-slate-200 [&_summary::-webkit-details-marker]:hidden dark:bg-gray-800 dark:border-gray-700">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4 text-eng-dark hover:bg-slate-50 transition dark:text-gray-200 dark:hover:bg-gray-700">
+                        <span>6. ¿Qué es la "curvatura anticlástica"?</span>
+                        <span class="transition group-open:rotate-180"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                    </summary>
+                    <div class="text-slate-600 p-4 border-t border-slate-100 bg-slate-50 leading-relaxed text-justify dark:text-gray-400 dark:border-gray-700 dark:bg-gray-700/50">
+                        Al flexionar una viga, las fibras superiores en compresión tienden a expandirse lateralmente, mientras que las fibras inferiores en tensión tienden a contraerse (debido al efecto de Poisson). Esto provoca que la sección transversal también se curve en el plano perpendicular, creando una superficie con forma de silla de montar, cuyo radio es <strong><i>&rho;'</i> = <i>&rho;</i>/<i>v</i></strong>.
+                    </div>
+                </details>
+
+                <details class="group bg-white rounded-lg shadow-sm border border-slate-200 [&_summary::-webkit-details-marker]:hidden dark:bg-gray-800 dark:border-gray-700">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4 text-eng-dark hover:bg-slate-50 transition dark:text-gray-200 dark:hover:bg-gray-700">
+                        <span>7. ¿Cuál es la diferencia entre deflexión y curvatura?</span>
+                        <span class="transition group-open:rotate-180"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                    </summary>
+                    <div class="text-slate-600 p-4 border-t border-slate-100 bg-slate-50 leading-relaxed text-justify dark:text-gray-400 dark:border-gray-700 dark:bg-gray-700/50">
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>La <strong>curvatura</strong> (<i>&kappa;</i>) es una medida local del "doblez" en un punto específico, definida como la tasa de cambio del ángulo de la pendiente respecto a la longitud.</li>
+                            <li>La <strong>deflexión</strong> (<i>y</i> o <i>v</i>) es el desplazamiento vertical acumulado de un punto respecto a su posición original.</li>
+                        </ul>
+                        <p class="mt-2">Matemáticamente, para pendientes pequeñas, la curvatura es aproximadamente la segunda derivada de la deflexión: <strong><i>&kappa;</i> &approx; d<sup>2</sup><i>y</i>/dx<sup>2</sup></strong>.</p>
+                    </div>
+                </details>
+
+                <details class="group bg-white rounded-lg shadow-sm border border-slate-200 [&_summary::-webkit-details-marker]:hidden dark:bg-gray-800 dark:border-gray-700">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4 text-eng-dark hover:bg-slate-50 transition dark:text-gray-200 dark:hover:bg-gray-700">
+                        <span>8. ¿Por qué el diseño prefiere vigas con mayor peralte (altura)?</span>
+                        <span class="transition group-open:rotate-180"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                    </summary>
+                    <div class="text-slate-600 p-4 border-t border-slate-100 bg-slate-50 leading-relaxed text-justify dark:text-gray-400 dark:border-gray-700 dark:bg-gray-700/50">
+                        La eficiencia de una sección depende de su módulo de sección (<i>S</i> = <i>I</i>/<i>c</i>). Al aumentar el peralte (<i>h</i>), el momento de inercia (<i>I</i>) crece de forma cúbica (&approx; <i>bh</i><sup>3</sup>/12), lo que reduce drásticamente tanto los esfuerzos máximos como la curvatura ante una misma carga.
+                    </div>
+                </details>
+
+                <details class="group bg-white rounded-lg shadow-sm border border-slate-200 [&_summary::-webkit-details-marker]:hidden dark:bg-gray-800 dark:border-gray-700">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4 text-eng-dark hover:bg-slate-50 transition dark:text-gray-200 dark:hover:bg-gray-700">
+                        <span>9. ¿Cómo afecta la presencia de refuerzo (acero) en el concreto a esta relación?</span>
+                        <span class="transition group-open:rotate-180"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                    </summary>
+                    <div class="text-slate-600 p-4 border-t border-slate-100 bg-slate-50 leading-relaxed text-justify dark:text-gray-400 dark:border-gray-700 dark:bg-gray-700/50">
+                        En vigas de hormigón armado, el análisis de curvatura debe considerar que el concreto no resiste tensión. Por ello, la posición del eje neutro se determina de forma iterativa buscando el equilibrio entre la fuerza de compresión del concreto y la fuerza de tracción del acero. La curvatura final dependerá de la cuantía de acero y de las curvas esfuerzo-deformación de ambos materiales.
+                    </div>
+                </details>
+
+                <details class="group bg-white rounded-lg shadow-sm border border-slate-200 [&_summary::-webkit-details-marker]:hidden dark:bg-gray-800 dark:border-gray-700">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4 text-eng-dark hover:bg-slate-50 transition dark:text-gray-200 dark:hover:bg-gray-700">
+                        <span>10. ¿Qué errores comunes deben evitarse al aplicar estas fórmulas?</span>
+                        <span class="transition group-open:rotate-180"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                    </summary>
+                    <div class="text-slate-600 p-4 border-t border-slate-100 bg-slate-50 leading-relaxed text-justify dark:text-gray-400 dark:border-gray-700 dark:bg-gray-700/50">
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>Confundir el centroide geométrico con el eje neutro en materiales no homogéneos o en rango plástico.</li>
+                            <li>Ignorar que la relación lineal <strong><i>&sigma;</i> = <i>My</i>/<i>I</i></strong> solo es válida si el material obedece la ley de Hooke; en plasticidad, la deformación sigue siendo lineal, pero el esfuerzo no.</li>
+                            <li>Despreciar la deflexión por cortante en vigas muy cortas o con cargas muy pesadas, donde la hipótesis de secciones planas puede no ser suficiente.</li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <section id="quiz" class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 border-t-4 border-t-amber-400 dark:bg-gray-800 dark:border-gray-700">
+            <h2 class="text-3xl font-bold text-eng-dark mb-6 border-b pb-2 flex items-center gap-2 dark:text-gray-200 dark:border-gray-600">
+                <span>🧠</span> Quiz de Comprensión
+            </h2>
+            <p class="text-slate-600 mb-6 dark:text-gray-400">Pon a prueba lo que aprendiste con estas 3 preguntas rápidas.</p>
             
-            <div class="bg-blue-50 p-6 rounded-lg mb-8 border border-blue-100 italic text-gray-700 leading-relaxed shadow-inner text-sm dark:bg-blue-900/30 dark:border-blue-800 dark:text-gray-300">
-                <strong>Enunciado:</strong> Una barra prismática de acero de sección rectangular (base <b>b=0.8 pulg</b>, altura <b>h=2.5 pulg</b>) se flexiona hasta que el radio de curvatura es de <b>ρ=200 pulg</b>. Con <b>E=29×10⁶ psi</b> y un esfuerzo de fluencia <b>σ<sub>Y</sub>=36 ksi</b>, determine: 
-                <span class="block mt-2 font-semibold">1) Deformación máxima, 2) Esfuerzo máximo y verificación de fluencia, 3) Momento flector en el límite elástico.</span>
-            </div>
-
             <div class="space-y-6">
+                <div class="bg-slate-50 p-5 rounded-lg border border-slate-100 dark:bg-gray-700 dark:border-gray-600">
+                    <p class="font-semibold text-eng-dark mb-3 dark:text-gray-200">1. ¿En qué parte de una viga sometida a flexión pura la deformación unitaria es igual a cero?</p>
+                    <div class="space-y-2 text-slate-700 dark:text-gray-300">
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="radio" name="q1" value="a" class="w-4 h-4"> En la fibra superior (compresión máxima).</label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="radio" name="q1" value="b" class="w-4 h-4"> En el eje neutro.</label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="radio" name="q1" value="c" class="w-4 h-4"> En los apoyos de la viga.</label>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-5 rounded-lg border border-slate-100 dark:bg-gray-700 dark:border-gray-600">
+                    <p class="font-semibold text-eng-dark mb-3 dark:text-gray-200">2. Si aumentas el peralte (altura) de una viga de modo que su Inercia (I) sea mayor, manteniendo la carga igual, ¿qué ocurre con la curvatura?</p>
+                    <div class="space-y-2 text-slate-700 dark:text-gray-300">
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="radio" name="q2" value="a" class="w-4 h-4"> Disminuye (la viga se dobla menos).</label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="radio" name="q2" value="b" class="w-4 h-4"> Aumenta (la viga se dobla más).</label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="radio" name="q2" value="c" class="w-4 h-4"> Se mantiene igual, solo cambia el momento flector.</label>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-5 rounded-lg border border-slate-100 dark:bg-gray-700 dark:border-gray-600">
+                    <p class="font-semibold text-eng-dark mb-3 dark:text-gray-200">3. ¿Qué mide la "Deflexión" a diferencia de la "Curvatura"?</p>
+                    <div class="space-y-2 text-slate-700 dark:text-gray-300">
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="radio" name="q3" value="a" class="w-4 h-4"> El ángulo de giro de una sección local.</label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="radio" name="q3" value="b" class="w-4 h-4"> La distancia perpendicular al eje neutro.</label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="radio" name="q3" value="c" class="w-4 h-4"> El desplazamiento vertical total desde su posición original.</label>
+                    </div>
+                </div>
+
+                <button onclick="verificarQuiz()" class="bg-brand-header hover:bg-blue-800 text-white font-semibold py-2 px-6 rounded shadow transition dark:bg-blue-700 dark:hover:bg-blue-600">
+                    Verificar Respuestas
+                </button>
                 
-                <div class="border rounded-lg overflow-hidden dark:border-gray-700">
-                    <button onclick="togglePaso('paso1')" class="w-full flex justify-between items-center p-5 bg-gray-900 text-white font-bold hover:bg-gray-800 transition dark:bg-gray-700 dark:hover:bg-gray-600">
-                        <span>1. Cálculo de Deformación Unitaria Máxima (ϵ<sub>max</sub>)</span>
-                        <span id="icon-paso1">+</span>
-                    </button>
-                    <div id="paso1" class="hidden p-6 bg-white border-x dark:bg-gray-800 dark:border-gray-700">
-                        <p class="mb-4 text-gray-600 dark:text-gray-400">La fibra más alejada del eje neutro está a una distancia <b>c</b>:</p>
-                        <div class="bg-gray-100 p-4 rounded-lg font-mono mb-4 text-sm dark:bg-gray-700 dark:text-gray-300">
-                            c = h / 2 = 2.5 pulg / 2 = 1.25 pulg <br>
-                            &epsilon;<sub>max</sub> = c / &rho; = 1.25 / 200
-                        </div>
-                        <p class="text-xl font-bold text-blue-900 dark:text-blue-400">&epsilon;<sub>max</sub> = 0.00625 pulg/pulg (0.625%)</p>
-                    </div>
-                </div>
-
-                <div class="border rounded-lg overflow-hidden dark:border-gray-700">
-                    <button onclick="togglePaso('paso2')" class="w-full flex justify-between items-center p-5 bg-gray-900 text-white font-bold hover:bg-gray-800 transition dark:bg-gray-700 dark:hover:bg-gray-600">
-                        <span>2. Esfuerzo Máximo y Verificación de Fluencia</span>
-                        <span id="icon-paso2">+</span>
-                    </button>
-                    <div id="paso2" class="hidden p-6 bg-white border-x dark:bg-gray-800 dark:border-gray-700">
-                        <p class="mb-4 dark:text-gray-300">Aplicamos la Ley de Hooke:</p>
-                        <div class="bg-gray-100 p-4 rounded-lg font-mono mb-4 text-sm dark:bg-gray-700 dark:text-gray-300">
-                            &sigma;<sub>max</sub> = E &middot; &epsilon;<sub>max</sub> <br>
-                            &sigma;<sub>max</sub> = (29&times;10<sup>6</sup> psi) &middot; (0.00625) = 181,250 psi
-                        </div>
-                        <div class="bg-red-100 border-l-4 border-red-600 p-4 text-red-800 dark:bg-red-900/30 dark:border-red-500 dark:text-red-300">
-                            <strong>VERIFICACIÓN:</strong> 181.25 ksi > 36 ksi. <br>
-                            ¡EL MATERIAL HA CEDIDO! Ha entrado en el rango plástico.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="border rounded-lg overflow-hidden dark:border-gray-700">
-                    <button onclick="togglePaso('paso3')" class="w-full flex justify-between items-center p-5 bg-gray-900 text-white font-bold hover:bg-gray-800 transition dark:bg-gray-700 dark:hover:bg-gray-600">
-                        <span>3. Momento Flector (M) en el Límite Elástico</span>
-                        <span id="icon-paso3">+</span>
-                    </button>
-                    <div id="paso3" class="hidden p-6 bg-white border-x text-sm dark:bg-gray-800 dark:border-gray-700">
-                        <p class="mb-2 dark:text-gray-300">Calculamos el Momento de Inercia (I):</p>
-                        <div class="bg-gray-100 p-4 rounded-lg font-mono mb-4 dark:bg-gray-700 dark:text-gray-300">
-                            I = (1/12) &middot; b &middot; h<sup>3</sup> = (1/12)(0.8)(2.5)<sup>3</sup> = 1.0417 pulg<sup>4</sup>
-                        </div>
-                        <p class="mb-2 text-sm dark:text-gray-300">Momento en el límite elástico (&sigma; = &sigma;<sub>Y</sub>):</p>
-                        <div class="bg-gray-100 p-4 rounded-lg font-mono mb-4 dark:bg-gray-700 dark:text-gray-300">
-                            M = (&sigma;<sub>Y</sub> &middot; I) / c <br>
-                            M = (36,000 psi &middot; 1.0417 pulg<sup>4</sup>) / 1.25 pulg
-                        </div>
-                        <p class="text-xl font-bold text-green-700 dark:text-green-400">M = 30,000 lb-pulg (30 kip-pulg)</p>
-                    </div>
-                </div>
-
+                <div id="quiz-resultado" class="hidden mt-4 p-4 rounded-lg font-semibold text-lg text-center"></div>
             </div>
         </section>
 
-        <section class="bg-white p-8 rounded-xl shadow-md dark:bg-gray-800">
-            <h2 class="text-3xl font-bold text-blue-900 mb-6 dark:text-blue-400">Conclusiones</h2>
-            <div class="grid md:grid-cols-2 gap-8 text-lg">
-                <div class="space-y-4">
-                    <p class="dark:text-gray-300"><strong>• Priorizar la Cinemática:</strong> Entender por qué las secciones permanecen planas facilita la deducción de fórmulas.</p>
-                    <p class="dark:text-gray-300"><strong>• Diagramas M-ϕ:</strong> Permiten identificar los puntos críticos: agrietamiento (A), fluencia (Y) y capacidad última (U).</p>
+        <section class="mt-8 bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:bg-gray-800 dark:border-gray-700">
+            <div class="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4 dark:border-gray-700">
+                <span class="text-2xl">💡</span>
+                <span class="text-sm font-bold text-slate-400 uppercase tracking-widest dark:text-gray-500">Perspectiva Práctica</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 border-l-4 border-l-blue-400 hover:shadow-md transition-shadow dark:bg-gray-700 dark:border-gray-600 dark:border-l-blue-500">
+                    <h4 class="font-bold text-eng-dark mb-2 flex items-center gap-2 dark:text-gray-200"><span>🔄</span> La Secuencia Estructural</h4>
+                    <p class="text-sm text-slate-600 leading-relaxed text-justify dark:text-gray-400">La flexión sigue una cadena física inevitable: la carga externa genera un <strong>momento flector</strong> que curva la viga. Esta <strong>curvatura</strong> deforma geométricamente las fibras internas, induciendo <strong>esfuerzos</strong> que finalmente resisten el peso.</p>
                 </div>
-                <div class="space-y-4 border-l-2 border-gray-100 pl-8 dark:border-gray-700">
-                    <p class="dark:text-gray-300"><strong>• Análisis de Energía:</strong> Evalúa cuánta energía puede absorber la estructura antes de una falla catastrófica.</p>
-                    <p class="dark:text-gray-300"><strong>• Modelación Numérica:</strong> Se sugiere contrastar estos resultados teóricos con software como Abaqus o Matlab.</p>
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 border-l-4 border-l-emerald-400 hover:shadow-md transition-shadow dark:bg-gray-700 dark:border-gray-600 dark:border-l-emerald-500">
+                    <h4 class="font-bold text-eng-dark mb-2 flex items-center gap-2 dark:text-gray-200"><span>🏗️</span> Aplicación en Ingeniería</h4>
+                    <p class="text-sm text-slate-600 leading-relaxed text-justify dark:text-gray-400">Saber que el esfuerzo disminuye al aumentar la inercia nos permite diseñar estructuras eficientes. Usamos perfiles en "I" o vigas huecas para alejar el material del eje neutro, optimizando rascacielos y chasis.</p>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 border-l-4 border-l-indigo-400 hover:shadow-md transition-shadow dark:bg-gray-700 dark:border-gray-600 dark:border-l-indigo-500">
+                    <h4 class="font-bold text-eng-dark mb-2 flex items-center gap-2 dark:text-gray-200"><span>🎛️</span> El Poder de las Variables</h4>
+                    <p class="text-sm text-slate-600 leading-relaxed text-justify dark:text-gray-400">El simulador traduce la teoría en intuición. Mover los parámetros demuestra por qué aumentar el <strong>peralte (h)</strong> es la solución más potente (por su impacto al cubo) frente a reducir cargas o acortar distancias.</p>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 border-l-4 border-l-amber-400 hover:shadow-md transition-shadow dark:bg-gray-700 dark:border-gray-600 dark:border-l-amber-500">
+                    <h4 class="font-bold text-eng-dark mb-2 flex items-center gap-2 dark:text-gray-200"><span>🧠</span> Clave de Aprendizaje</h4>
+                    <p class="text-sm text-slate-600 leading-relaxed text-justify dark:text-gray-400">Para dominar estos conceptos, la visualización es mejor que la memoria. Interpretar la física detrás de las ecuaciones e imaginar cómo rotan las secciones transversales al aplicar fuerza forja el criterio de un diseñador.</p>
                 </div>
             </div>
         </section>
+
     </main>
+
+    <section class="max-w-4xl mx-auto px-6 mb-16 space-y-6">
+        
+        <details class="group bg-white rounded-lg shadow-sm border border-slate-200 [&_summary::-webkit-details-marker]:hidden dark:bg-gray-800 dark:border-gray-700">
+            <summary class="flex items-center gap-3 font-medium cursor-pointer list-none p-5 text-slate-700 hover:bg-slate-50 transition dark:text-gray-300 dark:hover:bg-gray-700">
+                <span class="transition group-open:rotate-90 text-slate-400">
+                    <svg fill="none" height="20" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="20"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </span>
+                <span class="text-lg">📚 Referencias Bibliográficas</span>
+            </summary>
+            <div class="p-6 border-t border-slate-100 bg-slate-50 text-slate-600 dark:border-gray-700 dark:bg-gray-700/50 dark:text-gray-400">
+                <ul class="list-disc pl-5 space-y-3 text-sm">
+                    <li>Alcívar, W., Párraga, N., & Vélez, J. (s.f.). <i>Comparación teórico-experimental del comportamiento a flexión de vigas mediante gráficas momento-curvatura.</i> Revista científica de la Universidad Técnica de Manabí.</li>
+                    <li>Beer, F. P., Johnston, E. R., DeWolf, J. T., & Mazurek, D. F. (2017). <i>Mecánica de materiales</i> (7a ed.). McGraw-Hill Education.</li>
+                    <li>Cervera Ruiz, M., & Blanco Díaz, E. (2002). <i>Resistencia de Materiales.</i> Edicions de la Universitat Politècnica de Catalunya.</li>
+                    <li>Hibbeler, R. C. (2017). <i>Mecánica de materiales</i> (10a ed.). Pearson Education.</li>
+                    <li>IIT Bombay. (s.f.). <i>Chapter 4: Pure Bending.</i> Mechanics of Materials.</li>
+                    <li>MIT OpenCourseWare. (2004). <i>Chapter 9: Stresses: Beams in Bending.</i> 1.050 Solid Mechanics.</li>
+                    <li>Roylance, D. (s.f.). <i>Curvas de esfuerzo-deformación.</i> Massachusetts Institute of Technology.</li>
+                    <li>Universidad Nacional Autónoma de México. (s.f.). <i>Relación momento-curvatura en vigas.</i> Material académico de ingeniería estructural.</li>
+                    <li>University of Washington. (s.f.). <i>Chapter 3: Beams: Strain, Stress, Deflections.</i> ME 354A Mechanics of Materials.</li>
+                </ul>
+            </div>
+        </details>
+    </section>
 
     <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
     <div class="absolute inset-0 opacity-10">
@@ -291,9 +602,15 @@
     
     <div class="max-w-6xl mx-auto px-6 relative z-10">
         <div class="flex flex-col items-center space-y-4">
+            
             <div class="text-center space-y-1">
                 <div class="flex items-center justify-center space-x-2 text-sm">
-                    <span class="text-white font-medium">Josué David Ordoñez Pastor</span>
+                    <span class="text-white font-medium">Allan Carlos Calderon Vasquez</span>
+                    <span class="text-gray-600">◆</span>
+                    <span class="text-gray-400">201930985</span>
+                </div>
+                <div class="flex items-center justify-center space-x-2 text-sm">
+                    <span class="text-white font-medium">Josue David Ordonez Pastor</span>
                     <span class="text-gray-600">◆</span>
                     <span class="text-gray-400">202230578</span>
                 </div>
@@ -321,18 +638,134 @@
     <script src="../js/progreso.js"></script>
     
     <script>
-        function togglePaso(idPaso) {
-            const contenido = document.getElementById(idPaso);
-            const icono = document.getElementById('icon-' + idPaso);
-            
-            if (contenido.classList.contains('hidden')) {
-                contenido.classList.remove('hidden');
-                icono.innerText = '−';
+        const btn = document.getElementById('mobile-btn');
+        const menu = document.getElementById('mobile-menu');
+        if (btn && menu) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+            const mobileLinks = menu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    menu.classList.add('hidden');
+                });
+            });
+        }
+
+        function toggleMetodologia(detallesId, btnId) {
+            const detalles = document.getElementById(detallesId);
+            const btn = document.getElementById(btnId);
+            if (detalles.classList.contains('hidden')) {
+                detalles.classList.remove('hidden');
+                btn.innerHTML = '➖ Leer menos';
             } else {
-                contenido.classList.add('hidden');
-                icono.innerText = '+';
+                detalles.classList.add('hidden');
+                btn.innerHTML = '➕ Leer más';
             }
         }
+
+        function toggleFormula(id) {
+            const elem = document.getElementById(id);
+            if (elem.classList.contains('hidden')) {
+                elem.classList.remove('hidden');
+            } else {
+                elem.classList.add('hidden');
+            }
+        }
+
+        const sliderP = document.getElementById('sliderP');
+        const sliderL = document.getElementById('sliderL');
+        const sliderH = document.getElementById('sliderH');
+        const valP = document.getElementById('valP');
+        const valL = document.getElementById('valL');
+        const valH = document.getElementById('valH');
+        const resM = document.getElementById('resM');
+        const resI = document.getElementById('resI');
+        const resEI = document.getElementById('resEI');
+        const resK = document.getElementById('resK');
+        const resE = document.getElementById('resE');
+        const resS = document.getElementById('resS');
+        const resStatus = document.getElementById('resStatus');
+
+        const E = 200e9;
+        const b = 0.05;
+        const limiteFluencia = 250e6;
+
+        function actualizarResultados() {
+            let P = parseFloat(sliderP.value);
+            let L = parseFloat(sliderL.value);
+            let h_cm = parseFloat(sliderH.value);
+            let h = h_cm / 100;
+
+            valP.innerText = P + " N";
+            valL.innerText = L.toFixed(1) + " m";
+            valH.innerText = h_cm + " cm";
+
+            let M = P * L;
+            let I = (b * Math.pow(h, 3)) / 12;
+            let EI = E * I;
+            let k = M / EI;
+            let eMax = k * (h / 2);
+            let sigma = E * eMax;
+            let sigmaMPa = sigma / 1e6;
+
+            resM.innerText = M.toFixed(2) + " N·m";
+            resI.innerText = I.toExponential(2) + " m⁴";
+            resEI.innerText = EI.toExponential(2) + " N·m²";
+            resK.innerText = k.toExponential(2) + " m⁻¹";
+            resE.innerText = eMax.toExponential(2);
+            resS.innerText = sigmaMPa.toFixed(2) + " MPa";
+
+            if (sigma >= limiteFluencia) {
+                resStatus.innerHTML = "⚠️ Estado: Fluencia (deformación permanente)";
+                resStatus.className = "mt-6 p-4 rounded-xl text-center font-bold text-lg text-red-800 bg-red-100 border border-red-300 transition-colors duration-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800";
+            } else {
+                resStatus.innerHTML = "✅ Estado: Elástico";
+                resStatus.className = "mt-6 p-4 rounded-xl text-center font-bold text-lg text-emerald-800 bg-emerald-100 border border-emerald-300 transition-colors duration-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800";
+            }
+        }
+
+        if (sliderP && sliderL && sliderH) {
+            sliderP.addEventListener('input', actualizarResultados);
+            sliderL.addEventListener('input', actualizarResultados);
+            sliderH.addEventListener('input', actualizarResultados);
+            actualizarResultados();
+        }
+
+        function verificarQuiz() {
+            let aciertos = 0;
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            const q3 = document.querySelector('input[name="q3"]:checked');
+            const resultadoDiv = document.getElementById('quiz-resultado');
+
+            if (!q1 || !q2 || !q3) {
+                resultadoDiv.classList.remove('hidden');
+                resultadoDiv.className = "mt-4 p-4 rounded-lg font-semibold text-lg text-center bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800";
+                resultadoDiv.textContent = "⚠️ Por favor, responde todas las preguntas antes de verificar.";
+                return;
+            }
+
+            if (q1.value === 'b') aciertos++;
+            if (q2.value === 'a') aciertos++;
+            if (q3.value === 'c') aciertos++;
+
+            resultadoDiv.classList.remove('hidden');
+            if (aciertos === 3) {
+                resultadoDiv.className = "mt-4 p-4 rounded-lg font-semibold text-lg text-center bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800";
+                resultadoDiv.innerHTML = "🎉 ¡Perfecto! Acertaste 3 de 3. Tienes un excelente dominio del tema.";
+            } else if (aciertos === 2) {
+                resultadoDiv.className = "mt-4 p-4 rounded-lg font-semibold text-lg text-center bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800";
+                resultadoDiv.innerHTML = "👍 ¡Muy bien! Acertaste 2 de 3. Solo un pequeño repaso y lo dominarás.";
+            } else {
+                resultadoDiv.className = "mt-4 p-4 rounded-lg font-semibold text-lg text-center bg-red-100 text-red-800 border border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800";
+                resultadoDiv.innerHTML = `Acertaste ${aciertos} de 3. Te recomendamos releer la introducción y volver a intentarlo.`;
+            }
+        }
+
+        window.toggleMetodologia = toggleMetodologia;
+        window.toggleFormula = toggleFormula;
+        window.verificarQuiz = verificarQuiz;
         
         // Actualizar botón de completado
         if (typeof actualizarBotonEnPagina === 'function') {
