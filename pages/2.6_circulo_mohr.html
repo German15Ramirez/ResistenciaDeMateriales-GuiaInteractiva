@@ -321,6 +321,26 @@
             </div>
         </section>
 
+         <!-- MAPA MENTAL - IMAGEN -->
+
+<div id="contenedorMapaMental"></div>
+
+<div id="mapaMental"></div>
+
+<script>
+    fetch('../components/mapa-mental.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('mapaMental').innerHTML = html;
+            const img = document.querySelector('#mapaMental img');
+            if (img) {
+                img.src = '../img/Mapa_2.6.jpg';
+                img.alt = 'Mapa mental - Círculo de Mohr';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+</script>
+
         <section>
             <h3 class="text-2xl font-bold text-gray-800 mb-6 dark:text-gray-200">Recursos Audiovisuales</h3>
             <div class="grid md:grid-cols-2 gap-4">

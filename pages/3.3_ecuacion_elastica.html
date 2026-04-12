@@ -276,6 +276,26 @@
             </div>
         </section>
 
+         <!-- MAPA MENTAL - IMAGEN -->
+
+<div id="contenedorMapaMental"></div>
+
+<div id="mapaMental"></div>
+
+<script>
+    fetch('../components/mapa-mental.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('mapaMental').innerHTML = html;
+            const img = document.querySelector('#mapaMental img');
+            if (img) {
+                img.src = '../img/Mapa_3.3.jpg';
+                img.alt = 'Mapa mental - Ecuación Elástica';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+</script>
+
         <section class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8">
             <h2 class="text-xl font-bold text-blue-900 dark:text-blue-400 mb-4">Bibliografía</h2>
             <ul class="text-sm space-y-2 dark:text-gray-300">

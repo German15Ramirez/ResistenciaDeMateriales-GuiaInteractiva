@@ -348,6 +348,26 @@
             </div>
         </section>
 
+        <!-- MAPA MENTAL - IMAGEN -->
+
+<div id="contenedorMapaMental"></div>
+
+<div id="mapaMental"></div>
+
+<script>
+    fetch('../components/mapa-mental.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('mapaMental').innerHTML = html;
+            const img = document.querySelector('#mapaMental img');
+            if (img) {
+                img.src = '../img/Mapa_1.1.jpg';
+                img.alt = 'Mapa mental - Superposición y sus limitaciones';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+</script>
+
         <section class="bg-white p-10 rounded-xl shadow-md border-l-8 border-purple-800 dark:bg-gray-800 dark:border-purple-600">
             <h2 class="text-2xl font-bold text-purple-900 mb-6 uppercase tracking-tight italic border-b-2 border-purple-100 pb-2 dark:text-purple-400">
                 Evaluación: Conceptos de Superposición

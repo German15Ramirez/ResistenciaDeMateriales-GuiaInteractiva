@@ -543,6 +543,26 @@
       </div>
     </section>
 
+     <!-- MAPA MENTAL - IMAGEN -->
+
+<div id="contenedorMapaMental"></div>
+
+<div id="mapaMental"></div>
+
+<script>
+    fetch('../components/mapa-mental.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('mapaMental').innerHTML = html;
+            const img = document.querySelector('#mapaMental img');
+            if (img) {
+                img.src = '../img/Mapa_3.1.jpg';
+                img.alt = 'Mapa mental - Introducción a la Deflexión';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+</script>
+
     <section id="quiz" class="fade-in">
       <div class="flex items-center gap-3 mb-6">
         <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg">🧠</div>

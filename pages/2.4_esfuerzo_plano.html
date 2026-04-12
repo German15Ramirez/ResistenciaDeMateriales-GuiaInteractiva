@@ -215,6 +215,26 @@
             </div>
         </section>
 
+         <!-- MAPA MENTAL - IMAGEN -->
+
+<div id="contenedorMapaMental"></div>
+
+<div id="mapaMental"></div>
+
+<script>
+    fetch('../components/mapa-mental.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('mapaMental').innerHTML = html;
+            const img = document.querySelector('#mapaMental img');
+            if (img) {
+                img.src = '../img/Mapa_2.4.jpg';
+                img.alt = 'Mapa mental - Esfuerzo Plano';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+</script>
+
         <!-- FAQ -->
         <section id="faq" class="mb-12 scroll-mt-24">
             <h2 class="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-6 border-b-2 border-blue-100 dark:border-blue-800 pb-2 inline-block">❓ 6. Preguntas Frecuentes (FAQ)</h2>
