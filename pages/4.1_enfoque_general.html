@@ -172,6 +172,26 @@
             </div>
         </section>
 
+        <!-- MAPA -->
+
+<div id="contenedorMapaMental"></div>
+
+<div id="mapaMental"></div>
+
+<script>
+    fetch('../components/mapa-mental.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('mapaMental').innerHTML = html;
+            const img = document.querySelector('#mapaMental img');
+            if (img) {
+                img.src = '../img/Mapa_4.1.jpg';
+                img.alt = 'Mapa mental - Vigas Estáticamente Indeterminadas';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+</script>
+
         <section class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 transition-colors duration-300">
             <h2 class="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-6 border-b-2 border-blue-100 dark:border-gray-700 pb-2">Calculadora de Grado de Indeterminación</h2>
             <p class="mb-6 text-gray-700 dark:text-gray-300">Esta herramienta te permite verificar rápidamente el grado de indeterminación de una estructura en 2D.</p>

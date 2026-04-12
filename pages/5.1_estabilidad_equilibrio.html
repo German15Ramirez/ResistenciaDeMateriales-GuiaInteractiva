@@ -172,6 +172,26 @@
             </div>
         </section>
 
+        <!-- MAPA -->
+
+<div id="contenedorMapaMental"></div>
+
+<div id="mapaMental"></div>
+
+<script>
+    fetch('../components/mapa-mental.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('mapaMental').innerHTML = html;
+            const img = document.querySelector('#mapaMental img');
+            if (img) {
+                img.src = '../img/Mapa_5.1.jpg';
+                img.alt = 'Mapa mental - Estabilidad y Equilibrio';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+</script>
+
         <section class="mb-16 bg-slate-900 text-white p-8 md:p-12 rounded-2xl shadow-2xl dark:bg-gray-950">
             <div class="flex items-center mb-8">
                 <div class="h-1 w-12 bg-blue-400 mr-4"></div>

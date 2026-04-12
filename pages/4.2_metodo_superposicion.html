@@ -247,6 +247,26 @@
             </p>
         </section>
 
+        <!-- MAPA -->
+
+<div id="contenedorMapaMental"></div>
+
+<div id="mapaMental"></div>
+
+<script>
+    fetch('../components/mapa-mental.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('mapaMental').innerHTML = html;
+            const img = document.querySelector('#mapaMental img');
+            if (img) {
+                img.src = '../img/Mapa_4.2.jpg';
+                img.alt = 'Mapa mental - Método de Superposición';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+</script>
+
         <section class="bg-white p-8 md:p-12 rounded-2xl shadow-md border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
             <h3 class="text-2xl font-bold mb-8 text-blue-900 text-center uppercase tracking-widest dark:text-blue-400">Mini Quiz de Evaluación</h3>
             <div id="quiz-container" class="max-w-3xl mx-auto space-y-8">

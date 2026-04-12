@@ -190,6 +190,27 @@
             </ul>
         </section>
 
+        <!-- MAPA -->
+<!-- MAPA MENTAL - IMAGEN -->
+
+<div id="contenedorMapaMental"></div>
+
+<div id="mapaMental"></div>
+
+<script>
+    fetch('../components/mapa-mental.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('mapaMental').innerHTML = html;
+            const img = document.querySelector('#mapaMental img');
+            if (img) {
+                img.src = '../img/Mapa_3.6.jpg';
+                img.alt = 'Mapa mental - Deflexión en vigas';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+</script>
+
         <section id="ejercicio" class="fade-in scroll-mt-20">
             <h2 class="text-3xl font-bold mb-6 text-center border-b-2 border-blue-900 inline-block pb-2 dark:border-blue-500">Ejercicio Práctico</h2>
             <div class="bg-white p-8 rounded-lg shadow-md dark:bg-gray-800">
