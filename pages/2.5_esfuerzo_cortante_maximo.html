@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Esfuerzo Cortante Máximo</title>
+    <title>2.5 Esfuerzo Cortante Máximo - Mecánica de Materiales</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <script>
@@ -78,6 +78,101 @@
         }
         .dark .shadow-sm {
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Estilos para el quiz */
+        .quiz-container {
+            background-color: #fff;
+            border-left: 8px solid #6b21a8;
+            border-radius: 8px;
+        }
+        .dark .quiz-container {
+            background-color: #1f2937;
+            border-left-color: #8b5cf6;
+        }
+        .quiz-title {
+            color: #6b21a8;
+        }
+        .dark .quiz-title {
+            color: #a78bfa;
+        }
+        .pregunta-item {
+            margin-bottom: 25px;
+        }
+        .pregunta-texto {
+            font-weight: 500;
+            color: #374151;
+        }
+        .dark .pregunta-texto {
+            color: #e5e7eb;
+        }
+        .opcion-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: #4b5563;
+        }
+        .dark .opcion-label {
+            color: #9ca3af;
+        }
+        .opcion-label input {
+            accent-color: #6b21a8;
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+        .resultado-area {
+            background-color: #fef9c3;
+            border: 1px solid #fde047;
+            color: #854d0e;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 6px;
+            display: none;
+        }
+        .dark .resultado-area {
+            background-color: #78350f;
+            border-color: #f59e0b;
+            color: #fef3c7;
+        }
+        .quiz-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .quiz-btn-evaluar {
+            background-color: #7e22ce;
+            color: white;
+        }
+        .quiz-btn-evaluar:hover {
+            background-color: #6b21a8;
+        }
+        .dark .quiz-btn-evaluar {
+            background-color: #8b5cf6;
+        }
+        .dark .quiz-btn-evaluar:hover {
+            background-color: #7c3aed;
+        }
+        .quiz-btn-resetear {
+            background-color: #e5e7eb;
+            color: #4b5563;
+        }
+        .quiz-btn-resetear:hover {
+            background-color: #d1d5db;
+        }
+        .dark .quiz-btn-resetear {
+            background-color: #374151;
+            color: #9ca3af;
+        }
+        .dark .quiz-btn-resetear:hover {
+            background-color: #4b5563;
         }
     </style>
 </head>
@@ -182,6 +277,22 @@
             </div>
         </section>
 
+        <!-- QUIZ DE EVALUACIÓN -->
+        <section class="mb-12">
+            <div class="quiz-container bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-md">
+                <h2 class="text-2xl font-bold quiz-title mb-6 uppercase border-b pb-2">Evaluación: Conceptos de Cortante Máximo</h2>
+                
+                <div id="cuestionario"></div>
+
+                <div id="resultado-area" class="resultado-area"></div>
+
+                <div class="flex gap-4 mt-6">
+                    <button id="btn-evaluar" onclick="evaluar()" class="quiz-btn quiz-btn-evaluar flex-2">Evaluar</button>
+                    <button id="btn-resetear" onclick="resetear()" class="quiz-btn quiz-btn-resetear flex-1">Resetear</button>
+                </div>
+            </div>
+        </section>
+
         <section class="mb-12">
             <h2 class="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-6 border-b-2 border-blue-100 dark:border-blue-900 pb-2 text-center">Conclusiones</h2>
             <div class="grid md:grid-cols-3 gap-6">
@@ -203,71 +314,114 @@
         <!-- BIBLIOGRAFIA -->
         <section class="bg-white p-10 rounded-lg shadow-md border-t-8 border-gray-400 dark:bg-gray-800 dark:border-gray-600">
             <h2 class="text-2xl font-bold text-gray-800 mb-8 border-b-2 pb-2 inline-block dark:text-gray-200">Referencias</h2>
-<div class="mb-8">
-    <div class="space-y-4 text-gray-700 text-sm md:text-base leading-relaxed dark:text-gray-300 ml-4">
-        <p class="pl-8 -indent-8">
-            <strong>Hibbeler, R. C. (2017).</strong> <i>Mecánica de Materiales.</i> 10ma Edición. Pearson Educación. (Capítulo 9: Transformación de Esfuerzo y Capítulo 10: Círculo de Mohr).
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>Beer, F. P., Johnston, E. R., DeWolf, J. T., & Mazurek, D. F. (2017).</strong> <i>Mecánica de Materiales.</i> 7ma Edición. McGraw-Hill Education. (Capítulo 7: Transformaciones de Esfuerzos y Deformaciones).
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>Gere, J. M., & Goodno, B. J. (2018).</strong> <i>Mechanics of Materials.</i> 9th Edition. Cengage Learning. (Capítulo 7: Análisis de Esfuerzo y Deformación).
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>Shigley, J. E., & Budynas, R. G. (2020).</strong> <i>Diseño en Ingeniería Mecánica.</i> 11va Edición. McGraw-Hill. (Capítulo 5: Fallas resultantes de carga estática).
-        </p>
-    </div>
-</div>
- </section>
+            <div class="mb-8">
+                <div class="space-y-4 text-gray-700 text-sm md:text-base leading-relaxed dark:text-gray-300 ml-4">
+                    <p class="pl-8 -indent-8">
+                        <strong>Hibbeler, R. C. (2017).</strong> <i>Mecánica de Materiales.</i> 10ma Edición. Pearson Educación. (Capítulo 9: Transformación de Esfuerzo y Capítulo 10: Círculo de Mohr).
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>Beer, F. P., Johnston, E. R., DeWolf, J. T., & Mazurek, D. F. (2017).</strong> <i>Mecánica de Materiales.</i> 7ma Edición. McGraw-Hill Education. (Capítulo 7: Transformaciones de Esfuerzos y Deformaciones).
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>Gere, J. M., & Goodno, B. J. (2018).</strong> <i>Mechanics of Materials.</i> 9th Edition. Cengage Learning. (Capítulo 7: Análisis de Esfuerzo y Deformación).
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>Shigley, J. E., & Budynas, R. G. (2020).</strong> <i>Diseño en Ingeniería Mecánica.</i> 11va Edición. McGraw-Hill. (Capítulo 5: Fallas resultantes de carga estática).
+                    </p>
+                </div>
+            </div>
+        </section>
 
     </main>
 
     <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
-    </div>
-    
-    <div class="max-w-6xl mx-auto px-6 relative z-10">
-        <div class="flex flex-col items-center space-y-4">            
-            <div class="text-center space-y-1">
-                <div class="flex items-center justify-center space-x-2 text-sm">
-                    <span class="text-white font-medium">Alexander Sergio Iván de León Martínez</span>
-                    <span class="text-gray-600">◆</span>
-                    <span class="text-gray-400">202231023</span>
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="flex flex-col items-center space-y-4">            
+                <div class="text-center space-y-1">
+                    <div class="flex items-center justify-center space-x-2 text-sm">
+                        <span class="text-white font-medium">Alexander Sergio Iván de León Martínez</span>
+                        <span class="text-gray-600">◆</span>
+                        <span class="text-gray-400">202231023</span>
+                    </div>
+                    <div class="flex items-center justify-center space-x-2 text-sm">
+                        <span class="text-white font-medium">Owdulvis Francovi Hernández Sánchez</span>
+                        <span class="text-gray-600">◆</span>
+                        <span class="text-gray-400">202131128</span>
+                    </div>
                 </div>
-                <div class="flex items-center justify-center space-x-2 text-sm">
-                    <span class="text-white font-medium">Owdulvis Francovi Hernández Sánchez</span>
-                    <span class="text-gray-600">◆</span>
-                    <span class="text-gray-400">202131128</span>
+                
+                <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+                
+                <div class="flex space-x-3 pt-2">
+                    <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                        </svg>
+                    </a>
+                    <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
+                        </svg>
+                    </a>
                 </div>
-            </div>
-            
-            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
-            
-            <div class="flex space-x-3 pt-2">
-                <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
-                    </svg>
-                </a>
-                <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
-                    </svg>
-                </a>
             </div>
         </div>
-    </div>
-</footer>
+    </footer>
 
     <script src="../js/darkmode.js"></script>
     <script src="../js/progreso.js"></script>
     
     <script>
-        window.onload = function(){
-            document.body.classList.remove("opacity-0");
+        // Datos del quiz
+        const preguntas = [
+            { id: 1, q: "¿El esfuerzo cortante máximo ocurre en planos inclinados a 45° respecto a los esfuerzos principales?", a: "V" },
+            { id: 2, q: "¿El esfuerzo cortante máximo se obtiene como el centro del círculo de Mohr?", a: "F" },
+            { id: 3, q: "¿El criterio de Tresca utiliza el esfuerzo cortante máximo para evaluar la falla en materiales dúctiles?", a: "V" },
+            { id: 4, q: "¿Si el esfuerzo cortante máximo excede el esfuerzo de fluencia del material, se considera que ocurre la falla?", a: "V" },
+            { id: 5, q: "¿El esfuerzo cortante máximo depende únicamente de los esfuerzos normales en X y Y, sin considerar el esfuerzo cortante τxy?", a: "F" },
+            { id: 6, q: "¿El cálculo del esfuerzo cortante máximo es útil en el diseño de elementos como engranajes, poleas y zapatas?", a: "V" },
+            { id: 7, q: "¿Puedo elegir entre los puntos X y Y, cualquiera como punto principal?", a: "F" },
+            { id: 8, q: "¿El plano donde está el cortante máximo es paralelo al eje X?", a: "F" }
+        ];
+
+        function renderQuiz() {
+            const container = document.getElementById('cuestionario');
+            container.innerHTML = preguntas.map(p => `
+                <div class="pregunta-item mb-6">
+                    <span class="pregunta-texto block font-semibold mb-2 dark:text-gray-200">${p.id}. ${p.q}</span>
+                    <div class="flex gap-6">
+                        <label class="opcion-label flex items-center cursor-pointer">
+                            <input type="radio" name="p${p.id}" value="V" class="mr-2"> Verdadero
+                        </label>
+                        <label class="opcion-label flex items-center cursor-pointer">
+                            <input type="radio" name="p${p.id}" value="F" class="mr-2"> Falso
+                        </label>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function evaluar() {
+            let aciertos = 0;
+            preguntas.forEach(p => {
+                const seleccion = document.querySelector(`input[name="p${p.id}"]:checked`);
+                if (seleccion && seleccion.value === p.a) aciertos++;
+            });
+
+            const res = document.getElementById('resultado-area');
+            res.innerHTML = `Resultado: ${aciertos} de ${preguntas.length} correctas. ${aciertos === preguntas.length ? '¡Excelente trabajo!' : '¡Sigue estudiando!'}`;
+            res.style.display = 'block';
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        function resetear() {
+            document.querySelectorAll('input').forEach(i => i.checked = false);
+            document.getElementById('resultado-area').style.display = 'none';
         }
 
         function resolverEjercicio() {
@@ -275,10 +429,9 @@
             const sy = 80.0;
             const txy = -35.0;
 
-            const promedio = (sx + sy) / 2; // ( -5 + 80 ) / 2 = 37.5
-            
-            const base = (sx - sy) / 2; // -42.5
-            const radio = Math.sqrt(Math.pow(base, 2) + Math.pow(txy, 2)).toFixed(2); // 55.06
+            const promedio = (sx + sy) / 2;
+            const base = (sx - sy) / 2;
+            const radio = Math.sqrt(Math.pow(base, 2) + Math.pow(txy, 2)).toFixed(2);
 
             document.getElementById("resultadoEjercicio").innerHTML = `
                 <div class="text-left w-full">
@@ -291,6 +444,12 @@
                 </div>
             `;
         }
+
+        // Inicializar
+        window.onload = function() {
+            renderQuiz();
+            document.body.classList.remove("opacity-0");
+        };
 
         if (typeof actualizarBotonEnPagina === 'function') {
             actualizarBotonEnPagina('2.5_esfuerzo_cortante_maximo');

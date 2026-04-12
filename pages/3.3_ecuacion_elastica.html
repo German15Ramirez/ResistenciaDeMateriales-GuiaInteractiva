@@ -57,6 +57,17 @@
         .dark .bg-gray-800 { background-color: #1f2937 !important; }
         .dark .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
         .dark .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
+        
+        /* Estilos para el quiz */
+        .quiz-option {
+            transition: all 0.2s ease;
+        }
+        .quiz-option:hover:not(:disabled) {
+            transform: translateY(-1px);
+        }
+        .quiz-option:disabled {
+            cursor: default;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans leading-relaxed dark:bg-gray-900 dark:text-gray-100">
@@ -221,6 +232,35 @@
             </div>
         </section>
 
+        <!-- QUIZ INTERACTIVO -->
+        <section class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8 border-t-8 border-blue-900 dark:border-blue-500">
+            <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-6 flex items-center">
+                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.364-6.364l-.707-.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M12 7a5 5 0 015 5 12.001 12.001 0 01-5 5 12.001 12.001 0 01-5-5 5 5 0 015-5z"></path></svg>
+                Quiz: Autoevaluación de la Elástica
+            </h2>
+            
+            <div id="quiz-container">
+                <div id="question-text" class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200"></div>
+                <div id="options-container" class="grid grid-cols-1 gap-3"></div>
+                <div id="quiz-feedback" class="mt-6 hidden p-4 rounded-lg font-bold text-center"></div>
+                
+                <div class="mt-8 flex justify-between items-center border-t pt-6 dark:border-gray-700">
+                    <span id="quiz-progress" class="text-sm text-gray-500 dark:text-gray-400 font-bold"></span>
+                    <button id="next-btn" onclick="nextQuestion()" class="hidden bg-blue-900 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-bold transition shadow-md">
+                        Siguiente Pregunta
+                    </button>
+                </div>
+            </div>
+
+            <div id="quiz-result" class="hidden text-center py-8">
+                <h3 class="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-2">¡Quiz Completado!</h3>
+                <p id="final-score" class="text-xl text-gray-600 dark:text-gray-400 mb-6"></p>
+                <button onclick="resetQuiz()" class="bg-blue-900 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-bold transition shadow-lg">
+                    Reintentar Quiz
+                </button>
+            </div>
+        </section>
+
         <section class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8">
             <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-4">5. Conclusiones</h2>
             <p class="mb-4 dark:text-gray-300">
@@ -250,54 +290,164 @@
     </main>
 
     <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
-    </div>
-    
-    <div class="max-w-6xl mx-auto px-6 relative z-10">
-        <div class="flex flex-col items-center space-y-4">
-            <div class="text-center space-y-1">
-                <div class="flex items-center justify-center space-x-2 text-sm">
-                    <span class="text-white font-medium">Rudy Mynor de Paz Velasco</span>
-                    <span class="text-gray-600">◆</span>
-                    <span class="text-gray-400">202330452</span>
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="flex flex-col items-center space-y-4">
+                <div class="text-center space-y-1">
+                    <div class="flex items-center justify-center space-x-2 text-sm">
+                        <span class="text-white font-medium">Rudy Mynor de Paz Velasco</span>
+                        <span class="text-gray-600">◆</span>
+                        <span class="text-gray-400">202330452</span>
+                    </div>
+                    <div class="flex items-center justify-center space-x-2 text-sm">
+                        <span class="text-white font-medium">Cesar Roberto Pérez Altuve</span>
+                        <span class="text-gray-600">◆</span>
+                        <span class="text-gray-400">202330043</span>
+                    </div>
                 </div>
-                <div class="flex items-center justify-center space-x-2 text-sm">
-                    <span class="text-white font-medium">Cesar Roberto Pérez Altuve</span>
-                    <span class="text-gray-600">◆</span>
-                    <span class="text-gray-400">202330043</span>
+                
+                <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+                
+                <div class="flex space-x-3 pt-2">
+                    <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                        </svg>
+                    </a>
+                    <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
+                        </svg>
+                    </a>
                 </div>
-            </div>
-            
-            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
-            
-            <div class="flex space-x-3 pt-2">
-                <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
-                    </svg>
-                </a>
-                <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
-                    </svg>
-                </a>
             </div>
         </div>
-    </div>
-</footer>
+    </footer>
 
     <script src="../js/darkmode.js"></script>
     <script src="../js/progreso.js"></script>
     
     <script>
+        // Datos del Quiz
+        const quizData = [
+            {
+                q: "¿Cómo se define la curva elástica de una viga?",
+                a: ["La línea de rotura del material", "La línea que describe la deformación del eje neutro", "La gráfica de esfuerzos cortantes"],
+                correct: 1
+            },
+            {
+                q: "En la ecuación EI y'' = M(x), ¿qué representa el término 'EI'?",
+                a: ["El momento flector máximo", "La carga distribuida", "La rigidez a la flexión"],
+                correct: 2
+            },
+            {
+                q: "¿Cuál es la hipótesis principal de pequeñas deflexiones?",
+                a: ["La pendiente es tan pequeña que su cuadrado es despreciable", "El material es perfectamente plástico", "La viga no tiene apoyos"],
+                correct: 0
+            },
+            {
+                q: "¿Qué magnitud física se obtiene al integrar una vez la ecuación del momento?",
+                a: ["La deflexión (y)", "La pendiente o rotación (θ)", "La fuerza cortante (V)"],
+                correct: 1
+            },
+            {
+                q: "En un empotramiento (x=0), ¿cuáles son las condiciones de frontera?",
+                a: ["y = 0 y θ = 0", "y = 0 únicamente", "M = 0 y V = 0"],
+                correct: 0
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const quizContainer = document.getElementById('quiz-container');
+            const resultContainer = document.getElementById('quiz-result');
+            const questionText = document.getElementById('question-text');
+            const optionsContainer = document.getElementById('options-container');
+            const progress = document.getElementById('quiz-progress');
+            const feedback = document.getElementById('quiz-feedback');
+            const nextBtn = document.getElementById('next-btn');
+
+            feedback.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            optionsContainer.innerHTML = '';
+
+            const data = quizData[currentQuestion];
+            questionText.innerText = `${currentQuestion + 1}. ${data.q}`;
+            progress.innerText = `Pregunta ${currentQuestion + 1} de ${quizData.length}`;
+
+            data.a.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.innerText = option;
+                btn.className = "quiz-option text-left p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-900 hover:bg-blue-50 dark:hover:bg-blue-900/30 dark:hover:border-blue-500 transition font-medium dark:text-gray-300";
+                btn.onclick = () => checkAnswer(index);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(index) {
+            const data = quizData[currentQuestion];
+            const feedback = document.getElementById('quiz-feedback');
+            const nextBtn = document.getElementById('next-btn');
+            const options = document.getElementById('options-container').children;
+
+            for (let btn of options) { btn.disabled = true; }
+
+            feedback.classList.remove('hidden');
+            if (index === data.correct) {
+                score++;
+                feedback.innerText = "¡Correcto!";
+                feedback.className = "mt-6 p-4 rounded-lg font-bold text-center bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
+                options[index].classList.add('bg-green-100', 'border-green-500', 'dark:bg-green-900/50', 'dark:border-green-600');
+            } else {
+                feedback.innerText = "Incorrecto. Revisa la teoría.";
+                feedback.className = "mt-6 p-4 rounded-lg font-bold text-center bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
+                options[index].classList.add('bg-red-100', 'border-red-500', 'dark:bg-red-900/50', 'dark:border-red-600');
+                options[data.correct].classList.add('bg-green-100', 'border-green-500', 'dark:bg-green-900/50', 'dark:border-green-600');
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            const result = document.getElementById('quiz-result');
+            result.classList.remove('hidden');
+            document.getElementById('final-score').innerText = `Obtuviste ${score} de ${quizData.length} respuestas correctas.`;
+        }
+
+        function resetQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            loadQuestion();
+        }
+
         function mostrarPaso(num) {
             const paso = document.getElementById('paso' + num);
             paso.classList.remove('step-hidden');
             paso.classList.add('fade-in');
             paso.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+        
+        // Iniciar el quiz al cargar
+        window.onload = function() {
+            loadQuestion();
+        };
         
         // Actualizar botón de completado
         if (typeof actualizarBotonEnPagina === 'function') {

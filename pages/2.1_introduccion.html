@@ -72,17 +72,129 @@
         .dark input, .dark input.border { background-color: #374151; color: #f3f4f6; border-color: #4b5563; }
         .dark input::placeholder { color: #9ca3af; }
         .dark .bg-blue-100.p-2 { background-color: #1e3a8a !important; }
+        
+        /* Estilos para el quiz */
+        .quiz-mohr-container {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        .dark .quiz-mohr-container {
+            background-color: #1f2937;
+            border-color: #374151;
+        }
+        .quiz-mohr-title {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            border-bottom: 4px solid #3b82f6;
+            display: inline-block;
+            width: 100%;
+            padding-bottom: 10px;
+        }
+        .dark .quiz-mohr-title {
+            color: #60a5fa;
+            border-bottom-color: #60a5fa;
+        }
+        .quiz-mohr-question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f8fafc;
+            border-left: 5px solid #3b82f6;
+        }
+        .dark .quiz-mohr-question {
+            background-color: #1f2937;
+            border-left-color: #60a5fa;
+        }
+        .quiz-mohr-question p {
+            margin-bottom: 15px;
+            color: #1e293b;
+            font-weight: 700;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+        .dark .quiz-mohr-question p {
+            color: #e5e7eb;
+        }
+        .quiz-mohr-label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            color: #475569;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .dark .quiz-mohr-label {
+            color: #9ca3af;
+        }
+        .quiz-mohr-label:hover {
+            background-color: #f1f5f9;
+            border-color: #3b82f6;
+        }
+        .dark .quiz-mohr-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .quiz-mohr-label input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        .quiz-mohr-btn {
+            display: block;
+            width: 100%;
+            max-width: 350px;
+            margin: 30px auto 0;
+            background-color: #1e40af;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+        }
+        .quiz-mohr-btn:hover {
+            background-color: #1e3a8a;
+            transform: translateY(-2px);
+        }
+        .dark .quiz-mohr-btn {
+            background-color: #3b82f6;
+        }
+        .dark .quiz-mohr-btn:hover {
+            background-color: #2563eb;
+        }
+        #quiz-resultado-mohr {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1rem;
+            display: none;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 antialiased dark:bg-gray-900 dark:text-gray-100">
 
     <nav class="bg-blue-900 text-white sticky top-0 z-50 shadow-lg p-4 dark:bg-blue-800">
         <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+            </div>
             <div class="hidden md:flex space-x-6 text-xs uppercase font-semibold items-center">
                 <a href="#inicio" class="hover:text-blue-300">Inicio</a>
                 <a href="#guia" class="hover:text-blue-300">Guía Técnica</a>
                 <a href="#calculadora" class="hover:text-blue-300">Calculadora</a>
                 <a href="#ejemplos" class="hover:text-blue-300">Ejemplos</a>
+            </div>
         </div>
     </nav>
 
@@ -151,41 +263,40 @@
         </section>
 
         <section id="calculadora" class="scroll-mt bg-gray-900 text-white p-8 md:p-12 rounded-3xl shadow-2xl border-b-8 border-blue-600 dark:bg-gray-950 dark:border-blue-500">
-    
-    <h2 class="text-2xl font-bold mb-10 text-center text-blue-400 uppercase tracking-widest">Calculadora Analítica Paso a Paso</h2>
-    
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div>
-            <label class="block text-xs font-bold mb-2 text-blue-300 dark:text-blue-300">σx (MPa)</label>
-            <input type="number" id="sx" value="80" 
-                   class="w-full p-3 rounded-xl font-bold bg-white text-gray-900 border border-gray-300 dark:bg-gray-700 dark:text-white">
-        </div>
-        <div>
-            <label class="block text-xs font-bold mb-2 text-blue-300 dark:text-blue-300">σy (MPa)</label>
-            <input type="number" id="sy" value="-40" 
-                   class="w-full p-3 rounded-xl font-bold bg-white text-gray-900 border border-gray-300 dark:bg-gray-700 dark:text-white">
-        </div>
-        <div>
-            <label class="block text-xs font-bold mb-2 text-blue-300 dark:text-blue-300">τxy (MPa)</label>
-            <input type="number" id="txy" value="25" 
-                   class="w-full p-3 rounded-xl font-bold bg-white text-gray-900 border border-gray-300 dark:bg-gray-700 dark:text-white">
-        </div>
-        <div>
-            <label class="block text-xs font-bold mb-2 text-blue-300 dark:text-blue-300">θ (°)</label>
-            <input type="number" id="th" value="30" 
-                   class="w-full p-3 rounded-xl font-bold bg-white text-gray-900 border border-gray-300 dark:bg-gray-700 dark:text-white">
-        </div>
-    </div>
+            <h2 class="text-2xl font-bold mb-10 text-center text-blue-400 uppercase tracking-widest">Calculadora Analítica Paso a Paso</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div>
+                    <label class="block text-xs font-bold mb-2 text-blue-300 dark:text-blue-300">σx (MPa)</label>
+                    <input type="number" id="sx" value="80" 
+                           class="w-full p-3 rounded-xl font-bold bg-white text-gray-900 border border-gray-300 dark:bg-gray-700 dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-2 text-blue-300 dark:text-blue-300">σy (MPa)</label>
+                    <input type="number" id="sy" value="-40" 
+                           class="w-full p-3 rounded-xl font-bold bg-white text-gray-900 border border-gray-300 dark:bg-gray-700 dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-2 text-blue-300 dark:text-blue-300">τxy (MPa)</label>
+                    <input type="number" id="txy" value="25" 
+                           class="w-full p-3 rounded-xl font-bold bg-white text-gray-900 border border-gray-300 dark:bg-gray-700 dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-2 text-blue-300 dark:text-blue-300">θ (°)</label>
+                    <input type="number" id="th" value="30" 
+                           class="w-full p-3 rounded-xl font-bold bg-white text-gray-900 border border-gray-300 dark:bg-gray-700 dark:text-white">
+                </div>
+            </div>
 
-    <button onclick="calcular()" 
-            class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-2xl font-black text-lg transition-all uppercase dark:bg-blue-700 dark:hover:bg-blue-600 text-white">
-        Generar Resolución
-    </button>
+            <button onclick="calcular()" 
+                    class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-2xl font-black text-lg transition-all uppercase dark:bg-blue-700 dark:hover:bg-blue-600 text-white">
+                Generar Resolución
+            </button>
 
-    <div id="resultado_box" class="hidden mt-10 bg-white text-gray-900 p-8 rounded-2xl border-l-8 border-blue-600 dark:bg-gray-800 dark:text-gray-200 dark:border-blue-500">
-        <div id="pasos_procedimiento" class="space-y-6"></div>
-    </div>
-</section>
+            <div id="resultado_box" class="hidden mt-10 bg-white text-gray-900 p-8 rounded-2xl border-l-8 border-blue-600 dark:bg-gray-800 dark:text-gray-200 dark:border-blue-500">
+                <div id="pasos_procedimiento" class="space-y-6"></div>
+            </div>
+        </section>
 
         <section id="ejemplos" class="scroll-mt max-w-5xl mx-auto">
             <h2 class="text-3xl font-bold text-blue-900 mb-10 text-center uppercase dark:text-blue-400">Ejemplos de Aplicación</h2>
@@ -225,57 +336,195 @@
                 </details>
             </div>
         </section>
+
+        <!-- MAPA MENTAL - IMAGEN -->
+
+<div id="contenedorMapaMental"></div>
+
+<div id="mapaMental"></div>
+
+<script>
+    fetch('../components/mapa-mental.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('mapaMental').innerHTML = html;
+            const img = document.querySelector('#mapaMental img');
+            if (img) {
+                img.src = '../img/Mapa_2.1.jpg';
+                img.alt = 'Mapa mental - Introducción a la Transformación de Esfuerzos';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+</script>
+
+        <!-- QUIZ DE TRANSFORMACIÓN DE ESFUERZOS -->
+        <section id="quiz" class="scroll-mt max-w-4xl mx-auto">
+            <div class="quiz-mohr-container">
+                <h3 class="quiz-mohr-title">📝 QUIZ: TRANSFORMACIÓN DE ESFUERZOS</h3>
+                
+                <form id="form-quiz-mohr">
+                    <div class="quiz-mohr-question">
+                        <p>1. ¿Bajo qué condición se considera que la distribución del esfuerzo normal es uniforme en una sección transversal bajo carga axial?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p1" value="c"> En secciones alejadas de los puntos de aplicación de la carga.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p1" value="b"> Exactamente en el punto de aplicación.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p1" value="a"> Solo si el material es heterogéneo.</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>2. ¿Cómo se define la convención de signos positiva para el ángulo θ en la transformación de esfuerzos?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p2" value="b"> Es positivo en dirección contraria a las manecillas del reloj.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p2" value="d"> Es positivo si sigue el sentido de las manecillas del reloj.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p2" value="a"> Siempre es negativo si es mayor a 90°.</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>3. ¿Qué representa un estado de 'Esfuerzo Plano'?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p3" value="d"> Un estado donde los componentes de esfuerzo en una de las caras son cero.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p3" value="a"> Solo existen esfuerzos cortantes.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p3" value="b"> El material es infinitamente rígido.</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>4. ¿Cuál es la función principal del Círculo de Mohr?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p4" value="a"> Proporcionar una representación gráfica de las variaciones de esfuerzo al cambiar la orientación.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p4" value="b"> Medir la dureza superficial del acero.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p4" value="c"> Calcular la velocidad de flujo en tuberías.</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>5. ¿Qué caracteriza a los planos principales de esfuerzo?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p5" value="a"> Esfuerzo normal máximo/mínimo y esfuerzo cortante nulo.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p5" value="b"> Solo existe esfuerzo cortante máximo.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p5" value="c"> El esfuerzo normal es siempre cero.</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>6. ¿A qué ángulo están los planos de cortante máximo respecto a los principales?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p6" value="b"> 45 grados.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p6" value="a"> 90 grados.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p6" value="c"> 0 grados.</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>7. ¿Qué valor permanece constante (invariante) ante cualquier rotación?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p7" value="a"> La suma de los esfuerzos normales (σx + σy).</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p7" value="b"> El esfuerzo cortante transformado.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p7" value="c"> El ángulo de orientación.</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>8. En el Círculo de Mohr, ¿qué representa físicamente el radio R?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p8" value="b"> El esfuerzo cortante máximo en el plano.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p8" value="a"> El esfuerzo normal promedio.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p8" value="c"> La deformación unitaria axial.</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>9. Si un elemento rota θ en la realidad, ¿cuánto rota en el Círculo de Mohr?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p9" value="c"> 2θ (el doble).</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p9" value="a"> θ (igual).</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p9" value="b"> θ / 2.</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>10. ¿Cuál es la característica principal del esfuerzo cortante (τ)?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p10" value="b"> Actúa de forma tangencial a la superficie del elemento.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p10" value="d"> Actúa de forma perpendicular a la superficie.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p10" value="a"> Solo se presenta en secciones cuadradas.</label>
+                    </div>
+
+                    <div class="quiz-mohr-question">
+                        <p>11. Según las ecuaciones generales, ¿cuál es el cortante transformado si θ = 0°?</p>
+                        <label class="quiz-mohr-label"><input type="radio" name="p11" value="c"> τxy (el valor original).</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p11" value="b"> 0.</label>
+                        <label class="quiz-mohr-label"><input type="radio" name="p11" value="a"> σ promedio.</label>
+                    </div>
+
+                    <button type="button" class="quiz-mohr-btn" onclick="evaluarQuizTotal()">Finalizar y Calificar</button>
+                </form>
+
+                <div id="quiz-resultado-mohr"></div>
+            </div>
+        </section>  
+
+                <!-- BOTON QUE REDIRIGE A YT -->
+                <section class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 transition-colors duration-300 text-center">
+            <h2 class="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-6">Recurso Multimedia</h2>
+            <p class="mb-6 text-gray-700 dark:text-gray-300">Para complementar tu aprendizaje, puedes ver el siguiente video explicativo sobre el tema:</p>
+            <a href="https://www.youtube.com/watch?v=chvThBGcmrQ" target="_blank" class="inline-flex items-center bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg transform hover:scale-105">
+                <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                Ver Video en YouTube
+            </a>
+        </section>
+
         <!-- BIBLIOGRAFIA -->
         <section class="bg-white p-10 rounded-lg shadow-md border-t-8 border-gray-400 dark:bg-gray-800 dark:border-gray-600">
-            <h2 class="text-2xl font-bold text-gray-800 mb-8 border-b-2 pb-2 inline-block dark:text-gray-200">Referencias</h2>
-<div class="mb-8">
-    <div class="space-y-4 text-gray-700 text-sm md:text-base leading-relaxed dark:text-gray-300 ml-4">
-        <p class="pl-8 -indent-8">
-            <strong>Beer, F. P., Johnston, E. R.</strong> <i>Mecánica de Materiales.</i> McGraw-Hill Education.
-        </p>
-    </div>
-</div>
- </section>
+            <h2 class="text-2xl font-bold text-gray-800 mb-8 border-b-2 pb-2 inline-block dark:text-gray-200">Referencias Bibliográficas</h2>
+            <div class="space-y-4 text-gray-700 text-sm md:text-base leading-relaxed dark:text-gray-300">
+                <p class="pl-8 -indent-8">
+                    1. <strong>Beer, F. P., Johnston, E. R., DeWolf, J. T., & Mazurek, D. F. (2017).</strong> <i>Mecánica de materiales</i> (7a ed.). McGraw-Hill Education.
+                </p>
+                <p class="pl-8 -indent-8">
+                    2. <strong>Hibbeler, R. C. (2011).</strong> <i>Mecánica de materiales</i> (8a ed.). Pearson Educación.
+                </p>
+                <p class="pl-8 -indent-8">
+                    3. <strong>Popov, E. P. (2000).</strong> <i>Mecánica de sólidos</i>. Pearson Educación.
+                </p>
+                <p class="pl-8 -indent-8">
+                    4. <strong>Timoshenko, S. P., & Goodier, J. N. (1970).</strong> <i>Theory of Elasticity</i>. McGraw-Hill Book Company.
+                </p>
+                <p class="pl-8 -indent-8">
+                    5. <strong>Mott, R. L. (2007).</strong> <i>Applied Strength of Materials</i> (5ta ed.). Prentice Hall.
+                </p>
+                <p class="pl-8 -indent-8">
+                    6. <strong>Oller, S. H., & Nallim, L. G. (2020).</strong> <i>Estática y Resistencia de Materiales</i>. CIMNE, Barcelona.
+                </p>
+            </div>
+        </section>
+
+        
+
     </main>
 
     <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
-    </div>
-    
-    <div class="max-w-6xl mx-auto px-6 relative z-10">
-        <div class="flex flex-col items-center space-y-4">
-            <div class="text-center space-y-1">
-                <div class="flex items-center justify-center space-x-2 text-sm">
-                    <span class="text-white font-medium">Paula Figueroa</span>
-                    <span class="text-gray-600">◆</span>
-                    <span class="text-gray-400">202132511</span>
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="flex flex-col items-center space-y-4">
+                <div class="text-center space-y-1">
+                    <div class="flex items-center justify-center space-x-2 text-sm">
+                        <span class="text-white font-medium">Paula Figueroa</span>
+                        <span class="text-gray-600">◆</span>
+                        <span class="text-gray-400">202132511</span>
+                    </div>
+                    <div class="flex items-center justify-center space-x-2 text-sm">
+                        <span class="text-white font-medium">Noel López</span>
+                        <span class="text-gray-600">◆</span>
+                        <span class="text-gray-400">201731454</span>
+                    </div>
                 </div>
-                <div class="flex items-center justify-center space-x-2 text-sm">
-                    <span class="text-white font-medium">Noel López</span>
-                    <span class="text-gray-600">◆</span>
-                    <span class="text-gray-400">201731454</span>
+                
+                <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+                
+                <div class="flex space-x-3 pt-2">
+                    <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                        </svg>
+                    </a>
+                    <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
+                        </svg>
+                    </a>
                 </div>
-            </div>
-            
-            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
-            
-            <div class="flex space-x-3 pt-2">
-                <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
-                    </svg>
-                </a>
-                <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
-                    </svg>
-                </a>
             </div>
         </div>
-    </div>
-</footer>
+    </footer>
+
     <script src="../js/darkmode.js"></script>
     <script src="../js/progreso.js"></script>
     
@@ -314,6 +563,67 @@
             `;
             MathJax.typeset();
             document.getElementById('resultado_box').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function evaluarQuizTotal() {
+            const respuestas = {
+                p1: 'c', p2: 'b', p3: 'd', p4: 'a', p5: 'a', 
+                p6: 'b', p7: 'a', p8: 'b', p9: 'c', p10: 'b', p11: 'c'
+            };
+
+            let puntaje = 0;
+            const total = 11;
+            const form = document.getElementById('form-quiz-mohr');
+            const resDiv = document.getElementById('quiz-resultado-mohr');
+            
+            let contestadas = 0;
+            for (let i = 1; i <= total; i++) {
+                const radio = form.elements['p' + i];
+                if (radio) {
+                    for (let j = 0; j < radio.length; j++) {
+                        if (radio[j].checked) {
+                            contestadas++;
+                            if (radio[j].value === respuestas['p' + i]) puntaje++;
+                        }
+                    }
+                }
+            }
+
+            resDiv.style.display = "block";
+
+            if (contestadas < total) {
+                resDiv.style.backgroundColor = "#fee2e2";
+                resDiv.style.color = "#991b1b";
+                resDiv.innerHTML = `⚠️ Has respondido ${contestadas} de ${total}. ¡Completa todas para ver tu nota!`;
+                return;
+            }
+
+            const porcentaje = (puntaje / total) * 100;
+
+            if (porcentaje === 100) {
+                resDiv.style.backgroundColor = "#dcfce7";
+                resDiv.style.color = "#166534";
+                resDiv.innerHTML = `¡EXCELENTE! 🏆 ${puntaje}/${total} correctas. Tienes un dominio total de la transformación de esfuerzos.`;
+            } else if (porcentaje >= 70) {
+                resDiv.style.backgroundColor = "#fef9c3";
+                resDiv.style.color = "#854d0e";
+                resDiv.innerHTML = `¡Buen trabajo! 👏 Puntaje: ${puntaje}/${total}. Estás muy cerca de la maestría.`;
+            } else {
+                resDiv.style.backgroundColor = "#fee2e2";
+                resDiv.style.color = "#991b1b";
+                resDiv.innerHTML = `Puntaje: ${puntaje}/${total}. 📚 Te recomendamos repasar los conceptos de planos principales y el Círculo de Mohr.`;
+            }
+            
+            // Agregar clases dark
+            if (porcentaje === 100) {
+                resDiv.classList.add('dark:bg-green-900/30', 'dark:text-green-400');
+            } else if (porcentaje >= 70) {
+                resDiv.classList.add('dark:bg-amber-900/30', 'dark:text-amber-400');
+            } else {
+                resDiv.classList.add('dark:bg-red-900/30', 'dark:text-red-400');
+            }
+            
+            resDiv.scrollIntoView({ behavior: 'smooth' });
         }
         
         // Actualizar botón de completado
