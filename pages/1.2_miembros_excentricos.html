@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miembros Cargados Excéntricamente</title>
+    <title>1.2 Miembros Cargados Excéntricamente</title>
     
     <!-- Script para modo oscuro - se sincroniza con la página principal -->
     <script>
@@ -63,6 +63,16 @@
         .dark .text-gray-400 { color: #9ca3af !important; }
         .dark .bg-blue-900.text-white { background-color: #1e3a8a !important; }
         .dark .border-blue-200 { border-color: #3b82f6 !important; }
+        
+        /* Estilos para el quiz */
+        .option-card { transition: all 0.2s ease; cursor: pointer; }
+        .option-card:hover { border-color: #1e3a8a; background-color: #f0f4ff; }
+        .dark .option-card:hover { border-color: #60a5fa; background-color: #1e293b; }
+        .selected { border-color: #1e3a8a; background-color: #e0e7ff; }
+        .correct { background-color: #dcfce7 !important; border-color: #16a34a !important; }
+        .incorrect { background-color: #fee2e2 !important; border-color: #dc2626 !important; }
+        .dark .correct { background-color: #14532d !important; border-color: #22c55e !important; }
+        .dark .incorrect { background-color: #7f1d1d !important; border-color: #ef4444 !important; }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans dark:bg-gray-900 dark:text-gray-100">
@@ -81,6 +91,8 @@
                         📚 Marcar como completado
                     </button>
                 </div>
+            </div>
+            <div class="flex items-center gap-4 mt-6 md:mt-0">
             </div>
         </div>
     </header>
@@ -142,25 +154,65 @@
             </div>
         </section>
 
-        <!-- MAPA MENTAL - IMAGEN -->
+        <!-- QUIZ INTERACTIVO -->
+        <section id="quiz" class="bg-white p-8 rounded-2xl shadow-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+            <h2 class="text-2xl font-bold mb-6 text-blue-900 uppercase flex items-center border-b pb-4 dark:text-blue-400 dark:border-gray-700">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Evaluación Interactiva
+            </h2>
+            
+            <div id="quiz-container">
+                <div class="mb-8">
+                    <div class="flex justify-between text-xs font-bold text-blue-900 uppercase mb-2 dark:text-blue-400">
+                        <span id="progress-text">Pregunta 1 de 5</span>
+                        <span id="score-text">Puntos: 0</span>
+                    </div>
+                    <div class="w-full bg-gray-200 h-2 rounded-full dark:bg-gray-700">
+                        <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-500 dark:bg-blue-500" style="width: 20%"></div>
+                    </div>
+                </div>
 
-<div id="contenedorMapaMental"></div>
+                <div id="question-box">
+                    <h2 id="question-title" class="text-xl font-bold text-gray-800 mb-6 dark:text-gray-200">Cargando pregunta...</h2>
+                    <div id="options-container" class="space-y-4"></div>
+                </div>
 
-<div id="mapaMental"></div>
+                <div class="mt-10 flex justify-between">
+                    <button id="btn-next" onclick="nextQuestion()" class="hidden bg-blue-900 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition-all ml-auto dark:bg-blue-700 dark:hover:bg-blue-600">
+                        Siguiente Pregunta →
+                    </button>
+                </div>
+            </div>
 
-<script>
-    fetch('../components/mapa-mental.html')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('mapaMental').innerHTML = html;
-            const img = document.querySelector('#mapaMental img');
-            if (img) {
-                img.src = '../img/Mapa_1.2.jpg';
-                img.alt = 'Mapa mental - Miembros Excéntricos';
-            }
-        })
-        .catch(error => console.error('Error:', error));
-</script>
+            <div id="result-screen" class="hidden text-center">
+                <h2 class="text-3xl font-bold text-blue-900 mb-4 dark:text-blue-400">¡Prueba Finalizada!</h2>
+                <p class="text-gray-600 mb-6 dark:text-gray-400">Tu desempeño en el análisis de miembros excéntricos fue:</p>
+                <div class="text-6xl font-black text-blue-900 mb-8 dark:text-blue-400" id="final-score">0/5</div>
+                <div id="feedback-msg" class="mb-10 font-semibold text-lg dark:text-gray-300"></div>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button onclick="resetQuiz()" class="bg-blue-900 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition-all dark:bg-blue-700 dark:hover:bg-blue-600">Reintentar</button>
+                    <a href="#quiz" class="bg-gray-100 text-blue-900 px-8 py-3 rounded-lg font-bold hover:bg-gray-200 border border-gray-300 dark:bg-gray-700 dark:text-blue-400 dark:hover:bg-gray-600">Volver al Inicio</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- MAPA MENTAL -->
+        <div id="contenedorMapaMental"></div>
+        <div id="mapaMental"></div>
+
+        <script>
+            fetch('../components/mapa-mental.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('mapaMental').innerHTML = html;
+                    const img = document.querySelector('#mapaMental img');
+                    if (img) {
+                        img.src = '../img/Mapa_1.2.jpg';
+                        img.alt = 'Mapa mental - Miembros Excéntricos';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        </script>
 
         <section id="ejercicio-ejemplo" class="bg-white p-8 rounded-2xl shadow-md border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
             <h2 class="text-2xl font-bold mb-6 text-blue-900 uppercase flex items-center border-b pb-4 dark:text-blue-400 dark:border-gray-700">
@@ -316,90 +368,220 @@
                 </details>
             </div>
         </section>
+
         <!-- BIBLIOGRAFIA -->
         <section class="bg-white p-10 rounded-lg shadow-md border-t-8 border-gray-400 dark:bg-gray-800 dark:border-gray-600">
             <h2 class="text-2xl font-bold text-gray-800 mb-8 border-b-2 pb-2 inline-block dark:text-gray-200">Referencias</h2>
-    <div class="mb-8">
-    <div class="space-y-4 text-gray-700 text-sm md:text-base leading-relaxed dark:text-gray-300 ml-4">
-        <p class="pl-8 -indent-8">
-            <strong>Gobierno de la Ciudad de México (2023).</strong> <i>Normas Técnicas Complementarias para Diseño y Construcción de Estructuras de Acero (NTC-Acero 2023).</i> Gaceta Oficial de la Ciudad de México.
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>International Organization for Standardization (2012).</strong> <i>ISO 8686-1:2012. Cranes — Design principles for loads and load combinations — Part 1: General.</i> Second edition.
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>Beer, F. P., Johnston, Jr., E. R., DeWolf, J. T., & Mazurek, D. F. (2013).</strong> <i>Mecánica de Materiales</i> (6ta ed.). McGraw-Hill Education.
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>De Buen, O. (1980/2017).</strong> <i>Estructuras de Acero: Comportamiento y Diseño.</i> Limusa / Fundación ICA.
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>Reinhard, R. G. (2013).</strong> <i>Esfuerzos Combinados: Columna cargada excéntricamente.</i> Universidad Tecnológica Nacional (UTN), Facultad Regional Santa Cruz. Cátedra: Elementos de Máquina.
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>Erazo Espinosa, W. J. (2018).</strong> <i>Columnas con Carga Excéntrica.</i> Curso: Resistencia de Materiales.
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>Blanco, J. M. (2019/2020).</strong> <i>Columnas con Cargas Axiales Excéntricas - Análisis y Comportamiento.</i> Apuntes de clase, Universidad Tecnológica Nacional.
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>Caviedes, A. & Erazo Espinosa, W. J.</strong> <i>Diseño de Columnas Cargadas Excéntricamente.</i> Documento técnico sobre pandeo y métodos de interacción.
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>Repositorio PDFCoffee.</strong> <i>Columnas con Carga Excéntrica: Fórmula de la Secante.</i> Manual sobre análisis de columnas idealmente rectas y desviaciones de carga.
-        </p>
-        <p class="pl-8 -indent-8">
-            <strong>Anónimo.</strong> <i>Capítulo II: Esfuerzos Combinados.</i> Guía sobre análisis de esfuerzos por carga axial, cortante y flexión asimétrica.
-        </p>
-    </div>
-    </div>
- </section>
+            <div class="mb-8">
+                <div class="space-y-4 text-gray-700 text-sm md:text-base leading-relaxed dark:text-gray-300 ml-4">
+                    <p class="pl-8 -indent-8">
+                        <strong>Gobierno de la Ciudad de México (2023).</strong> <i>Normas Técnicas Complementarias para Diseño y Construcción de Estructuras de Acero (NTC-Acero 2023).</i> Gaceta Oficial de la Ciudad de México.
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>International Organization for Standardization (2012).</strong> <i>ISO 8686-1:2012. Cranes — Design principles for loads and load combinations — Part 1: General.</i> Second edition.
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>Beer, F. P., Johnston, Jr., E. R., DeWolf, J. T., & Mazurek, D. F. (2013).</strong> <i>Mecánica de Materiales</i> (6ta ed.). McGraw-Hill Education.
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>De Buen, O. (1980/2017).</strong> <i>Estructuras de Acero: Comportamiento y Diseño.</i> Limusa / Fundación ICA.
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>Reinhard, R. G. (2013).</strong> <i>Esfuerzos Combinados: Columna cargada excéntricamente.</i> Universidad Tecnológica Nacional (UTN), Facultad Regional Santa Cruz. Cátedra: Elementos de Máquina.
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>Erazo Espinosa, W. J. (2018).</strong> <i>Columnas con Carga Excéntrica.</i> Curso: Resistencia de Materiales.
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>Blanco, J. M. (2019/2020).</strong> <i>Columnas con Cargas Axiales Excéntricas - Análisis y Comportamiento.</i> Apuntes de clase, Universidad Tecnológica Nacional.
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>Caviedes, A. & Erazo Espinosa, W. J.</strong> <i>Diseño de Columnas Cargadas Excéntricamente.</i> Documento técnico sobre pandeo y métodos de interacción.
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>Repositorio PDFCoffee.</strong> <i>Columnas con Carga Excéntrica: Fórmula de la Secante.</i> Manual sobre análisis de columnas idealmente rectas y desviaciones de carga.
+                    </p>
+                    <p class="pl-8 -indent-8">
+                        <strong>Anónimo.</strong> <i>Capítulo II: Esfuerzos Combinados.</i> Guía sobre análisis de esfuerzos por carga axial, cortante y flexión asimétrica.
+                    </p>
+                </div>
+            </div>
+        </section>
     </main>
 
-
     <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
-    </div>
-    
-    <div class="max-w-6xl mx-auto px-6 relative z-10">
-        <div class="flex flex-col items-center space-y-4">
-            <div class="text-center space-y-1">
-                <div class="flex items-center justify-center space-x-2 text-sm">
-                    <span class="text-white font-medium">Margareth Daniella Pérez Castro</span>
-                    <span class="text-gray-600">◆</span>
-                    <span class="text-gray-400">202331844</span>
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="flex flex-col items-center space-y-4">
+                <div class="text-center space-y-1">
+                    <div class="flex items-center justify-center space-x-2 text-sm">
+                        <span class="text-white font-medium">Margareth Daniella Pérez Castro</span>
+                        <span class="text-gray-600">◆</span>
+                        <span class="text-gray-400">202331844</span>
+                    </div>
+                    <div class="flex items-center justify-center space-x-2 text-sm">
+                        <span class="text-white font-medium">Einar Alexander Yax Rodas</span>
+                        <span class="text-gray-600">◆</span>
+                        <span class="text-gray-400">202130034</span>
+                    </div>
                 </div>
-                <div class="flex items-center justify-center space-x-2 text-sm">
-                    <span class="text-white font-medium">Einar Alexander Yax Rodas</span>
-                    <span class="text-gray-600">◆</span>
-                    <span class="text-gray-400">202130034</span>
+                
+                <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+                
+                <div class="flex space-x-3 pt-2">
+                    <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                        </svg>
+                    </a>
+                    <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
+                        </svg>
+                    </a>
                 </div>
-            </div>
-            
-            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
-            
-            <div class="flex space-x-3 pt-2">
-                <a href="https://www.facebook.com/DivisionIngenieriaCunoc/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
-                    </svg>
-                </a>
-                <a href="http://ingenieria.cunoc.usac.edu.gt/" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93V18c0 .55-.45 1-1 1s-1-.45-1-1v-1.07c-2.83-.48-5-2.94-5-5.93 0-.55.45-1 1-1s1 .45 1 1c0 1.85 1.28 3.42 3 3.87v-3.74c-1.72-.45-3-2.02-3-3.87 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.85-1.28 3.42-3 3.87v3.74c1.72-.45 3-2.02 3-3.87 0-.55.45-1 1-1s1 .45 1 1c0 2.99-2.17 5.45-5 5.93z"/>
-                    </svg>
-                </a>
             </div>
         </div>
-    </div>
-</footer>
+    </footer>
 
     <script src="../js/darkmode.js"></script>
     <script src="../js/progreso.js"></script>
     
     <script>
+        // Datos del quiz
+        const questions = [
+            {
+                q: "¿Qué sucede con el principio de superposición en columnas esbeltas cargadas excéntricamente?",
+                options: [
+                    "Sigue siendo perfectamente válido y lineal.",
+                    "No es aplicable porque la deflexión aumenta el brazo de palanca de la carga axial.",
+                    "Solo se aplica si la carga es de tracción en lugar de compresión.",
+                    "Se aplica únicamente si el material es madera."
+                ],
+                correct: 1
+            },
+            {
+                q: "¿Cuál es el propósito principal de la 'Fórmula de la Secante'?",
+                options: [
+                    "Calcular el volumen de la columna.",
+                    "Determinar el costo del material de acero.",
+                    "Calcular el esfuerzo de compresión máximo considerando efectos de segundo orden.",
+                    "Medir la temperatura de la sección transversal."
+                ],
+                correct: 2
+            },
+            {
+                q: "En el término de excentricidad (ec/r²), ¿qué representa la variable 'r'?",
+                options: [
+                    "El radio de la sección circular únicamente.",
+                    "La resistencia a la fluencia del acero.",
+                    "El radio de giro de la sección transversal.",
+                    "La rigidez flexional del miembro."
+                ],
+                correct: 2
+            },
+            {
+                q: "¿Qué define el 'Núcleo Central' de una sección?",
+                options: [
+                    "El punto exacto donde la columna se rompe.",
+                    "La zona donde la carga axial no produce tensiones de tracción.",
+                    "La parte más pesada de la viga.",
+                    "El recubrimiento de pintura antioxidante."
+                ],
+                correct: 1
+            },
+            {
+                q: "Si aumentamos la excentricidad 'e' en una columna, ¿qué ocurre con el esfuerzo total?",
+                options: [
+                    "Aumenta drásticamente debido al incremento del momento flector.",
+                    "Se mantiene igual porque el área no cambia.",
+                    "Disminuye, ya que la carga se aleja del centro.",
+                    "Solo cambia si la columna es corta."
+                ],
+                correct: 0
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        function loadQuestion() {
+            answered = false;
+            const qData = questions[currentQuestion];
+            document.getElementById('question-title').innerText = qData.q;
+            document.getElementById('progress-text').innerText = `Pregunta ${currentQuestion + 1} de 5`;
+            document.getElementById('progress-bar').style.width = `${((currentQuestion + 1) / 5) * 100}%`;
+            
+            const optionsHtml = qData.options.map((opt, i) => `
+                <div onclick="checkAnswer(${i})" class="option-card border-2 border-gray-200 dark:border-gray-600 p-4 rounded-xl font-medium text-gray-700 dark:text-gray-300 flex items-center transition-all">
+                    <span class="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mr-4 text-xs font-bold text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}</span>
+                    ${opt}
+                </div>
+            `).join('');
+            
+            document.getElementById('options-container').innerHTML = optionsHtml;
+            document.getElementById('btn-next').classList.add('hidden');
+        }
+
+        function checkAnswer(index) {
+            if (answered) return;
+            answered = true;
+            
+            const qData = questions[currentQuestion];
+            const options = document.querySelectorAll('.option-card');
+            
+            if (index === qData.correct) {
+                options[index].classList.add('correct');
+                score++;
+                document.getElementById('score-text').innerText = `Puntos: ${score}`;
+            } else {
+                options[index].classList.add('incorrect');
+                options[qData.correct].classList.add('correct');
+            }
+            
+            document.getElementById('btn-next').classList.remove('hidden');
+            if (currentQuestion === questions.length - 1) {
+                document.getElementById('btn-next').innerText = "Ver Resultados Finales";
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = `${score}/5`;
+            
+            let msg = "";
+            if (score === 5) msg = "¡Excelente! Eres un experto en miembros excéntricos.";
+            else if (score >= 3) msg = "¡Buen trabajo! Tienes bases sólidas.";
+            else msg = "Te recomendamos repasar los conceptos de la Fórmula de la Secante.";
+            
+            document.getElementById('feedback-msg').innerText = msg;
+        }
+
+        function resetQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            answered = false;
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            loadQuestion();
+            document.getElementById('score-text').innerText = `Puntos: 0`;
+        }
+
         function calcularEsfuerzo() {
             const P = parseFloat(document.getElementById('cargaP').value);
             const e = parseFloat(document.getElementById('excentricidadE').value);
@@ -419,6 +601,9 @@
                 alert("Completa todos los campos técnicos para calcular.");
             }
         }
+        
+        // Iniciar quiz
+        loadQuestion();
         
         // Actualizar botón de completado
         if (typeof actualizarBotonEnPagina === 'function') {

@@ -83,18 +83,18 @@
         /* Estilos para el quiz */
         .quiz-container {
             background-color: #fff;
-            border-left: 8px solid #6b21a8;
+            border-left: 8px solid #003399;
             border-radius: 8px;
         }
         .dark .quiz-container {
             background-color: #1f2937;
-            border-left-color: #8b5cf6;
+            border-left-color: #3b82f6;
         }
         .quiz-title {
-            color: #6b21a8;
+            color: #003399;
         }
         .dark .quiz-title {
-            color: #a78bfa;
+            color: #60a5fa;
         }
         .pregunta-item {
             margin-bottom: 25px;
@@ -116,9 +116,12 @@
             color: #9ca3af;
         }
         .opcion-label input {
-            accent-color: #6b21a8;
+            accent-color: #003399;
             margin-right: 8px;
             transform: scale(1.2);
+        }
+        .dark .opcion-label input {
+            accent-color: #3b82f6;
         }
         .resultado-area {
             background-color: #fef9c3;
@@ -148,17 +151,17 @@
             transition: 0.2s;
         }
         .quiz-btn-evaluar {
-            background-color: #7e22ce;
+            background-color: #003399;
             color: white;
         }
         .quiz-btn-evaluar:hover {
-            background-color: #6b21a8;
+            background-color: #002673;
         }
         .dark .quiz-btn-evaluar {
-            background-color: #8b5cf6;
+            background-color: #3b82f6;
         }
         .dark .quiz-btn-evaluar:hover {
-            background-color: #7c3aed;
+            background-color: #2563eb;
         }
         .quiz-btn-resetear {
             background-color: #e5e7eb;
@@ -179,7 +182,7 @@
 
 <body class="bg-gray-100 text-gray-800 font-sans dark:bg-gray-900 dark:text-gray-100">
 
-    <header class="bg-blue-900 text-white py-16">
+    <header class="bg-blue-900 text-white py-16 dark:bg-blue-800">
         <div class="max-w-5xl mx-auto text-center px-6">
             <div class="flex justify-between items-start mb-4">
                 <div class="w-14"></div>
@@ -267,7 +270,7 @@
             <p class="text-center mb-8 dark:text-gray-300">Dados: \(\sigma_x = -5.0\), \(\sigma_y = 80.0\) y \(\tau_{xy} = -35.0\).</p>
             
             <div class="flex justify-center gap-4 mb-8">
-                <button onclick="resolverEjercicio()" class="bg-blue-900 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition shadow-lg">
+                <button onclick="resolverEjercicio()" class="bg-blue-900 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition shadow-lg dark:bg-blue-700">
                     Calcular \(\tau_{max}\)
                 </button>
             </div>
@@ -311,25 +314,23 @@
             </div>
         </section>
 
-         <!-- MAPA MENTAL - IMAGEN -->
+        <!-- MAPA MENTAL - IMAGEN -->
+        <div id="contenedorMapaMental"></div>
+        <div id="mapaMental"></div>
 
-<div id="contenedorMapaMental"></div>
-
-<div id="mapaMental"></div>
-
-<script>
-    fetch('../components/mapa-mental.html')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('mapaMental').innerHTML = html;
-            const img = document.querySelector('#mapaMental img');
-            if (img) {
-                img.src = '../img/Mapa_2.5.jpg';
-                img.alt = 'Mapa mental - Esfuerzo Cortante Máximo';
-            }
-        })
-        .catch(error => console.error('Error:', error));
-</script>
+        <script>
+            fetch('../components/mapa-mental.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('mapaMental').innerHTML = html;
+                    const img = document.querySelector('#mapaMental img');
+                    if (img) {
+                        img.src = '../img/Mapa_2.5.jpg';
+                        img.alt = 'Mapa mental - Esfuerzo Cortante Máximo';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        </script>
 
         <!-- BIBLIOGRAFIA -->
         <section class="bg-white p-10 rounded-lg shadow-md border-t-8 border-gray-400 dark:bg-gray-800 dark:border-gray-600">
@@ -354,7 +355,7 @@
 
     </main>
 
-    <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden">
+    <footer id="info" class="bg-gray-900 text-white py-8 mt-16 relative overflow-hidden dark:bg-gray-950">
         <div class="absolute inset-0 opacity-10">
             <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
             <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full blur-3xl"></div>
