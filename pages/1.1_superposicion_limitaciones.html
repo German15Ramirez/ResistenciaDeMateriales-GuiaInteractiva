@@ -348,21 +348,30 @@
             </div>
         </section>
 
-        <!-- MAPA MENTAL - IMAGEN -->
-
-<div id="contenedorMapaMental"></div>
-
+        <!-- MAPA MENTAL - IMAGEN OPTIMIZADO -->
 <div id="mapaMental"></div>
 
 <script>
+    // Cargar el componente del mapa mental
     fetch('../components/mapa-mental.html')
         .then(response => response.text())
         .then(html => {
             document.getElementById('mapaMental').innerHTML = html;
+            
+            // Ruta de la imagen JPG original
+            const jpgPath = '../img/Mapa_1.1.jpg';
             const img = document.querySelector('#mapaMental img');
+            
             if (img) {
-                img.src = '../img/Mapa_1.1.jpg';
+                // Intentar cargar WebP primero (si existe), sino JPG
+                const webpPath = jpgPath.replace(/\.jpg$/i, '.webp').replace(/\.jpeg$/i, '.webp');
+                img.src = webpPath;
+                img.onerror = function() {
+                    this.src = jpgPath;
+                };
                 img.alt = 'Mapa mental - Superposición y sus limitaciones';
+                // Guardar ruta original para el modal
+                img.setAttribute('data-fullsrc', jpgPath);
             }
         })
         .catch(error => console.error('Error:', error));
