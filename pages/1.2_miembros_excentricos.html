@@ -196,23 +196,23 @@
             </div>
         </section>
 
-        <!-- MAPA MENTAL -->
-        <div id="contenedorMapaMental"></div>
-        <div id="mapaMental"></div>
+        <!-- MAPA MENTAL - IMAGEN -->
+<div id="mapaMental"></div>
 
-        <script>
-            fetch('../components/mapa-mental.html')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('mapaMental').innerHTML = html;
-                    const img = document.querySelector('#mapaMental img');
-                    if (img) {
-                        img.src = '../img/Mapa_1.2.jpg';
-                        img.alt = 'Mapa mental - Miembros Excéntricos';
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        </script>
+<script>
+    fetch('../components/mapa-mental.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('mapaMental').innerHTML = html;
+            const img = document.querySelector('#mapaMental img');
+            if (img) {
+                img.src = '../img/Mapa_1.2.webp';
+                img.alt = 'Mapa mental - Miembros Excéntricos';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+</script>
+
 
         <section id="ejercicio-ejemplo" class="bg-white p-8 rounded-2xl shadow-md border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
             <h2 class="text-2xl font-bold mb-6 text-blue-900 uppercase flex items-center border-b pb-4 dark:text-blue-400 dark:border-gray-700">

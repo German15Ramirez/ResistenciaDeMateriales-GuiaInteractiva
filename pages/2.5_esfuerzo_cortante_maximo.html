@@ -315,22 +315,21 @@
         </section>
 
         <!-- MAPA MENTAL - IMAGEN -->
-        <div id="contenedorMapaMental"></div>
-        <div id="mapaMental"></div>
+<div id="mapaMental"></div>
 
-        <script>
-            fetch('../components/mapa-mental.html')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('mapaMental').innerHTML = html;
-                    const img = document.querySelector('#mapaMental img');
-                    if (img) {
-                        img.src = '../img/Mapa_2.5.jpg';
-                        img.alt = 'Mapa mental - Esfuerzo Cortante Máximo';
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        </script>
+<script>
+    fetch('../components/mapa-mental.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('mapaMental').innerHTML = html;
+            const img = document.querySelector('#mapaMental img');
+            if (img) {
+                img.src = '../img/Mapa_2.5.webp';
+                img.alt = 'Mapa mental - Esfuerzo Cortante Máximo';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+</script>
 
         <!-- BOTON QUE REDIRIGE A YT -->
                 <section class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 transition-colors duration-300 text-center">

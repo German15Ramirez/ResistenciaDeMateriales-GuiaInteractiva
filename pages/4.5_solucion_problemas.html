@@ -471,10 +471,7 @@
             </div>
         </section>
 
-        <!-- MAPA -->
-
-<div id="contenedorMapaMental"></div>
-
+        <!-- MAPA MENTAL - IMAGEN -->
 <div id="mapaMental"></div>
 
 <script>
@@ -484,13 +481,12 @@
             document.getElementById('mapaMental').innerHTML = html;
             const img = document.querySelector('#mapaMental img');
             if (img) {
-                img.src = '../img/Mapa_4.5.jpg';
+                img.src = '../img/Mapa_4.5.webp';
                 img.alt = 'Mapa mental - Solución de Problemas';
             }
         })
         .catch(error => console.error('Error:', error));
 </script>
-
 <!-- RECURSOS MULTIMEDIA -->
 <section class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 transition-colors duration-300 text-center">
     <h2 class="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-6">Recursos Multimedia</h2>
